@@ -1,0 +1,71 @@
+/* Navbar.css */
+.floating-navbar {
+    position: fixed;
+    top: 20px;
+    left: 32%;
+    /* Center horizontally */
+    /* Ensure it's above everything else */
+
+    /* Glassmorphism Styling */
+    background: rgba(255, 255, 255, 0.05); /* Very sheer white/gray */
+    backdrop-filter: blur(15px); /* The frosted glass effect */
+    -webkit-backdrop-filter: blur(15px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+    
+    /* Circular Edges */
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.6); /* Default inactive color */
+    padding: 0.8rem;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Ensure framer motion transform origin is center for scaling */
+    transform-origin: center;
+}
+
+/* Active State Styling provided by NavLink */
+.nav-link.active-link {
+    color: var(--ag-green, #39ff14);
+}
+
+/* Optional: Add a small indicator dot below active item */
+.nav-link.active-link::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 6px;
+    height: 6px;
+    background-color: var(--ag-green, #39ff14);
+    border-radius: 50%;
+}

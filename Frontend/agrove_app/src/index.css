@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,3 +67,21 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+=======
+/* index.css */
+:root {
+  --ag-bg-dark: #0a0a0a; /* Deep black */
+  --ag-text-white: #ffffff;
+  --ag-green: #39ff14; /* Neon/electric green tone */
+  --ag-green-soft: #4ade80; /* Softer green for blends */
+  --ag-yellow: #fbbf24; /* Warm yellow */
+  --ag-blob-opacity: 0.4; /* Controls how intense the background blobs are */
+}
+
+body {
+    margin: 0;
+    background-color: var(--ag-bg-dark);
+    font-family: 'Inter', sans-serif; /* Or your preferred font */
+    overflow-x: hidden;
+}
+>>>>>>> 48ab030 (feat: initialize frontend with React, Vite, and essential styles)
