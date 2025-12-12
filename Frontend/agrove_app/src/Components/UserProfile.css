@@ -1,0 +1,211 @@
+/* UserProfile.css */
+
+/* --- Layout & Background --- */
+.profile-container {
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centers the card vertically */
+  padding: 20px;
+  padding-bottom: 100px; /* Space for Navbar */
+  position: relative;
+  color: white;
+}
+
+.profile-content {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 10;
+}
+
+/* --- The Glass Card --- */
+.profile-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 3rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Header Section --- */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.avatar-circle {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #39ff14, #15803d);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #000;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.profile-id {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+.status-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: rgba(57, 255, 20, 0.1);
+  color: #39ff14;
+  border: 1px solid rgba(57, 255, 20, 0.3);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 2rem 0;
+}
+
+/* --- Details Grid --- */
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Mobile responsive for grid */
+@media (max-width: 500px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .status-badge {
+    margin: 8px auto 0;
+  }
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s;
+}
+
+.detail-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.detail-icon {
+  font-size: 1.4rem;
+  color: #fbbf24; /* Yellow Accent */
+}
+
+.detail-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-text .label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-text .value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* --- Logout Button --- */
+.logout-btn {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1); /* Red tint */
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* --- Background Blobs --- */
+.profile-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.blob-profile-1 { top: -10%; left: -10%; width: 400px; height: 400px; background: #39ff14; }
+.blob-profile-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #ef4444; } /* Red for Locked */
+.blob-profile-3 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #fbbf24; } /* Yellow for Profile */
+
+/* Locked Mode Center Alignment */
+.profile-container.locked-mode {
+  text-align: center;
+}
+
+.profile-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #39ff14;
+  color: black;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  margin-top: 1rem;
+}

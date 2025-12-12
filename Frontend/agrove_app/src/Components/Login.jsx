@@ -1,18 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import './Authentication.css';
 
 const Login = () => {
+  const nav = useNavigate(); // ✅ Defined as 'nav'
 
-const handleSubmit = (e) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
- }
+    try {
+      // ✅ Matches your backend port 3000
+      const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      
+      console.log("Login Success:", res.data);
+      localStorage.setItem('userInfo', JSON.stringify(res.data));
+      
+      nav('/dashboard'); // ✅ Fixed: changed 'navigate' to 'nav'
+
+    } catch (error) {
+      console.error("Login Error:", error);
+      // Simple alert for now since toast is commented out
+      alert(error.response?.data?.message || 'Login Failed'); 
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-container">
-      {/* Ambient Background */}
       <div className="auth-blob blob-auth-1"></div>
       <div className="auth-blob blob-auth-2"></div>
 
@@ -37,7 +60,10 @@ const handleSubmit = (e) => {
               <input 
                 type="email" 
                 className="auth-input" 
-                placeholder="farmer@agrove.in" 
+                placeholder="farmer@agrove.in"
+                value={email}                       /* ✅ ADDED */
+                onChange={(e) => setEmail(e.target.value)} /* ✅ ADDED */
+                required                            /* ✅ ADDED */
               />
             </div>
           </div>
@@ -50,12 +76,15 @@ const handleSubmit = (e) => {
                 type="password" 
                 className="auth-input" 
                 placeholder="••••••••" 
+                value={password}                    /* ✅ ADDED */
+                onChange={(e) => setPassword(e.target.value)} /* ✅ ADDED */
+                required                            /* ✅ ADDED */
               />
             </div>
           </div>
 
-          <button type="submit" className="auth-submit-btn">
-            Login to Dashboard <FiArrowRight />
+          <button type="submit" className="auth-submit-btn" disabled={loading}>
+            {loading ? 'Logging In...' : <>Login to Dashboard <FiArrowRight /></>}
           </button>
         </form>
       </motion.div>
