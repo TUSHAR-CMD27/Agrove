@@ -172,9 +172,10 @@ const Dashboard = () => {
           {/* Ad Section */}
           <motion.div 
             className="bento-card ad-card"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }} /* Triggers when scrolled to */
+            viewport={{ once: true, margin: "-50px" }} /* Only animates once, never hides again */
+            transition={{ duration: 0.4 }}
           >
             <div className="ad-content">
               <span className="ad-badge">Sponsored</span>

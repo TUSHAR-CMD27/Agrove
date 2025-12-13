@@ -24,6 +24,7 @@ const UserProfile = () => {
     localStorage.removeItem('userInfo');
     // Redirect to login
     navigate('/login');
+    window.location.reload();
   };
 
   // --- 3. Render: Locked State (Not Logged In) ---
@@ -72,7 +73,7 @@ const UserProfile = () => {
             </div>
             <div className="header-info">
               <h1 className="profile-name">{user?.name || "Agrove User"}</h1>
-              <span className="profile-id">ID: {user?.user_id || "AG-2025-???"}</span>
+              <span className="profile-id">ID: {user?.user_id || "AG-2025-7898"}</span>
               <span className="status-badge">Active Farmer</span>
             </div>
           </div>

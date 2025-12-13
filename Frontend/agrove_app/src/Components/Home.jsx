@@ -1,12 +1,28 @@
-// Home.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import { FiArrowRight } from 'react-icons/fi';
 
 const Home = () => {
-  // Animation variants for staggered text entry
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Check if user info exists in localStorage
+    const userInfo = localStorage.getItem('userInfo');
+    if (userInfo) {
+      const parsedUser = JSON.parse(userInfo);
+      setUser(parsedUser);
+
+      // Redirect to dashboard if logged in
+      navigate('/dashboard', { replace: true });
+    } else {
+      setUser(null); // user not logged in
+    }
+  }, [navigate]);
+
+  // Animation variants (unchanged)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -20,20 +36,20 @@ const Home = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100 }
+      transition: { type: 'spring', stiffness: 100 }
     }
   };
 
   return (
     <div className="home-container">
-      {/* The Background Blob Layer */}
+      {/* Background blobs */}
       <div className="blob-layer">
         <div className="ag-blob blob-green-1"></div>
         <div className="ag-blob blob-yellow-1"></div>
         <div className="ag-blob blob-white-1"></div>
       </div>
 
-      {/* The Content Layer */}
+      {/* Hero Content */}
       <motion.div 
         className="hero-content"
         variants={containerVariants}
@@ -49,11 +65,10 @@ const Home = () => {
         </motion.h2>
         
         <motion.p variants={itemVariants} className="hero-description">
-          Smart farm management powered by data. maximize yields, minimize risks, and grow sustainably.
+          Smart farm management powered by data. Maximize yields, minimize risks, and grow sustainably.
         </motion.p>
 
         <motion.div variants={itemVariants} className="cta-group">
-           {/* Using React Router Link for navigation */}
           <Link to="/signup" className="ag-btn ag-btn-primary">
             Get Started <FiArrowRight />
           </Link>
@@ -62,7 +77,6 @@ const Home = () => {
           </Link>
         </motion.div>
       </motion.div>
-       {/* NB: Navbar will be rendered outside this component in App.jsx so it floats above everything */}
     </div>
   );
 };

@@ -22,8 +22,9 @@ const Login = () => {
       
       console.log("Login Success:", res.data);
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      
-      nav('/dashboard'); // ✅ Fixed: changed 'navigate' to 'nav'
+      nav('/dashboard'); 
+      window.location.reload();
+      // ✅ Fixed: changed 'navigate' to 'nav'
 
     } catch (error) {
       console.error("Login Error:", error);

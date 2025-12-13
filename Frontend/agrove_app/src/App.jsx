@@ -7,6 +7,8 @@ import Login from './Components/Login.jsx'
 import Signup from './Components/Signup.jsx'
 import Dashboard from './Components/Dashboard.jsx'
 import Profile from './Components/UserProfile.jsx'
+import FloatingMenu from './Components/FloatingMenu.jsx'
+import AddField from './Components/AddField.jsx'
 
 const App = () => {
   return (
@@ -21,10 +23,11 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
          <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/add-field" element={<AddField />} />
         </Routes>
 
         <Navbar />
-        
+        <FloatingMenu /> 
       </div>
     </Router>
   )

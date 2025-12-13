@@ -11,10 +11,10 @@ app.use(cors({origin :'http://localhost:5173'}));
 app.use(express.json());
 
 //routes
-const authROute = require('./routes/authRoutes')
+const authROute = require('./routes/authRoutes.js')
 
 app.use('/api/auth', authROute)
-
+app.use('/api/fields', require('./routes/fieldRoutes'));
 
 const PORT = process.env.PORT || 5000;
 
