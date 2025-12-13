@@ -11,7 +11,7 @@ app.use(cors({origin :'http://localhost:5173'}));
 app.use(express.json());
 
 //routes
-const authROute = require('./routes/authRoutes.js')
+const authROute = require('./routes/authRoutes')
 
 app.use('/api/auth', authROute)
 app.use('/api/fields', require('./routes/fieldRoutes'));

@@ -67,6 +67,41 @@
     100% { transform: translate(-30px, -50px) scale(0.9); }
 }
 
+/* Home.css */
+
+/* ... (Keep your existing styles for .home-container, .blob-layer, etc.) ... */
+
+/* --- Hero Content Styling --- */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.hero-title {
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--ag-text-white, #ffffff);
+  margin-bottom: 0.5rem;
+  letter-spacing: -2px;
+  
+  /* ADDED: Ensures letters stay inline and don't wrap oddly */
+  display: inline-block; 
+}
+
+/* ADDED: Target the spans inside the title for smooth rendering */
+.hero-title span {
+  display: inline-block; /* Crucial for transform animations to work on text */
+}
+
+.accent-dot {
+  color: var(--ag-green, #39ff14);
+}
+
+/* ... (Keep the rest of your CSS exactly as it was) ... */
+
 /* --- Hero Content Styling --- */
 .hero-content {
     position: relative;

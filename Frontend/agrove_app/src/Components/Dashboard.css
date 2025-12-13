@@ -45,6 +45,7 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.1rem;
   margin-top: 0.5rem;
+  text-align: left;
 }
 
 .date-badge {
@@ -260,7 +261,34 @@
   justify-content: center;
   margin: 0 auto 1.5rem auto;
 }
+/* --- New Fields Section Styles --- */
+.fields-section-container {
+  margin-top: 3rem;
+}
 
+.fields-grid-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-fields-state {
+  background: rgba(255,255,255,0.02);
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+  color: #a1a1aa;
+}
+
+/* Ensure charts are vertically centered */
+.bento-card .chart-wrapper {
+  flex: 1;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .access-denied-card h2 { margin-bottom: 0.5rem; }
 .access-denied-card p { color: #888; margin-bottom: 2rem; }
 
@@ -307,5 +335,40 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Fields take more space */
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+/* Analytics Card */
+.chart-card {
+  background: rgba(20, 20, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.chart-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: #e4e4e7;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }

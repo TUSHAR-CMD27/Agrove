@@ -20,34 +20,37 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fieldCount, setFieldCount] = useState(0);
 
-  // Check Login & Field Data
+  // --- Auth + Field Check ---
   useEffect(() => {
     const checkUser = async () => {
       const userInfo = localStorage.getItem('userInfo');
-      if (userInfo) {
-        const parsedUser = JSON.parse(userInfo);
-        setUser(parsedUser);
-        
-        // Check fields to enable/disable "Add Activity"
-        try {
-          const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-          const res = await axios.get('http://localhost:3000/api/fields', config);
-          setFieldCount(res.data.length);
-        } catch (err) {
-          console.error("Field check failed");
-        }
-      } else {
+
+      if (!userInfo) {
         setUser(null);
+        setFieldCount(0);
+        return;
+      }
+
+      const parsedUser = JSON.parse(userInfo);
+      setUser(parsedUser);
+
+      try {
+        const config = {
+          headers: { Authorization: `Bearer ${parsedUser.token}` }
+        };
+        const res = await axios.get('http://localhost:3000/api/fields', config);
+        setFieldCount(res.data.length);
+      } catch {
+        setFieldCount(0);
       }
     };
-    
-    // Run on mount and listen for storage changes (optional enhancement)
-    checkUser();
-    window.addEventListener('storage', checkUser); 
-    return () => window.removeEventListener('storage', checkUser);
-  }, [isMenuOpen]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const toggleMenu = () => setIsMenuOpen(prev => !prev);
 
   const iconVariants = {
     hover: { scale: 1.2 },
@@ -56,7 +59,7 @@ const Navbar = () => {
 
   const menuVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.8 },
-    visible: { opacity: 1, y: -15, scale: 1 }, // Moves up above navbar
+    visible: { opacity: 1, y: -15, scale: 1 },
     exit: { opacity: 0, y: 20, scale: 0.8 }
   };
 
@@ -64,12 +67,18 @@ const Navbar = () => {
     <li className="nav-item">
       <NavLink
         to={to}
-        className={({ isActive }) => `nav-link ${isActive ? 'active-link' : ''}`}
+        className={({ isActive }) =>
+          `nav-link ${isActive ? 'active-link' : ''}`
+        }
       >
-        <motion.div variants={iconVariants} whileHover="hover" whileTap="tap" className="icon-container">
+        <motion.div
+          className="icon-container"
+          variants={iconVariants}
+          whileHover="hover"
+          whileTap="tap"
+        >
           {icon}
         </motion.div>
-        {/* Tooltip hidden on mobile usually, good for desktop */}
         <span className="nav-tooltip">{label}</span>
       </NavLink>
     </li>
@@ -77,29 +86,37 @@ const Navbar = () => {
 
   return (
     <>
-      {/* --- The Pop-up Menu (Appears ABOVE navbar) --- */}
+      {/* --- Floating Action Popup --- */}
       <AnimatePresence>
         {isMenuOpen && user && (
           <div className="navbar-popup-menu">
-            {/* Option: Add Activity */}
             <motion.button
               variants={menuVariants}
-              initial="hidden" animate="visible" exit="exit"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               transition={{ delay: 0.05 }}
               onClick={() => {
                 setIsMenuOpen(false);
-                fieldCount > 0 ? navigate('/add-activity') : alert("Add a Field first!");
+                fieldCount > 0
+                  ? navigate('/add-activity')
+                  : alert('Add a Field first!');
               }}
-              className={`popup-btn activity-btn ${fieldCount === 0 ? 'disabled' : ''}`}
+              className={`popup-btn activity-btn ${
+                fieldCount === 0 ? 'disabled' : ''
+              }`}
             >
               <span className="popup-label">Add Activity</span>
-              <div className="popup-icon"><FiActivity /></div>
+              <div className="popup-icon">
+                <FiActivity />
+              </div>
             </motion.button>
 
-            {/* Option: Add Field */}
             <motion.button
               variants={menuVariants}
-              initial="hidden" animate="visible" exit="exit"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               onClick={() => {
                 setIsMenuOpen(false);
                 navigate('/add-field');
@@ -107,28 +124,32 @@ const Navbar = () => {
               className="popup-btn field-btn"
             >
               <span className="popup-label">Add Field</span>
-              <div className="popup-icon"><FiLayers /></div>
+              <div className="popup-icon">
+                <FiLayers />
+              </div>
             </motion.button>
           </div>
         )}
       </AnimatePresence>
 
-      {/* --- The Main Navbar --- */}
+      {/* --- Navbar --- */}
       <motion.nav
         className="floating-navbar"
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 120, damping: 14 }}
       >
-        <ul className="nav-list">
-          
-          {/* Guest Links */}
-          {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
-          
-          {/* Dashboard (Always visible) */}
-          <NavItem to="/dashboard" icon={<FiGrid size={22} />} label="Dashboard" />
+       
 
-          {/* --- CENTRAL ACTION BUTTON (Logged In Only) --- */}
+        <ul className="nav-list">
+          {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
+
+          <NavItem
+            to="/dashboard"
+            icon={<FiGrid size={22} />}
+            label="Dashboard"
+          />
+
           {user && (
             <li className="nav-item fab-wrapper">
               <motion.button
@@ -142,17 +163,22 @@ const Navbar = () => {
             </li>
           )}
 
-          {/* Profile (Always visible) */}
           <NavItem to="/profile" icon={<FiUser size={22} />} label="Profile" />
 
-          {/* Guest Auth Links */}
           {!user && (
             <>
-              <NavItem to="/login" icon={<FiLogIn size={22} />} label="Login" />
-              <NavItem to="/signup" icon={<FiUserPlus size={22} />} label="Signup" />
+              <NavItem
+                to="/login"
+                icon={<FiLogIn size={22} />}
+                label="Login"
+              />
+              <NavItem
+                to="/signup"
+                icon={<FiUserPlus size={22} />}
+                label="Signup"
+              />
             </>
           )}
-
         </ul>
       </motion.nav>
     </>

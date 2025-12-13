@@ -9,20 +9,19 @@ const Home = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user info exists in localStorage
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       const parsedUser = JSON.parse(userInfo);
       setUser(parsedUser);
-
-      // Redirect to dashboard if logged in
       navigate('/dashboard', { replace: true });
     } else {
-      setUser(null); // user not logged in
+      setUser(null);
     }
   }, [navigate]);
 
-  // Animation variants (unchanged)
+  // --- Animation Variants ---
+
+  // 1. Parent container for the whole hero section
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -31,6 +30,7 @@ const Home = () => {
     }
   };
 
+  // 2. Generic items (subtitle, buttons)
   const itemVariants = {
     hidden: { y: 30, opacity: 0 },
     visible: {
@@ -39,6 +39,29 @@ const Home = () => {
       transition: { type: 'spring', stiffness: 100 }
     }
   };
+
+  // 3. Specific variants for the Typing Title
+  const titleContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.5, // Wait a bit before starting typing
+        staggerChildren: 0.12 // Speed of typing (0.12s per letter)
+      }
+    }
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', damping: 12, stiffness: 200 }
+    }
+  };
+
+  const titleText = "Agrove";
 
   return (
     <div className="home-container">
@@ -56,8 +79,20 @@ const Home = () => {
         initial="hidden"
         animate="visible"
       >
-        <motion.h1 variants={itemVariants} className="hero-title">
-          Agrove<span className="accent-dot">.</span>
+        {/* TYPING ANIMATION TITLE */}
+        <motion.h1 
+          className="hero-title"
+          variants={titleContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {titleText.split("").map((char, index) => (
+            <motion.span key={index} variants={letterVariants}>
+              {char}
+            </motion.span>
+          ))}
+          {/* Animate the dot last */}
+          <motion.span variants={letterVariants} className="accent-dot">.</motion.span>
         </motion.h1>
         
         <motion.h2 variants={itemVariants} className="hero-subtitle">
