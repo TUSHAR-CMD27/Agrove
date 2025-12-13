@@ -36,6 +36,7 @@ const Signup = () => {
       
       // Navigate to Dashboard or Home after signup
       nav('/dashboard'); 
+      window.location.reload()
     } catch (err) {
       console.log("Error:", err.response?.data?.message || err.message);
       alert("Signup Failed: " + (err.response?.data?.message || "Server Error"));

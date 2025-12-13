@@ -314,7 +314,7 @@
 }
 
 .blob-dash-1 { top: -100px; left: -100px; width: 500px; height: 500px; background: #39ff14; }
-.blob-dash-2 { bottom: -100px; right: -100px; width: 400px; height: 400px; background: #ef4444; }
+.blob-dash-2 { bottom: 300px; left: -100px; width: 400px; height: 400px; background: #ffffff75; }
 .blob-dash-3 { bottom: 20%; right: -5%; width: 300px; height: 300px; background: #3b82f6; }
 
 @keyframes pulse {

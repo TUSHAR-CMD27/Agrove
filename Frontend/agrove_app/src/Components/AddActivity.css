@@ -1,0 +1,167 @@
+.add-activity-container {
+  min-height: 100vh; /* Fixed typo: was 0.6vh */
+  background-color: #0a0a0a;
+  color: white;
+  padding: 20px;
+  padding-bottom: 100px; /* Space for scrolling past navbar */
+  position: relative;
+  overflow-x: hidden;
+}
+
+.activity-header-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  position: relative;
+  z-index: 2; /* Keep above blobs */
+}
+
+.back-btn-simple {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn-simple:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.activity-header-section h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.form-card {
+  background: rgba(17, 17, 17, 0.9); /* Slight transparency */
+  backdrop-filter: blur(10px);
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2; /* Keep above blobs */
+}
+
+.form-group-act {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group-act label {
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+.form-group-act input, 
+.form-group-act select, 
+.form-group-act textarea {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group-act input:focus, 
+.form-group-act select:focus, 
+.form-group-act textarea:focus {
+  border-color: #39ff14; /* Green focus */
+}
+
+/* Fix Dropdown visibility */
+.form-group-act select option {
+  background: #1f1f1f;
+  color: white;
+  padding: 10px;
+}
+
+.row-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 12px;
+  color: #666;
+  font-size: 14px;
+}
+
+.input-with-icon input {
+  padding-left: 36px;
+  width: 100%;
+}
+
+.cost-input input:focus { border-color: #ef4444; } 
+.revenue-input input:focus { border-color: #39ff14; } 
+.revenue-label { color: #39ff14 !important; }
+
+/* Blobs */
+.dash-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob-dash-1 { top: -100px; left: -100px; width: 500px; height: 500px; background: #39ff14; }
+.blob-dash-2 { bottom: 300px; left: -100px; width: 400px; height: 400px; background: #ffffff75; }
+.blob-dash-3 { bottom: 20%; right: -5%; width: 300px; height: 300px; background: #3b82f6; }
+
+.warning-text {
+  color: #fbbf24;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.submit-act-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #8bc540, #02ae35);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  transition: transform 0.2s;
+}
+
+.submit-act-btn:hover {
+  transform: scale(1.02);
+}
+
+.submit-act-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

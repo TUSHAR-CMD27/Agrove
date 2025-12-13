@@ -10,6 +10,7 @@ import Profile from './Components/UserProfile.jsx'
 import FloatingMenu from './Components/FloatingMenu.jsx'
 import AddField from './Components/AddField.jsx'
 import FieldDetails from './Components/FieldDetails.jsx'
+import AddActivity from './Components/AddActivity.jsx'
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} /> 
         <Route path="/add-field" element={<AddField />} />
         <Route path="/field/:id" element={<FieldDetails />} />
+        <Route path="/add-activity" element={<AddActivity />} />
         </Routes>
 
         <Navbar />

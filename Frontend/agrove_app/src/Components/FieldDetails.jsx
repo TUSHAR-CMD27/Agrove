@@ -1,68 +1,115 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { FiArrowLeft, FiActivity, FiCheckCircle, FiClock } from 'react-icons/fi';
+import axios from 'axios';
+import { 
+  PieChart, Pie, Cell, ResponsiveContainer, 
+  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid 
+} from 'recharts';
+import { FiArrowLeft, FiCheckCircle, FiClock } from 'react-icons/fi';
 import './FieldDetails.css';
-
-// Mock Data for "Stage Progress" (Will be dynamic later)
-const progressData = [
-  { name: 'Completed', value: 75 },
-  { name: 'Remaining', value: 25 },
-];
-const COLORS = ['#39ff14', '#333'];
 
 const FieldDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [field, setField] = useState(null);
+  const [activities, setActivities] = useState([]);
   
-  // Dummy Activity Logs (Frontend only for now)
-  const [activities, setActivities] = useState([
-    { id: 1, type: 'Sowing', date: '2023-10-01', status: 'Completed' },
-    { id: 2, type: 'Fertilizing', date: '2023-10-15', status: 'Completed' },
-    { id: 3, type: 'Irrigation', date: '2023-10-20', status: 'Completed' },
-    { id: 4, type: 'Pest Control', date: '2023-11-05', status: 'Pending' },
-  ]);
+  // Stats
+  const [progress, setProgress] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0); // ✅ New State for Revenue
+  const [currentStage, setCurrentStage] = useState('Planning');
 
-  // Simulate Fetching Field Data
+  const COLORS = ['#39ff14', '#333'];
+
+  // 1. Fetch Data
   useEffect(() => {
-    // In real backend integration, fetch axios.get(`/api/fields/${id}`)
-    // For now, we assume user passed data or we fetch from list context
-    console.log("Fetching details for field ID:", id);
-    // Setting dummy field data to visualize UI
-    setField({
-      _id: id,
-      fieldName: 'North Wheat Plot',
-      currentCrop: 'Wheat',
-      areaSize: 2.5,
-      soilType: 'Black',
-      fieldImage: 'https://images.unsplash.com/photo-1627920769842-6877543d3b73?q=80&w=400',
-      waterAvailability: 'Medium'
-    });
+    const fetchData = async () => {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (!userInfo) return;
+      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+      
+      try {
+        const [fieldRes, actRes] = await Promise.all([
+          axios.get(`http://localhost:3000/api/fields/${id}`, config),
+          axios.get(`http://localhost:3000/api/activities/${id}`, config)
+        ]);
+        setField(fieldRes.data);
+        setActivities(actRes.data);
+        calculateStats(actRes.data);
+      } catch (err) { console.error(err); }
+    };
+    fetchData();
   }, [id]);
 
-  if (!field) return <div className="loading-screen">Loading Field Data...</div>;
+  // 2. Logic: Calculate Progress & Financials
+  const calculateStats = (logs) => {
+    // Calculate Totals
+    const cost = logs.reduce((acc, curr) => acc + (curr.cost || 0), 0);
+    const revenue = logs.reduce((acc, curr) => acc + (curr.revenue || 0), 0); // ✅ Sum Revenue
+    
+    setTotalCost(cost);
+    setTotalRevenue(revenue);
+
+    const completed = logs.filter(l => l.status === 'Completed');
+    
+    // Determine Stage
+    let percent = 0;
+    let stage = "Planning";
+
+    if (completed.some(l => l.activityType === 'Sowing')) { percent = 25; stage = "Sowed"; }
+    if (completed.some(l => l.activityType === 'Irrigation')) { percent = 50; stage = "Growing"; }
+    if (completed.some(l => l.activityType === 'Fertilizer')) { percent = 75; stage = "Maturing"; }
+    if (completed.some(l => l.activityType === 'Harvesting')) { percent = 100; stage = "Harvested"; }
+
+    setProgress(percent);
+    setCurrentStage(stage);
+  };
+
+  // 3. Handle Click to Complete
+  const toggleStatus = async (activityId, currentStatus) => {
+    if (currentStatus === 'Completed') return; 
+
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+
+    try {
+      const updatedActivities = activities.map(act => 
+        act._id === activityId ? { ...act, status: 'Completed' } : act
+      );
+      setActivities(updatedActivities);
+      calculateStats(updatedActivities);
+
+      await axios.patch(`http://localhost:3000/api/activities/${activityId}`, {}, config);
+      
+    } catch (err) {
+      alert("Error updating status");
+    }
+  };
+
+  if (!field) return <div className="loading-screen">Loading...</div>;
+
+  const pieData = [{ name: 'Done', value: progress }, { name: 'Left', value: 100 - progress }];
+  
+  // ✅ Data for the new Bar Chart
+  const financialData = [
+    { name: 'Financials', Cost: totalCost, Revenue: totalRevenue }
+  ];
+
+  // Calculate Net Profit
+  const netProfit = totalRevenue - totalCost;
 
   return (
     <div className="field-detail-container">
-
-         {/* Background blobs */}
+      {/* Background blobs */}
       <div className="blob-layer">
         <div className="ag-blob blob-green-1"></div>
         <div className="ag-blob blob-yellow-1"></div>
-        <div className="ag-blob blob-white-1"></div>
       </div>
-      
-      {/* Header Image */}
-      <div 
-        className="detail-header" 
-        style={{ backgroundImage: `url(${field.fieldImage})` }}
-      >
-        <div className="overlay"></div>
-        <button onClick={() => navigate('/dashboard')} className="back-btn-detail">
-          <FiArrowLeft />
-        </button>
+
+      <div className="detail-header" >
+        <button onClick={() => navigate('/dashboard')} className="back-btn-detail"><FiArrowLeft /></button>
         <div className="header-content">
           <h1>{field.fieldName}</h1>
           <span className="crop-pill">{field.currentCrop}</span>
@@ -71,86 +118,95 @@ const FieldDetails = () => {
 
       <div className="detail-content-grid">
         
-        {/* Left: Stats & Progress */}
+        {/* Left Panel: Stats & Graphs */}
         <div className="left-panel">
           
-          {/* Progress Card */}
-          <motion.div 
-            className="info-card progress-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h3>Season Progress</h3>
+          {/* 1. Progress Pie Chart */}
+          <motion.div className="info-card progress-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h3>Field Status</h3>
             <div className="chart-row">
               <div className="chart-mini">
                 <ResponsiveContainer width="100%" height={120}>
                   <PieChart>
-                    <Pie
-                      data={progressData}
-                      innerRadius={40}
-                      outerRadius={55}
-                      dataKey="value"
-                      startAngle={90}
-                      endAngle={-270}
-                    >
-                      {progressData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                      ))}
+                    <Pie data={pieData} innerRadius={40} outerRadius={55} dataKey="value" startAngle={90} endAngle={-270}>
+                      {pieData.map((entry, index) => <Cell key={index} fill={COLORS[index]} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="center-text">
-                  <span className="percent">75%</span>
-                </div>
+                <div className="center-text"><span className="percent">{progress}%</span></div>
               </div>
               <div className="progress-labels">
-                <p>Current Stage: <strong>Flowering</strong></p>
-                <p>Est. Harvest: <strong>Dec 20</strong></p>
+                <p>Stage: <strong>{currentStage}</strong></p>
+                <p>Next: <strong>{progress === 100 ? 'Sale' : 'Care'}</strong></p>
               </div>
             </div>
           </motion.div>
 
-          {/* Quick Info */}
-          <div className="info-card">
-            <h3>Field Specifications</h3>
-            <div className="specs-grid">
-              <div className="spec-item">
-                <label>Area</label>
-                <span>{field.areaSize} Ha</span>
-              </div>
-              <div className="spec-item">
-                <label>Soil</label>
-                <span>{field.soilType}</span>
-              </div>
-              <div className="spec-item">
-                <label>Water</label>
-                <span>{field.waterAvailability}</span>
-              </div>
+          {/* ✅ 2. NEW: Profit vs Cost Bar Chart */}
+          <motion.div 
+            className="info-card financial-card" 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <h3>Profit & Loss Analysis</h3>
+            <div className="financial-chart-wrapper">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={financialData} layout="vertical" barSize={20}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
+                  <XAxis type="number" stroke="#666" hide />
+                  <YAxis type="category" dataKey="name" stroke="#666" hide width={10} />
+                  <Tooltip 
+                    cursor={{fill: 'transparent'}}
+                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
+                  />
+                  <Legend verticalAlign="top" height={36}/>
+                  <Bar dataKey="Cost" fill="#ef4444" radius={[0, 4, 4, 0]} name="Total Cost" />
+                  <Bar dataKey="Revenue" fill="#39ff14" radius={[0, 4, 4, 0]} name="Revenue" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-          </div>
+            
+            <div className="net-profit-row">
+              <span>Net Profit:</span>
+              <span className={`profit-val ${netProfit >= 0 ? 'positive' : 'negative'}`}>
+                {netProfit >= 0 ? '+' : '-'} ₹{Math.abs(netProfit).toLocaleString()}
+              </span>
+            </div>
+          </motion.div>
 
         </div>
 
-        {/* Right: Activity Log */}
+        {/* Right Panel: Interactive Timeline */}
         <div className="right-panel">
           <div className="activity-header">
-            <h3>Activity Log</h3>
-            <button className="add-log-btn" onClick={() => navigate('/add-activity')}>
-              + Log Task
-            </button>
+            <h3>Operations Log</h3>
+            <button className="add-log-btn" onClick={() => navigate('/add-activity')}>+ Plan Task</button>
           </div>
 
           <div className="timeline">
-            {activities.map((act, index) => (
-              <div key={act.id} className="timeline-item">
+            {activities.length === 0 ? <p className="no-logs">No tasks planned.</p> : activities.map((act) => (
+              <div key={act._id} className="timeline-item">
                 <div className="timeline-line"></div>
-                <div className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`}>
+                
+                <div 
+                  className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`}
+                  onClick={() => toggleStatus(act._id, act.status)}
+                  title={act.status === 'Planned' ? "Click to Mark Done" : "Completed"}
+                >
                   {act.status === 'Completed' ? <FiCheckCircle /> : <FiClock />}
                 </div>
+
                 <div className="timeline-content">
-                  <h4>{act.type}</h4>
-                  <span className="timeline-date">{act.date}</span>
-                  <span className={`status-tag ${act.status.toLowerCase()}`}>{act.status}</span>
+                  <div className="timeline-top">
+                    <h4>{act.activityType}</h4>
+                    <span className="cost-badge">₹{act.cost}</span>
+                  </div>
+                  <span className="timeline-date">
+                    {new Date(act.activityDate).toDateString()} 
+                    {act.status === 'Planned' && <span className="due-tag"> (Due)</span>}
+                  </span>
+                  {act.notes && <p className="act-notes">{act.notes}</p>}
                 </div>
               </div>
             ))}

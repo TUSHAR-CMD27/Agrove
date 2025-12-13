@@ -64,4 +64,95 @@
   padding: 2px 8px;
   border-radius: 4px;
   margin: 0;
+}/* FieldCard.css - Updates */
+
+/* ... existing styles ... */
+
+.card-info {
+  padding: 16px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+
+/* Status Alert on Image */
+.status-alert {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(239, 68, 68, 0.9); /* Red */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Activity Footer Section */
+.activity-footer {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Loading State */
+.activity-text.loading {
+  font-size: 11px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Has Activity State */
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.activity-dot.done {
+  background: #39ff14; /* Neon Green for completed */
+  box-shadow: 0 0 5px #39ff14;
+}
+
+.activity-dot.pending {
+  background: #fbbf24; /* Yellow for planned/pending */
+}
+
+.activity-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.act-type {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e4e4e7;
+  line-height: 1.2;
+}
+
+.act-date {
+  font-size: 10px;
+  color: #a1a1aa;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* No Activity State */
+.no-activity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #52525b; /* Darker gray */
+  font-size: 12px;
+  font-style: italic;
+}
+
