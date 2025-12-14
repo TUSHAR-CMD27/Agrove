@@ -1,42 +1,76 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ======================================= */
+/* 1. Global Variables (Theme Colors) */
+/* ======================================= */
+:root {
+  /* AGROVE BASE COLORS */
+  --ag-bg-dark: #0a0a0a;       /* Deep black */
+  --ag-text-white: #ffffff;
+  
+  /* PRIMARY ACCENT COLORS */
+  --ag-green: #39ff14;         /* Neon/electric green (Main Glow/Accent) */
+  --ag-green-soft: #4ade80;    /* Softer green for blends/backgrounds */
+  --ag-yellow: #fbbf24;        /* Warm yellow (Secondary Accent) */
+  
+  /* FUNCTIONAL COLORS */
+  --ag-error-red: #ef4444;
+  --ag-success-green: #22c55e;
+  
+  /* MISC */
+  --ag-blob-opacity: 0.4;      /* Controls how intense the background blobs are */
+  --ag-navbar-height: 80px;    /* Standard height for the floating navbar */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* ======================================= */
+/* 2. Global Resets & Base HTML Styling */
+/* ======================================= */
+
+/* Enable smooth scrolling for anchor links (like #about-us-section) */
+html {
+  scroll-behavior: smooth;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+  margin: 0;
+  /* Apply dark theme and font globally */
+  background-color: var(--ag-bg-dark);
+  color: var(--ag-text-white);
+  font-family: 'Inter', sans-serif; /* Use your preferred font */
+  overflow-x: hidden; /* Prevent horizontal scroll bar */
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Base text styling */
+h1, h2, h3, h4, p {
+  margin: 0;
+  padding: 0;
 }
 
-.card {
-  padding: 2em;
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-.read-the-docs {
-  color: #888;
+
+/* ======================================= */
+/* 3. Main Application Layout */
+/* ======================================= */
+
+.app-main {
+  /* The main container for all content. 
+    It doesn't need much styling beyond taking up the full height/width, 
+    as components inside will define their own layouts.
+  */
+  min-height: 100vh;
+  position: relative;
+  /* Padding here is crucial if your navbar is floating/fixed */
+  /* We might add padding-bottom later if the navbar covers content */
 }
+
+/* --- Utility Class --- */
+.white-text {
+  color: var(--ag-text-white);
+}
+
+/* Add any other utility or top-level layout classes here */

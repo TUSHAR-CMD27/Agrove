@@ -1,0 +1,223 @@
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;700&display=swap');
+
+/* --- Variable Definitions --- */
+:root {
+  --primary-color: #000000; /* Pitch Black */
+  --secondary-color-dark: #004d40; /* Darker Green */
+  --secondary-color-light: #00c853; /* Bright Green/Accent */
+  --text-color-white: #ffffff;
+  --glass-bg-color: rgba(255, 255, 255, 0.05); /* Slight Translucent White */
+  --glass-border-color: rgba(0, 200, 83, 0.4); /* Green border */
+  --glow-blur: 50px;
+}
+
+/* --- Base Page Styles --- */
+.about-page {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  padding: 80px 5%; /* Top padding for header, horizontal padding */
+  position: relative;
+  overflow: hidden; /* To contain the blurry blobs */
+  font-family: 'Roboto', sans-serif;
+}
+
+/* --- Text and Typography --- */
+.white-text {
+  color: var(--text-color-white);
+  font-family: 'Montserrat', sans-serif; /* Use for bold impact */
+}
+
+h1.white-text {
+  font-size: 3.5rem;
+  font-weight: 900; /* Extra bold */
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--secondary-color-light); /* Slight text glow */
+}
+
+h2.white-text {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 25px;
+  border-bottom: 2px solid var(--secondary-color-light); /* Sharp underline */
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.description-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
+/* --- Glassy Card Styling --- */
+.glass-card {
+  background: var(--glass-bg-color);
+  border: 1px solid var(--glass-border-color);
+  backdrop-filter: blur(8px); /* The main glassy effect */
+  -webkit-backdrop-filter: blur(8px); /* For Safari support */
+  border-radius: 5px; /* Sharp edges */
+  padding: 30px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0, 200, 83, 0.4); /* Greenish hover shadow */
+}
+
+
+/* --- Background Glowing Blobs --- */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  filter: blur(var(--glow-blur));
+  z-index: 0; /* Keep them in the background */
+  animation: pulse 15s infinite ease-in-out alternate;
+}
+
+.blob-green-1 {
+  background-color: rgba(0, 200, 83, 0.5); /* Greenish */
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: -5%;
+}
+
+.blob-white-2 {
+  background-color: rgba(255, 255, 255, 0.4); /* Whitish */
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  right: -10%;
+  animation-delay: 2s;
+}
+
+.blob-yellow-3 {
+  background-color: rgba(255, 235, 59, 0.4); /* Yellowish */
+  width: 200px;
+  height: 200px;
+  bottom: 5%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.1) translate(20px, 30px); }
+  100% { transform: scale(1) translate(-20px, -10px); }
+}
+
+/* --- Section Specific Styles --- */
+
+
+
+/* Stats */
+.about-stats {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  flex: 1;
+  min-width: 200px;
+  max-width: 250px;
+  padding: 20px 15px;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--secondary-color-light); /* Green for stats */
+  margin-bottom: 5px;
+  text-shadow: 0 0 8px var(--secondary-color-light);
+}
+
+.stat-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color-white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Feedback/Testimonials */
+.about-feedback {
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.testimonials-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.testimonial-card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testimonial-quote {
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.testimonial-source {
+  font-size: 0.9rem;
+  text-align: right;
+  color: var(--secondary-color-light);
+}
+
+/* Footer */
+.about-footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--secondary-color-dark);
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 768px) {
+  h1.white-text {
+    font-size: 2.5rem;
+  }
+
+  h2.white-text {
+    font-size: 1.7rem;
+  }
+
+  .about-page {
+    padding: 60px 4%;
+  }
+
+  .stats-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-item {
+    max-width: 80%;
+  }
+}
