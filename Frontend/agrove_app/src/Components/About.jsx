@@ -17,13 +17,13 @@ const testimonials = [
     feedback: "Agrove transformed how I manage my cotton fields. The task logging and tailored advice are spot-on. Highly recommended!",
   },
   {
-    name: 'Sarah Chen',
-    location: 'California, US',
+    name: 'Viraj Gupta',
+    location: 'Uttar Pradesh, IN',
     feedback: "The yield analytics helped me identify underperforming areas instantly. It's truly a practical tool for modern farming.",
   },
   {
-    name: 'Kwame Adofo',
-    location: 'Kumasi, GH',
+    name: 'Sayali Mane',
+    location: 'Maharashtra, IN',
     feedback: "Simple, clean interface. I use it directly on my tablet in the field. Essential for keeping track of my cocoa harvest.",
   },
 ];
