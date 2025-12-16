@@ -10,7 +10,8 @@ import {
   FiUserPlus,
   FiPlus,
   FiLayers,
-  FiActivity
+  FiActivity,
+  FiInfo 
 } from 'react-icons/fi';
 import './Navbar.css';
 
@@ -38,6 +39,7 @@ const Navbar = () => {
         const config = {
           headers: { Authorization: `Bearer ${parsedUser.token}` }
         };
+        // NOTE: Ensure your backend runs on this port/route
         const res = await axios.get('http://localhost:3000/api/fields', config);
         setFieldCount(res.data.length);
       } catch {
@@ -84,12 +86,20 @@ const Navbar = () => {
     </li>
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem('userInfo');
+    setUser(null);
+    setFieldCount(0);
+    navigate('/');
+  };
+
   return (
     <>
       {/* --- Floating Action Popup --- */}
       <AnimatePresence>
         {isMenuOpen && user && (
           <div className="navbar-popup-menu">
+            {/* Add Activity Button */}
             <motion.button
               variants={menuVariants}
               initial="hidden"
@@ -112,6 +122,7 @@ const Navbar = () => {
               </div>
             </motion.button>
 
+            {/* Add Field Button */}
             <motion.button
               variants={menuVariants}
               initial="hidden"
@@ -139,18 +150,19 @@ const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 120, damping: 14 }}
       >
-       
-
         <ul className="nav-list">
+          {/* 1. HOME (only shown when logged out) */}
           {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
            <h1 className='ayo'>AGROVE</h1>
 
+          {/* 2. DASHBOARD */}
           <NavItem
-            to="/dashboard"
+            to="/dashboard" // <-- CORRECTED: Links to the proper dashboard route
             icon={<FiGrid size={22} />}
             label="Dashboard"
           />
 
+          {/* 3. FAB (only shown when logged in) */}
           {user && (
             <li className="nav-item fab-wrapper">
               <motion.button
@@ -163,9 +175,18 @@ const Navbar = () => {
               </motion.button>
             </li>
           )}
+          
+          {/* 4. ABOUT US PAGE (REVERTED LINK) */}
+          <NavItem 
+            to="/about" // <-- REVERTED: Now links to the separate /about route
+            icon={<FiInfo size={22} />} 
+            label="About Us" 
+          />
 
+          {/* 5. PROFILE (User or Guest) */}
           <NavItem to="/profile" icon={<FiUser size={22} />} label="Profile" />
 
+          {/* 6. AUTHENTICATION LINKS (only shown when logged out) */}
           {!user && (
             <>
               <NavItem
