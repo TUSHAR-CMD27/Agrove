@@ -143,6 +143,7 @@ const Navbar = () => {
 
         <ul className="nav-list">
           {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
+           <h1 className='ayo'>AGROVE</h1>
 
           <NavItem
             to="/dashboard"

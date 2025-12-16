@@ -109,10 +109,11 @@
     text-align: center;
     max-width: 800px;
     padding: 2rem;
+    top : -34px; /* Slightly lift the content for better visual balance */
 }
 
 .hero-title {
-    font-size: 5rem;
+    font-size: 8rem;
     font-weight: 900;
     color: var(--ag-text-white, #ffffff);
     margin-bottom: 0.5rem;

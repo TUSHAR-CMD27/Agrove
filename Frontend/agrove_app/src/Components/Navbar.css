@@ -2,7 +2,7 @@
 .floating-navbar {
   position: fixed;
   top: 20px;
-  left: 75%;
+  left: 69%;
   transform: translateX(-50%);
   z-index: 999;
 
@@ -191,6 +191,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1002; /* Above everything */
+}
+.ayo{
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 
