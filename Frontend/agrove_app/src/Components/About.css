@@ -1,229 +1,234 @@
-/* Custom Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;700&display=swap');
-
-/* --- Variable Definitions --- */
 :root {
-  /* Color Palette */
-  --primary-color: #000000; /* Pitch Black */
-  --secondary-color-dark: #004d40; /* Darker Green */
-  --secondary-color-light: #00c853; /* Bright Green/Accent (Original) */
-  --text-color-white: #ffffff;
-  --text-color-dark: #000000; /* Keeping dark variable, but not using it for labels */
+  --bg-dark: #050505;
+  --bg-gradient: radial-gradient(circle at top center, #0f1a15 0%, #000000 80%);
+  
+  --primary-green: #254322; /* Neon Green */
+  --text-white: #f5f5f5;
+  --text-gray: #a1a1aa;
 
-  /* Glassmorphism Properties */
-  --glass-bg-color: rgba(255, 255, 255, 0.08); /* Increased opacity for better text contrast */
-  --glass-border-color: rgba(0, 200, 83, 0.5); 
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-
-  /* Aesthetic Properties */
-  --glow-blur: 40px; /* Reduced blur slightly */
-  --text-glow: 0 0 8px var(--secondary-color-light); 
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --glass-blur: 20px;
 }
 
-/* --- Base Page Styles --- */
+/* --- Base Layout --- */
 .about-page {
-  background-color: var(--primary-color);
+  background: var(--bg-dark);
+  background-image: var(--bg-gradient);
   min-height: 100vh;
-  padding: 5rem 5%;
+  padding: 8rem 2rem 4rem 2rem;
   position: relative;
   overflow: hidden;
-  font-family: 'Roboto', sans-serif;
-  color: var(--text-color-white);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-white);
 }
 
-/* --- Text and Typography --- */
-.white-text {
-  color: var(--text-color-white);
-  font-family: 'Montserrat', sans-serif;
-}
-
-h1.white-text {
-  font-size: 3.5rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  margin-block-end: 0.625rem;
-  text-shadow: var(--text-glow);
-}
-
-h2.white-text {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-block-start: 0;
-  margin-block-end: 1.5625rem;
-  border-bottom: 2px solid var(--secondary-color-light);
-  display: inline-block;
-  padding-block-end: 0.3125rem;
-}
-
-.description-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-}
-
-/* --- Glassy Card Styling --- */
-.glass-card {
-  background: var(--glass-bg-color);
-  border: 1px solid var(--glass-border-color);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 5px;
-  padding: 1.875rem;
-  box-shadow: var(--glass-shadow);
-}
-
-.glass-card:hover {
-  box-shadow: 0 15px 50px rgba(0, 200, 83, 0.6); 
-}
-
-
-/* --- Background Glowing Blobs --- */
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.6;
-  filter: blur(var(--glow-blur));
-  z-index: 0;
-}
-
-.blob-green-1 {
-  /* Drastically reduced opacity to allow white text contrast */
-  background-color: rgba(0, 200, 83, 0.2); 
-  width: 18.75rem;
-  height: 18.75rem;
-   opacity: 0.3;
-  top: 10%;
-  left: -5%;
-}
-
-.blob-white-2 {
-  background-color: rgba(255, 255, 255, 0.4);
-  width: 25rem;
-  height: 25rem;
-  top: 50%;
-  right: -10%;
-  opacity: 0.6;
-}
-
-.blob-yellow-3 {
-  background-color: rgba(255, 235, 59, 0.4);
-  width: 12.5rem;
-  height: 12.5rem;
-  bottom: 5%;
-  left: 20%;
-  opacity: 0.5;
-}
-
-/* --- Section Specific Styles --- */
-
-
-/* Stats */
-.about-stats {
-  text-align: center;
-  margin-block-end: 3.75rem;
+.content-wrapper {
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Typography --- */
+.section-title {
+  font-size: 3rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4rem;
+  color: var(--text-white);
+  letter-spacing: -1px;
+}
+
+/* --- Stats Cards --- */
+.about-stats {
+  margin-bottom: 8rem;
 }
 
 .stats-container {
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
 }
 
 .stat-item {
-  flex: 1;
-  min-width: 12.5rem;
-  max-width: 15.625rem;
-  padding: 1.25rem 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy hover */
+}
+
+.stat-item:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: var(--primary-green);
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 900;
-  color: var(--secondary-color-light); 
-  margin-block-end: 0.3125rem;
-  text-shadow: 0 0 10px var(--secondary-color-light);
+  background: linear-gradient(180deg, #fff, #39ff14);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+  line-height: 1;
 }
 
 .stat-label {
-  font-size: 1rem;
-  font-weight: 700;
-  /* Uniform Color: ALL LABELS ARE NOW WHITE */
-  color: var(--text-color-white); 
+  margin-top: 1rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  color: var(--text-gray);
 }
 
-/* --- VISIBILITY FIX REVERTED: The code that forced the first label to be black is removed --- */
-/* .stats-container .stat-item:first-child .stat-label { color: var(--text-color-dark); } */
-
-
-/* Feedback/Testimonials */
+/* --- Testimonials --- */
 .about-feedback {
-  margin-block-end: 3.75rem;
-  position: relative;
-  z-index: 1;
-  text-align: center;
+  margin-bottom: 6rem;
 }
 
 .testimonials-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
-  gap: 1.875rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
 }
 
-.testimonial-card {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+  /* Performance Optimization */
+  will-change: transform, opacity;
+}
+
+.quote-icon {
+  font-size: 5rem;
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.05);
+  font-family: serif;
 }
 
 .testimonial-quote {
-  font-style: italic;
-  font-size: 1.05rem;
-  margin-block-end: 0.9375rem;
-  flex-grow: 1;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #e4e4e7;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .testimonial-source {
-  font-size: 0.9rem;
-  text-align: right;
-  color: var(--secondary-color-light);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
 }
 
-/* Footer */
+.source-line {
+  width: 40px;
+  height: 2px;
+  background: var(--primary-green);
+}
+
+/* Card Shine Effect */
+.card-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.glass-card:hover .card-shine {
+  left: 150%;
+  transition: 0.7s;
+}
+
+/* --- Footer --- */
 .about-footer {
   text-align: center;
-  padding-block-start: 1.25rem;
-  border-block-start: 1px solid var(--secondary-color-dark);
-  position: relative;
-  z-index: 1;
+  padding-top: 3rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-gray);
+  font-size: 0.9rem;
 }
 
-/* --- Media Queries for Responsiveness --- */
+/* --- Optimized Blobs --- */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  z-index: 0;
+  opacity: 0.5;
+  /* Crucial for smoothness */
+  will-change: transform; 
+  pointer-events: none;
+}
+
+.blob-green-1 {
+  background: rgb(31, 245, 28) !important; /* Forces the color */
+
+  width: 500px;
+  height: 500px;
+  top: 10px;
+  left: -100px;
+  opacity: 0.25;
+}
+
+.blob-white-2 {
+  background: #ffffff;
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  right: -100px;
+  opacity: 0.1;
+}
+
+.blob-yellow-3 {
+  background: #fbbf24;
+  width: 350px;
+  height: 350px;
+  bottom: -50px;
+  left: 15%;
+  opacity: 0.15;
+}
+
+/* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
-  h1.white-text {
-    font-size: 2.5rem;
-  }
-
-  h2.white-text {
-    font-size: 1.7rem;
-  }
-
   .about-page {
-    padding: 3.75rem 4%;
+    padding: 6rem 1.5rem;
   }
-
-  .stats-container {
-    flex-direction: column;
-    align-items: center;
+  
+  .section-title {
+    font-size: 2.2rem;
   }
-
-  .stat-item {
-    max-width: 80%;
+  
+  .stat-value {
+    font-size: 2.8rem;
+  }
+  
+  .blob {
+    opacity: 0.3; /* Less intense on mobile */
+    filter: blur(60px); /* Better performance on mobile */
   }
 }

@@ -2,7 +2,7 @@
 .floating-navbar {
   position: fixed;
   top: 20px;
-  left: 72%;
+  left: 65%;
   transform: translateX(-50%);
   z-index: 999;
 
@@ -273,4 +273,76 @@
 
 .activity-btn .popup-icon {
   background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Blue */
+}
+/* ==============================
+   MOBILE: TOP-CENTER FLOATING NAV
+============================== */
+@media (max-width: 768px) {
+
+  .floating-navbar {
+    top: 14px;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 20px);
+    padding: 0.5rem 0.7rem;
+    border-radius: 999px;
+  }
+
+  /* Balance items for narrow screens */
+  .nav-list {
+    gap: 0.6rem;
+  }
+
+  /* Hide hover-only UX */
+  .nav-tooltip {
+    display: none;
+  }
+
+  /* Remove text clutter */
+  .nav-greeting,
+  .ayo {
+    display: none;
+  }
+
+  /* Tighten touch targets */
+  .nav-link {
+    padding: 0.55rem;
+  }
+
+  /* Keep FAB subtle, not dominant */
+  .fab-wrapper {
+    top: 0;
+  }
+
+  .nav-fab {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Popup stays centered under nav */
+  .navbar-popup-menu {
+    top: 72px;
+    bottom: auto;
+  }
+}
+
+/* ==============================
+   EXTRA SMALL PHONES
+============================== */
+@media (max-width: 420px) {
+
+  .floating-navbar {
+    padding: 0.45rem 0.6rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem;
+  }
+
+  .nav-fab {
+    width: 34px;
+    height: 34px;
+  }
 }

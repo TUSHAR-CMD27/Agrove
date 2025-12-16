@@ -1,16 +1,26 @@
 /* index.css */
+
 :root {
-  --ag-bg-dark: #0a0a0a; /* Deep black */
-  --ag-text-white: #ffffff;
-  --ag-green: #39ff14; /* Neon/electric green tone */
-  --ag-green-soft: #4ade80; /* Softer green for blends */
-  --ag-yellow: #fbbf24; /* Warm yellow */
-  --ag-blob-opacity: 0.4; /* Controls how intense the background blobs are */
+  --ag-bg-dark: #0a0a0a;        /* Deep black */
+  --ag-text-white: #ffffff;
+  --ag-green: #39ff14;         /* Neon / electric green */
+  --ag-green-soft: #4ade80;    /* Softer green for blends */
+  --ag-yellow: #fbbf24;        /* Warm yellow */
+  --ag-blob-opacity: 0.4;      /* Background blob intensity */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    background-color: var(--ag-bg-dark);
-    font-family: 'Inter', sans-serif; /* Or your preferred font */
-    overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--ag-bg-dark);
+  color: var(--ag-text-white);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }

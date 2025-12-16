@@ -177,11 +177,7 @@ const Navbar = () => {
           )}
           
           {/* 4. ABOUT US PAGE (REVERTED LINK) */}
-          <NavItem 
-            to="/about" // <-- REVERTED: Now links to the separate /about route
-            icon={<FiInfo size={22} />} 
-            label="About Us" 
-          />
+        
 
           {/* 5. PROFILE (User or Guest) */}
           <NavItem to="/profile" icon={<FiUser size={22} />} label="Profile" />

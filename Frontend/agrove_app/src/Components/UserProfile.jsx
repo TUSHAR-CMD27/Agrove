@@ -20,9 +20,7 @@ const UserProfile = () => {
 
   // --- 2. Logout Logic ---
   const handleLogout = () => {
-    // Clear data from storage
     localStorage.removeItem('userInfo');
-    // Redirect to login
     navigate('/login');
     window.location.reload();
   };
