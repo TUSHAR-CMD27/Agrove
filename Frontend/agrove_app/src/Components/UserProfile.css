@@ -8,9 +8,10 @@
   justify-content: center;
   align-items: center; /* Centers the card vertically */
   padding: 20px;
-  padding-bottom: 100px; /* Space for Navbar */
+  padding-top: 100px; /* Space for Navbar */
   position: relative;
   color: white;
+  overflow-x: hidden;
 }
 
 .profile-content {
@@ -101,22 +102,6 @@
   margin-bottom: 2.5rem;
 }
 
-/* Mobile responsive for grid */
-@media (max-width: 500px) {
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .status-badge {
-    margin: 8px auto 0;
-  }
-}
-
 .detail-row {
   display: flex;
   align-items: center;
@@ -134,7 +119,7 @@
 
 .detail-icon {
   font-size: 1.4rem;
-  color: #fbbf24; /* Yellow Accent */
+  color: #00ff62; /* Yellow Accent */
 }
 
 .detail-text {
@@ -186,15 +171,29 @@
   filter: blur(90px);
   opacity: 0.3;
   z-index: 0;
+  pointer-events: none;
 }
 
 .blob-profile-1 { top: -10%; left: -10%; width: 400px; height: 400px; background: #39ff14; }
-.blob-profile-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #ef4444; } /* Red for Locked */
-.blob-profile-3 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #fbbf24; } /* Yellow for Profile */
+.blob-profile-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #ef4444; } 
+.blob-profile-3 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #fbbf24; } 
 
 /* Locked Mode Center Alignment */
 .profile-container.locked-mode {
   text-align: center;
+}
+
+.access-denied-card {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 400px;
+}
+
+.lock-icon-wrapper {
+  width: 80px; height: 80px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;
 }
 
 .profile-btn-primary {
@@ -208,4 +207,20 @@
   text-decoration: none;
   font-weight: 700;
   margin-top: 1rem;
+}
+
+/* Mobile responsive for grid */
+@media (max-width: 500px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .status-badge {
+    margin: 8px auto 0;
+  }
 }

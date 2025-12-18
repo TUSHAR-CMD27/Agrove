@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 // --- All necessary Imports ---
 import Navbar from './Components/Navbar.jsx'
+import AddActivity from './Components/AddActivity.jsx'
 import Home from './Components/Home.jsx'
 import Login from './Components/Login.jsx'
 import Signup from './Components/Signup.jsx'
@@ -29,9 +30,9 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-field" element={<AddField />} />
           <Route path="/field/:id" element={<FieldDetails />} />
-          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/add-activity" element={<AddActivity />} />
 
-          <Route path="/about" element={<About />} /> {/* Separate About page restored */}
+
         </Routes>
 
         <Navbar />

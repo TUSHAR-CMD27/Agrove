@@ -153,6 +153,7 @@ const Navbar = () => {
         <ul className="nav-list">
           {/* 1. HOME (only shown when logged out) */}
           {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
+           <h1 className='ayo'>AGROVE</h1>
 
           {/* 2. DASHBOARD */}
           <NavItem
@@ -176,11 +177,7 @@ const Navbar = () => {
           )}
           
           {/* 4. ABOUT US PAGE (REVERTED LINK) */}
-          <NavItem 
-            to="/about" // <-- REVERTED: Now links to the separate /about route
-            icon={<FiInfo size={22} />} 
-            label="About Us" 
-          />
+        
 
           {/* 5. PROFILE (User or Guest) */}
           <NavItem to="/profile" icon={<FiUser size={22} />} label="Profile" />
