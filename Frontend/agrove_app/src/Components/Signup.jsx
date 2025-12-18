@@ -21,6 +21,19 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem('userInfo');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      // If profile is incomplete, go to onboarding (for Google users)
+      if (!user.age || !user.state) {
+        nav('/onboarding');
+      } else {
+        nav('/dashboard');
+      }
+    }
+  }, [nav]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

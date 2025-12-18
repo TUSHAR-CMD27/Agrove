@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiUser, FiMapPin, FiMail, FiHash, FiCalendar, FiLogOut, FiLock, FiArrowRight } from 'react-icons/fi';
@@ -11,11 +12,31 @@ const UserProfile = () => {
 
   // --- 1. Auth & Data Check ---
   useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      setUser(JSON.parse(userInfo));
-    }
-    setLoading(false);
+    const fetchUserData = async () => {
+      const userInfo = localStorage.getItem('userInfo');
+
+      if (userInfo) {
+        const storedUser = JSON.parse(userInfo);
+
+        try {
+          // 2. Fetch fresh data from MongoDB using the User's ID
+          const res = await axios.get(`http://localhost:3000/api/auth/profile/${storedUser._id}`);
+
+          // 3. Update state with real data from the DB
+          setUser(res.data);
+
+          // 4. Update localStorage so other parts of the app stay in sync
+          localStorage.setItem('userInfo', JSON.stringify(res.data));
+        } catch (err) {
+          console.error("Error fetching fresh profile:", err);
+          // If the server is down, we use the old local data as a backup
+          setUser(storedUser);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
   }, []);
 
   // --- 2. Logout Logic ---
@@ -33,8 +54,8 @@ const UserProfile = () => {
       <div className="profile-container locked-mode">
         <div className="profile-blob blob-profile-1"></div>
         <div className="profile-blob blob-profile-2"></div>
-        
-        <motion.div 
+
+        <motion.div
           className="access-denied-card"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -60,7 +81,7 @@ const UserProfile = () => {
       <div className="profile-blob blob-profile-3"></div>
 
       <div className="profile-content">
-        <motion.div 
+        <motion.div
           className="profile-card"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -82,25 +103,25 @@ const UserProfile = () => {
 
           {/* Details Grid */}
           <div className="details-grid">
-            <DetailItem 
-              icon={<FiMail />} 
-              label="Email Address" 
-              value={user?.email} 
+            <DetailItem
+              icon={<FiMail />}
+              label="Email Address"
+              value={user?.email}
             />
-            <DetailItem 
-              icon={<FiMapPin />} 
-              label="Location" 
-              value={`${user?.district || 'Unknown'}, ${user?.state || 'India'}`} 
+            <DetailItem
+              icon={<FiMapPin />}
+              label="Location"
+              value={`${user?.district || 'Unknown'}, ${user?.state || 'India'}`}
             />
-            <DetailItem 
-              icon={<FiHash />} 
-              label="Pincode" 
-              value={user?.pincode || "---"} 
+            <DetailItem
+              icon={<FiHash />}
+              label="Pincode"
+              value={user?.pincode || "---"}
             />
-            <DetailItem 
-              icon={<FiCalendar />} 
-              label="Age" 
-              value={user?.age ? `${user.age} Years` : "---"} 
+            <DetailItem
+              icon={<FiCalendar />}
+              label="Age"
+              value={user?.age ? `${user.age} Years` : "---"}
             />
           </div>
 

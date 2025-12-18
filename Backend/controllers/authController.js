@@ -23,7 +23,7 @@ const generateToken = (id) => {
 exports.signup = async (req, res) => {
   try {
     // 1. Only de-structure essential account creation fields
-    const { name, email, password } = req.body;
+    const { name, email, password, age, state, district, pincode } = req.body;
 
     // 1. Check if user exists (remains the same)
     const userExists = await User.findOne({ email });
@@ -46,7 +46,10 @@ exports.signup = async (req, res) => {
       email,
       password: hashedPassword,
       authProvider: 'local',
-      // Profile fields (age, state, district, pincode) are intentionally left out
+      age,
+      state,
+      district,
+      pincode,
     });
 
     if (user) {
@@ -54,6 +57,10 @@ exports.signup = async (req, res) => {
         _id: user.id,
         name: user.name,
         email: user.email,
+        age: user.age,
+        state: user.state,
+        district: user.district,
+        pincode: user.pincode,
         token: generateToken(user._id)
       });
     } else {
@@ -84,6 +91,10 @@ exports.login = async (req, res) => {
         _id: user.id,
         name: user.name,
         email: user.email,
+        age: user.age,
+        state: user.state,
+        district: user.district,
+        pincode: user.pincode,
         token: generateToken(user._id)
       });
     } else {
@@ -136,6 +147,10 @@ exports.googleLogin = async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      age: user.age,
+      state: user.state,
+      district: user.district,
+      pincode: user.pincode,
       token: generateToken(user._id)
     });
 
@@ -181,5 +196,23 @@ exports.updateProfile = async (req, res) => {
   } catch (error) {
     console.error("Profile Update Error:", error);
     res.status(500).json({ message: 'Server error during profile update.' });
+  }
+};
+
+// Add this to your authController.js
+exports.getProfile = async (req, res) => {
+  try {
+    // Find user by MongoDB _id (which is passed in the URL)
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the full user data back
+    res.json(user);
+  } catch (error) {
+    console.error("Fetch Profile Error:", error);
+    res.status(500).json({ message: "Server error fetching profile" });
   }
 };

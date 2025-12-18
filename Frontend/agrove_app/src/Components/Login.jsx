@@ -13,6 +13,19 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem('userInfo');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      // Check for missing profile data
+      if (!user.age || !user.state || !user.district || !user.pincode) {
+        nav('/onboarding');
+      } else {
+        nav('/dashboard');
+      }
+    }
+  }, [nav]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
