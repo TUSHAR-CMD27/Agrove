@@ -1,6 +1,8 @@
 import React from 'react'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
+// --- All necessary Imports ---
 import Navbar from './Components/Navbar.jsx'
 import Home from './Components/Home.jsx'
 import Login from './Components/Login.jsx'
@@ -10,28 +12,30 @@ import Profile from './Components/UserProfile.jsx'
 import FloatingMenu from './Components/FloatingMenu.jsx'
 import AddField from './Components/AddField.jsx'
 import FieldDetails from './Components/FieldDetails.jsx'
-import AddActivity from './Components/AddActivity.jsx'
+import About from './Components/About.jsx' // Needs to be here for the separate route
+import Onboarding from './Components/Onboarding.jsx'
 
 const App = () => {
   return (
     <Router>
       <div className="app-main">
-        
-        {/* The Routes determine which component shows up based on the URL */}
+
         <Routes>
           <Route path="/" element={<Home />} />
-         
+
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-         <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<Dashboard />} /> 
-        <Route path="/add-field" element={<AddField />} />
-        <Route path="/field/:id" element={<FieldDetails />} />
-        <Route path="/add-activity" element={<AddActivity />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/add-field" element={<AddField />} />
+          <Route path="/field/:id" element={<FieldDetails />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+
+          <Route path="/about" element={<About />} /> {/* Separate About page restored */}
         </Routes>
 
         <Navbar />
-        <FloatingMenu /> 
+        <FloatingMenu />
       </div>
     </Router>
   )

@@ -23,7 +23,13 @@ const Login = () => {
 
       console.log("Login Success:", res.data);
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      nav('/dashboard');
+      if (res.data.age === null || res.data.state === null || res.data.district === null || res.data.pincode === null) {
+        // If any required profile field is null/missing
+        nav('/onboarding');
+      } else {
+        // If all profile fields are present
+        nav('/dashboard');
+      }
       window.location.reload();
       // ✅ Fixed: changed 'navigate' to 'nav'
 
@@ -45,7 +51,13 @@ const Login = () => {
 
       console.log("Google Login Success:", res.data);
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      nav('/dashboard');
+      if (res.data.age === null || res.data.state === null || res.data.district === null || res.data.pincode === null) {
+        // If any required profile field is null/missing
+        nav('/onboarding');
+      } else {
+        // If all profile fields are present
+        nav('/dashboard');
+      }
       window.location.reload();
     } catch (error) {
       console.error("Google Login Error:", error);

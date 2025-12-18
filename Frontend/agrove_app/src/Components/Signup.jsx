@@ -46,17 +46,24 @@ const Signup = () => {
     }
   };
 
+  // Inside Signup.jsx
+
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
+      // 1. Send Google Token to Backend to create/fetch partial user
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
 
-      console.log("Google Signup Success:", res.data);
+      console.log("Google Auth Success:", res.data);
+
+      // 2. Save partial user info (Name, Email, ID) to storage
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      nav('/dashboard');
-      window.location.reload();
+
+      // 3. ✅ REDIRECT TO ONBOARDING (To fill Age, State, etc.)
+      nav('/onboarding');
+
     } catch (error) {
       console.error("Google Signup Error:", error);
       alert(error.response?.data?.message || 'Google Signup Failed');
