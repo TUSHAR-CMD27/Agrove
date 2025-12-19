@@ -6,7 +6,7 @@ html, body {
   padding: 0;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden; /* CRITICAL: Prevents buggy horizontal scroll */
+  overflow-x: hidden;
   background: #0a0a0a;
   color: white;
   scroll-behavior: smooth;
@@ -32,36 +32,20 @@ html, body {
 }
 
 /* ================================
-   BACKGROUND BLOBS (STATIC)
+   BACKGROUND BLOBS (VISIBLE)
 ================================ */
 .dash-blob {
   position: absolute;
   border-radius: 50%;
   filter: blur(90px);
-  opacity: 0.25; /* Subtle static opacity */
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
-  will-change: transform; /* Hint for GPU */
 }
 
-.blob-dash-1 {
-  top: -150px; left: -150px;
-  width: 600px; height: 600px;
-  background: #39ff14;
-}
-
-.blob-dash-2 {
-  top: 40%; right: -200px;
-  width: 500px; height: 500px;
-  background: #ffffff;
-  opacity: 0.08;
-}
-
-.blob-dash-3 {
-  bottom: -100px; left: 15%;
-  width: 500px; height: 500px;
-  background: #3b82f6;
-}
+.blob-dash-1 { top: -150px; left: -150px; width: 600px; height: 600px; background: #39ff14; }
+.blob-dash-2 { top: 40%; right: -200px; width: 500px; height: 500px; background: #ffffff; opacity: 0.08; }
+.blob-dash-3 { bottom: -100px; left: 15%; width: 500px; height: 500px; background: #3b82f6; }
 
 /* ================================
    HEADER
@@ -75,31 +59,9 @@ html, body {
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.user-greeting {
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.highlight-name {
-  color: #39ff14;
-  text-transform: capitalize;
-}
-
-.one-liner {
-  margin-top: 0.5rem;
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.6);
-}
-
-.date-badge {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.1);
-  font-size: 0.9rem;
-  border: 1px solid rgba(255,255,255,0.1);
-}
+.user-greeting { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin: 0; }
+.highlight-name { color: #39ff14; text-transform: capitalize; }
+.one-liner { margin-top: 0.5rem; font-size: 1.1rem; color: rgba(255,255,255,0.6); }
 
 /* ================================
    BENTO GRID
@@ -115,12 +77,11 @@ html, body {
 .row-span-2 { grid-row: span 2; }
 
 /* ================================
-   GLASS CARDS (Optimized)
+   GLASS CARDS
 ================================ */
 .bento-card {
   background: rgba(20,20,20,0.6);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-radius: 24px;
   border: 1px solid rgba(255,255,255,0.08);
   padding: 1.5rem;
@@ -141,113 +102,148 @@ html, body {
   align-items: center;
   margin-bottom: 1rem;
 }
-.card-header h3 { margin: 0; color: #e4e4e7; font-size: 1.1rem; }
-
-.card-icon { color: #39ff14; }
+.card-header h3 { margin: 0; color: #e4e4e7; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
 
 /* ================================
-   SPECIFIC CARDS
+   CHART & WRAPPERS
 ================================ */
 .chart-wrapper {
   flex: 1;
   min-height: 250px;
   width: 100%;
-  overflow: hidden; /* Fix Recharts overflow */
+  overflow: hidden;
 }
 
-/* Weather */
-.weather-card {
-  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+/* ================================
+   REFINED NEWS & SCHEMES (AS REQUESTED)
+================================ */
+.news-scroll {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.news-scroll::-webkit-scrollbar { width: 4px; }
+.news-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+.news-entry {
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.news-entry:last-child { border-bottom: none; }
+
+/* Headline: Plain White */
+.news-title-text {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #ffffff; /* White headline */
+  font-weight: 500;
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Link: Light Blue */
+.news-cta-link {
+  color: #39ff14; /* Light Blue */
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  transition: 0.2s;
+}
+
+.news-cta-link:hover {
+  color: #39ff14;
+  text-decoration: underline;
+}
+
+.news-actions {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.news-timestamp, .scheme-badge {
+  font-size: 0.75rem;
+  color: #71717a;
+}
+
+/* ================================
+   WEATHER CARD
+=============================== */
+.weather-card {
+  background: linear-gradient(145deg, rgba(57, 255, 20, 0.05), rgba(255, 255, 255, 0.02));
+  min-height: 180px;
 }
 
 .weather-main {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 
-.weather-icon { font-size: 3.5rem; }
-.weather-icon.sun { color: #fbbf24; }
-.weather-icon.rain { color: #60a5fa; }
-
 .weather-text { display: flex; flex-direction: column; }
-.temp { font-size: 2.8rem; font-weight: 800; line-height: 1; }
-.condition { font-size: 1rem; color: rgba(255,255,255,0.6); margin-top: 5px; }
+.temp { font-size: 3.2rem; font-weight: 800; line-height: 1; }
+.condition { font-size: 1.1rem; color: #39ff14; margin-top: 4px; font-weight: 600; }
 
 .weather-details {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid rgba(255,255,255,0.1);
   padding-top: 12px;
+  margin-top: auto;
 }
 
 .weather-detail-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #a1a1aa;
-  gap: 4px;
+  gap: 6px;
 }
-.detail-icon { color: #39ff14; font-size: 1rem; }
-
-/* News */
-.news-scroll {
-  max-height: 300px;
-  overflow-y: auto;
-}
-.news-scroll::-webkit-scrollbar { width: 4px; }
-.news-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-.news-item {
-  display: block;
-  text-decoration: none;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  transition: background 0.2s;
-}
-.news-item:hover { background: rgba(255,255,255,0.03); }
-.news-item:last-child { border-bottom: none; }
-
-.news-title {
-  margin: 0 0 6px 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: #e4e4e7;
-  font-weight: 500;
-}
-.news-meta { display: flex; justify-content: space-between; align-items: center; }
-.news-time { font-size: 0.75rem; color: #a1a1aa; }
 
 /* ================================
-   FIELDS
+   FIELDS SECTION (Increased Top Margin)
 ================================ */
-.fields-section-container { margin-top: 3rem; }
+.fields-section-container { 
+  /* ✅ UPDATED: Added significant margin and padding to prevent intersection */
+  margin-top: 5rem; 
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05); /* Optional: subtle divider */
+  width: 100%;
+}
+
 .fields-grid-display {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem; /* Increased gap for better breathing room */
+  margin-top: 2rem;
 }
-.empty-fields-state {
-  padding: 3rem;
-  border-radius: 16px;
-  text-align: center;
-  color: #a1a1aa;
-  border: 2px dashed rgba(255,255,255,0.1);
+
+.live-indicator { display: flex; align-items: center; gap: 6px; }
+.live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 8px #ef4444; animation: pulse 2s infinite; }
+.live-text { font-size: 0.7rem; font-weight: 800; color: #ef4444; }
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.5; }
 }
 
 /* ================================
    RESPONSIVE
 ================================ */
-@media (max-width: 1024px) {
-  .bento-grid { grid-template-columns: repeat(2,1fr); }
-}
-
+@media (max-width: 1024px) { .bento-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 768px) {
   .bento-grid { grid-template-columns: 1fr; }
   .col-span-2 { grid-column: span 1; }
-  .dash-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .user-greeting { font-size: 2.5rem; }
 }
