@@ -55,6 +55,34 @@ const Home = () => {
       // ===================================
       const tl = gsap.timeline();
 
+     
+      gsap.from(
+  [".cards", ".cards2", ".cards3", ".cardY1",".cardY2",".cardY3"],
+  {
+    x: 10,              // from the left
+    opacity: 0,          // from invisible
+    duration: 2,
+    ease: "expo.out",
+    stagger: 0.15,       // one after another
+    delay: 3
+  }
+);
+
+function float(el, x = 10, y = 10, dur = 4) {
+  gsap.to(el, {
+    x: gsap.utils.random(-x, x),
+    y: gsap.utils.random(-y, y),
+    duration: gsap.utils.random(dur - 1, dur + 1),
+    ease: "sine.inOut",
+    onComplete: () => float(el, x, y, dur)
+  });
+}
+
+float(".cards");
+float(".cards2", 14, 12, 5);
+float(".cards3", 8, 8, 3.5);
+
+
       // Blob Entry
       tl.fromTo(".blob-hero", 
         { opacity: 0, scale: 0.5 },
@@ -74,6 +102,7 @@ const Home = () => {
         { scale: 1, rotation: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" },
         "-=0.5"
       );
+
 
       // Subtitle & Desc
       tl.fromTo([".hero-subtitle", ".hero-description"],
@@ -147,7 +176,15 @@ const Home = () => {
 
   return (
     <div ref={mainRef} className="landing-wrapper">
-      
+      <div className='decor-layer'>
+      <div className='cards'></div>
+       <div className='cards2'></div>
+        <div className='cards3'></div>
+
+       <div className='cardY1'></div>
+       <div className='cardY2'></div>
+        <div className='cardY3'></div>
+      </div>
       {/* ------------------------------------------------ */}
       {/* HERO SECTION */}
       {/* ------------------------------------------------ */}

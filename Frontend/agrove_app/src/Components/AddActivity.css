@@ -165,3 +165,93 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+
+/* ================================================================
+   ADD ACTIVITY - MOBILE RESPONSIVE
+   ================================================================ */
+
+/* --- Container & Layout --- */
+.add-activity-container {
+  padding: 16px;
+  padding-top: 6rem;
+  padding-bottom: 120px; /* Space for navbar/floating buttons */
+  overflow-x: hidden;
+}
+
+.activity-header-section {
+  max-width: 100%;
+  margin: 0 0 20px 0;
+  gap: 12px;
+}
+
+.activity-header-section h1 {
+  font-size: clamp(1.2rem, 5vw, 1.5rem);
+}
+
+/* --- Form Card Adjustments --- */
+.form-card {
+  padding: 20px;
+  border-radius: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- Grid System (Responsive Row) --- */
+.row-split {
+  display: grid;
+  /* Stacks on mobile, splits on tablets and above */
+  grid-template-columns: 1fr; 
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .row-split {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+/* --- Tappable Inputs --- */
+.form-group-act input, 
+.form-group-act select, 
+.form-group-act textarea {
+  padding: 14px; /* Larger touch target for mobile */
+  font-size: 16px; /* Prevents auto-zoom on mobile browsers */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-with-icon input {
+  padding-left: 40px; /* More room for the icon on smaller screens */
+}
+
+/* --- Background Blobs (Mobile Performance) --- */
+@media (max-width: 768px) {
+ 
+
+}
+/* --- Submit Button --- */
+.submit-act-btn {
+  padding: 18px; /* High-visibility, easy-to-tap button */
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(2, 174, 53, 0.3);
+}
+
+.submit-act-btn:active {
+  transform: scale(0.96); /* Instant haptic-like feedback on tap */
+}
+
+/* --- Warning/Small Text --- */
+.warning-text {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* --- Keyboard Visibility Fix --- */
+@media (max-height: 600px) {
+  /* Adjusts padding when the on-screen keyboard might be covering things */
+  .add-activity-container {
+    padding-bottom: 20px;
+  }
+}

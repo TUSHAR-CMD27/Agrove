@@ -42,7 +42,7 @@ const UserProfile = () => {
   // --- 2. Logout Logic ---
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
-    navigate('/login');
+    navigate('/');
     window.location.reload();
   };
 

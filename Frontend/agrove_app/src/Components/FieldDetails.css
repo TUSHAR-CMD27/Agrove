@@ -1,79 +1,101 @@
+/* FieldDetail.css */
+
+/* --- Main Container --- */
 .field-detail-container {
   min-height: 100vh;
   background-color: #0a0a0a;
   color: white;
   padding-bottom: 100px;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* --- Header Section --- */
 .detail-header {
-  height: 18vh;
+  height: 30vh; /* Taller on PC */
+  min-height: 20px;
   background-size: cover;
   background-position: center;
-  justify-content:flex-start;
+  justify-content: flex-start;
   text-align: left;
   display: flex;
-  align-items: flex-start;
-  padding: 24px;
+  align-items: flex-end; /* Align text to bottom for drama */
+  padding: 60px; /* Spacious padding */
+  position: relative;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2), #0a0a0a);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), #0a0a0a);
 }
 
 .back-btn-detail {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 40px;
+  left: 40px;
   background: rgba(0,0,0,0.6);
-  border: none;
+  border: 1px solid rgba(255,255,255,0.1);
   color: white;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.back-btn-detail:hover {
+  background: white;
+  color: black;
+  transform: scale(1.1);
 }
 
 .header-content {
   position: relative;
   z-index: 5;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .header-content h1 {
-  margin: 0;
-  font-size: 9vh;
+  margin: 0 0 16px 0;
+  font-size: 5rem; /* Massive title on PC */
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .crop-pill {
   background: #39ff14;
   color: black;
-  font-size: 12px;
+  font-size: 1rem; /* Larger badge */
   font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
+  padding: 6px 16px;
+  border-radius: 30px;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
 }
 
-/* --- Content Grid --- */
+/* --- Content Grid (Desktop Optimized) --- */
 .detail-content-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  padding: 24px;
-  max-width: 1000px;
+  /* Left column slightly wider for charts */
+  grid-template-columns: 1.2fr 0.8fr; 
+  gap: 40px; /* Big gap for breathing room */
+  padding: 40px 60px;
+  max-width: 1600px; /* Much wider container */
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 /* --- Background Blobs --- */
 .blob-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 80%;
+  top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0.8;
   z-index: 0;
   pointer-events: none;
 }
@@ -87,34 +109,9 @@
   animation: floatMove 20s infinite ease-in-out alternate;
 }
 
-.blob-green-1 {
-  top: -10%;
-  left: -10%;
-  width: 500px;
-  height: 500px;
-  background: var(--ag-green, #37ff14b3);
-  animation-duration: 25s;
-}
-
-.blob-yellow-1 {
-  bottom: 10%;
-  right: -5%;
-  width: 400px;
-  height: 400px;
-  background: var(--ag-yellow, #473508f5);
-  animation-delay: -5s;
-  animation-duration: 18s;
-}
-
-.blob-white-1 {
-  top: 40%;
-  left: 30%;
-  width: 300px;
-  height: 300px;
-  background: var(--ag-text-white, #ffffff);
-  opacity: 0.2;
-  animation-delay: -10s;
-}
+.blob-green-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: var(--ag-green, #37ff14b3); animation-duration: 25s; }
+.blob-yellow-1 { bottom: 10%; right: -5%; width: 500px; height: 500px; background: var(--ag-yellow, #473508f5); animation-delay: -5s; animation-duration: 18s; }
+.blob-white-1 { top: 40%; left: 30%; width: 400px; height: 400px; background: var(--ag-text-white, #ffffff); opacity: 0.15; animation-delay: -10s; }
 
 @keyframes floatMove {
   0% { transform: translate(0, 0) scale(1); }
@@ -122,47 +119,60 @@
   100% { transform: translate(-30px, -50px) scale(0.9); }
 }
 
-/* --- Info Cards --- */
+/* --- Info Cards (Bigger on PC) --- */
 .info-card {
   background: linear-gradient(180deg, #141414, #0f0f0f);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 20px 22px;
-  border-radius: 18px;
+  padding: 32px; /* Increased padding */
+  border-radius: 24px;
   text-align: left;
-  word-spacing: 2px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  margin-bottom: 32px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
+.info-card:hover {
+  border-color: rgba(57, 255, 20, 0.3);
+  transform: translateY(-2px);
+}
+
+.info-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: #e4e4e7;
+}
+
+/* --- Chart Section --- */
 .chart-row {
   display: flex;
   align-items: center;
+  justify-content: space-around;
   gap: 20px;
+  padding: 0px 0;
 }
 
 .chart-mini {
-  width: 120px;
+  width: 180px; /* Much larger chart */
+  height: 180px;
   position: relative;
 }
 
 .center-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 80%; left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 2rem; /* Bigger percentage */
+  font-weight: 800;
   color: #39ff14;
 }
 
 /* Specs */
-.full-width {
-  grid-column: span 2;
-}
+.full-width { grid-column: span 2; }
+
 .smart-text {
   color: #39ff14;
-  font-size: 13px;
+  font-size: 1.1rem; /* Bigger text */
+  line-height: 1.6;
 }
 
 /* --- Timeline Section --- */
@@ -170,129 +180,167 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .add-log-btn {
   background: #2563eb;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
 }
+.add-log-btn:hover { background: #1d4ed8; }
 
 .timeline-item {
   display: flex;
-  gap: 16px;
+  gap: 24px; /* More space */
   position: relative;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 }
 
 .timeline-line {
   position: absolute;
-  left: 14px;
-  top: 30px;
+  left: 19px; /* Centered with 40px dot */
+  top: 40px;
   bottom: 0;
   width: 2px;
   background: #333;
 }
 
-.timeline-item:last-child .timeline-line {
-  display: none;
-}
+.timeline-item:last-child .timeline-line { display: none; }
 
-/* --- THE CRITICAL FIX: TIMELINE DOTS --- */
+/* Timeline Dots (Bigger) */
 .timeline-dot {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  border: 3px solid #333;
   transition: all 0.3s ease;
-  border: 2px solid #333;
-  cursor: pointer; /* Makes it look clickable */
+  flex-shrink: 0;
 }
 
-/* Pending State (Timer - Yellow) */
-.timeline-dot.pending {
-  background: rgba(251, 191, 36, 0.1); 
-  color: #fbbf24;
-  border-color: #fbbf24;
-}
+.timeline-dot.pending { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border-color: #fbbf24; }
+.timeline-dot.done { background: #39ff14; color: black; border-color: #39ff14; box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+.timeline-dot:hover { transform: scale(1.15); }
 
-/* Completed State (Checkmark - Neon Green) */
-.timeline-dot.done {
-  background: #39ff14; 
-  color: black;
-  border-color: #39ff14;
-  box-shadow: 0 0 10px rgba(57, 255, 20, 0.4); /* Glow effect */
-}
-
-.timeline-dot:hover {
-  transform: scale(1.1);
-}
-
-/* --- Timeline Content --- */
-.timeline-content {
-  flex: 1;
-}
+/* Timeline Content */
+.timeline-content { flex: 1; }
 
 .timeline-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
 }
 
 .timeline-content h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: 1.2rem; /* Bigger title */
   color: white;
 }
 
 .cost-badge {
-  font-size: 11px;
-  color: #fbbf24; /* Gold/Yellow for money */
+  font-size: 0.9rem;
+  color: #fbbf24;
   font-weight: bold;
+  background: rgba(251, 191, 36, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .timeline-date {
-  font-size: 11px;
-  color: #666;
+  font-size: 0.9rem;
+  color: #888;
   display: block;
-  margin: 2px 0 6px 0;
+  margin-bottom: 8px;
 }
 
 .act-notes {
-  font-size: 11px;
-  color: #888;
+  font-size: 1rem;
+  color: #a1a1aa;
   font-style: italic;
   margin-top: 4px;
 }
 
-.no-logs {
-  color: #666;
-  font-style: italic;
-  padding: 20px;
-  text-align: center;
-}
-
 .status-tag {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 6px;
   text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 8px;
+  display: inline-block;
 }
-
 .status-tag.completed { background: rgba(57, 255, 20, 0.1); color: #39ff14; }
 .status-tag.pending { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
 
-/* --- Mobile Responsive --- */
+/* =========================================
+   MOBILE RESPONSIVE (Overrides PC styles)
+   ========================================= */
 @media (max-width: 768px) {
+  
+  /* Reset Container Widths */
   .detail-content-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack vertically */
+    gap: 16px;
+    padding: 16px;
+    max-width: 100%;
   }
+
+  /* Reset Header */
+  .detail-header {
+    height: auto;
+    min-height: 220px;
+    padding: 24px;
+    align-items: flex-end;
+  }
+  
+  .header-content h1 {
+    font-size: 3rem; /* Smaller title */
+  }
+  
+  .back-btn-detail {
+    top: 20px; left: 20px;
+  }
+
+  /* Reset Card Padding */
+  .info-card {
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .info-card h3 { font-size: 1.2rem; }
+
+  /* Reset Charts */
+  .chart-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .chart-mini {
+    width: 140px;
+    height: 140px;
+  }
+  .center-text { font-size: 1.5rem;
+  bottom: 50px; 
+left:  55%;}
+
+  /* Reset Timeline */
+  .timeline-item { gap: 16px; padding-bottom: 24px; }
+  .timeline-dot { width: 32px; height: 32px; border-width: 2px; }
+  .timeline-line { left: 15px; top: 32px; }
+  .timeline-content h4 { font-size: 1rem; }
+  .act-notes { font-size: 0.85rem; }
+  
+  /* Reset Layout Grid Helpers */
+  .full-width { grid-column: span 1; }
 }

@@ -260,3 +260,119 @@
     grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
   }
 }
+
+/* ================================================================
+   ADD FIELD - MOBILE RESPONSIVE
+   ================================================================ */
+
+/* --- Header Scaling --- */
+.field-header-image {
+  height: clamp(100px, 15vh, 140px);
+}
+
+.header-title {
+  font-size: clamp(22px, 6vw, 28px);
+  left: 20px;
+  bottom: 15px;
+}
+
+/* --- Form Wrapper --- */
+.field-form-wrapper {
+  padding: 0 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.field-form {
+  gap: 20px; /* Slightly tighter gap for mobile verticality */
+}
+
+/* --- Grid & Row Adjustments --- */
+.form-row-af {
+  display: grid;
+  /* On very small phones, stack the inputs; otherwise, keep 2 columns */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* --- Interactive Elements (Tappability) --- */
+.form-group-af input,
+.form-group-af select {
+  padding: 14px; /* Slightly larger padding for better thumb interaction */
+  font-size: 16px; /* Prevents iOS/Android auto-zoom on focus */
+  appearance: none; /* Clean look for selects */
+}
+
+/* Water Options Grid (Ergonomics) */
+.water-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2x2 grid is better for thumbs than 4x1 */
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .water-options-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.water-btn {
+  padding: 12px 8px; /* Taller buttons are easier to tap */
+  font-weight: 600;
+}
+
+/* --- Avatar Grid --- */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Default mobile */
+  gap: 12px;
+}
+
+@media (min-width: 400px) {
+  .avatar-grid {
+    grid-template-columns: repeat(3, 1fr); /* Pixel 6a width (412px) fits 3 */
+  }
+}
+
+.avatar-card {
+  /* Ensure the "Selected" state doesn't shift the layout */
+  border-width: 3px; 
+}
+
+/* --- Smart Insight Box (Responsive) --- */
+.smart-insight-box {
+  flex-direction: column; /* Stack icon and text on narrow screens */
+  gap: 8px;
+  padding: 14px;
+}
+
+@media (min-width: 400px) {
+  .smart-insight-box {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* --- Save Button Fixes --- */
+.save-field-btn {
+  width: 100%;
+  padding: 18px;
+  position: sticky;
+  bottom: 20px; /* Floats above the navigation bar */
+  z-index: 10;
+  box-shadow: 0 10px 30px rgba(57, 255, 20, 0.2);
+}
+
+/* --- Mobile Specific Fixes (Pixel 6a) --- */
+@media (max-width: 768px) {
+  .back-btn {
+    top: 15px;
+    left: 15px;
+    padding: 8px;
+  }
+  
+  .section-title {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}

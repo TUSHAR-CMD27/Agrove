@@ -115,7 +115,7 @@ const Signup = () => {
             onError={handleGoogleError}
             theme="filled_black"
             size="large"
-            width="100%"
+            width="330px"
             text="signup_with"
           />
         </div>

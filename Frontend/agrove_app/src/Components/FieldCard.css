@@ -156,3 +156,85 @@
   font-style: italic;
 }
 
+/* --- Base Mobile Adjustments --- */
+
+@media (max-width: 768px) {
+  .field-card {
+    /* Slightly reduce border-radius for a tighter look on mobile */
+    border-radius: 12px;
+    /* Ensure the card takes full width of its grid container */
+    width: 100%;
+  }
+
+  .card-image {
+    /* Reduce height slightly on mobile to keep more cards visible on screen */
+    height: 120px;
+  }
+
+  .card-info {
+    padding: 12px; /* Tighten internal spacing */
+    gap: 6px;
+  }
+
+  .card-info h3 {
+    font-size: 15px; /* Scale down heading */
+    margin-bottom: 4px;
+  }
+
+  .info-row {
+    font-size: 11px; /* Slightly smaller text for stats */
+    margin-bottom: 4px;
+  }
+
+  /* Activity Footer Adjustments */
+  .activity-footer {
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+
+  .act-type {
+    font-size: 12px; /* Keep activity text readable but compact */
+  }
+
+  .act-date {
+    font-size: 9px;
+  }
+
+  /* Make status alert and crop badge more prominent on small screens */
+  .crop-badge, .status-alert {
+    padding: 3px 8px;
+    font-size: 9px;
+  }
+}
+
+/* --- Specific "Goldilocks" fix for 412px (Pixel 6a) --- */
+@media (max-width: 420px) {
+  /* Prevent info-row from wrapping awkwardly if field names/values are long */
+  .info-row {
+    flex-wrap: wrap; 
+    gap: 4px;
+  }
+
+  .info-row span {
+    flex-basis: 100%; /* Stack info items vertically on very narrow screens */
+    justify-content: flex-start;
+  }
+  
+  /* Increase the size of the activity dot for easier visual tracking */
+  .activity-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* --- Added Touch Feedback --- */
+@media (hover: none) {
+  /* On mobile/touch devices, we use :active instead of :hover */
+  .field-card:active {
+    border-color: #39ff14;
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(0.98); /* Visual tap feedback */
+    transition: transform 0.1s ease;
+  }
+}
+
