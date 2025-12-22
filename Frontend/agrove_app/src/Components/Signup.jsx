@@ -27,9 +27,9 @@ const Signup = () => {
       const user = JSON.parse(storedUser);
       // If profile is incomplete, go to onboarding (for Google users)
       if (!user.age || !user.state) {
-        nav('/onboarding');
+        nav('/Onboarding');
       } else {
-        nav('/dashboard');
+        nav('/Dashboard');
       }
     }
   }, [nav]);
@@ -49,7 +49,7 @@ const Signup = () => {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
 
       // Navigate to Dashboard or Home after signup
-      nav('/dashboard');
+      nav('/Dashboard');
       window.location.reload()
     } catch (err) {
       console.log("Error:", err.response?.data?.message || err.message);
@@ -75,7 +75,7 @@ const Signup = () => {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
 
       // 3. ✅ REDIRECT TO ONBOARDING (To fill Age, State, etc.)
-      nav('/onboarding');
+      nav('/Onboarding');
 
     } catch (error) {
       console.error("Google Signup Error:", error);
