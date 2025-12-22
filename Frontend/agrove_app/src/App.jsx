@@ -12,8 +12,10 @@ import Dashboard from './Components/Dashboard.jsx'
 import Profile from './Components/UserProfile.jsx'
 import FloatingMenu from './Components/FloatingMenu.jsx'
 import AddField from './Components/AddField.jsx'
+import Plan from './Components/Plan.jsx'
+import Bin from './Components/Bin.jsx'
 import FieldDetails from './Components/FieldDetails.jsx'
-import About from './Components/About.jsx' // Needs to be here for the separate route
+import EditPage from './Components/Edit.jsx'
 import Onboarding from './Components/Onboarding.jsx'
 
 const App = () => {
@@ -30,8 +32,11 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-field" element={<AddField />} />
           <Route path="/field/:id" element={<FieldDetails />} />
+          <Route path="/edit/:type/:id" element={<EditPage />} />
           <Route path="/add-activity" element={<AddActivity />} />
+          <Route path="/plan" element={<Plan />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/bin" element={<Bin />} />
         </Routes>
         <Navbar />
         <FloatingMenu />

@@ -1,97 +1,148 @@
 const Activity = require("../models/Activity");
 const Field = require("../models/Field");
 
-exports.addActivity = async (req, res) => {
-  try {
-    const {
-      fieldId,
-      activityType,
-      activityDate,
-      status,
-      productName,
-      quantity,
-      unit,
-      cost,
-      revenue,
-      notes,
-    } = req.body;
-
-    const field = await Field.findById(fieldId);
-    if (!field) return res.status(401).json({ message: 'Field not found' });
-
-    if (field.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    const activity = await Activity.create({
-      user: req.user.id,
-      field: fieldId,
-      activityType,
-      activityDate,
-      status,
-      productName,
-      quantity,
-      unit,
-      cost: Number(cost),
-      revenue: Number(revenue),
-      notes
-    });
-    res.status(201).json(activity);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server Error adding activity' });
-  }
-};
-
-// ✅ UPDATED: Added isDeleted: false to the query
+// ================= GET FIELD ACTIVITIES =================
 exports.getFieldActivities = async (req, res) => {
   try {
-    const activities = await Activity.find({ 
-      field: req.params.fieldId,
-      isDeleted: false // 👈 This filters out the "Backup" items
+    const { fieldId } = req.query;
+
+    const activities = await Activity.find({
+      field: fieldId,
+      user: req.user.id,
+      isDeleted: { $ne: true }
     }).sort({ activityDate: -1 });
-    
+
     res.status(200).json(activities);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Error fetching activities" });
   }
 };
 
+// ================= ADD ACTIVITY =================
+exports.addActivity = async (req, res) => {
+  try {
+    const { fieldId } = req.body;
+
+    const fieldExists = await Field.findOne({
+      _id: fieldId,
+      user: req.user.id
+    });
+
+    if (!fieldExists)
+      return res.status(404).json({ message: "Field not found" });
+
+    const activity = await Activity.create({
+      ...req.body,
+      field: fieldId,
+      user: req.user.id,
+      cost: Number(req.body.cost) || 0,
+      revenue: Number(req.body.revenue) || 0
+    });
+
+    res.status(201).json(activity);
+  } catch (error) {
+    res.status(500).json({ message: "Error adding activity" });
+  }
+};
+
+// ================= GET ACTIVITY BY ID =================
+exports.getActivityById = async (req, res) => {
+  try {
+    const activity = await Activity.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    res.json(activity);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching activity" });
+  }
+};
+
+// ================= UPDATE ACTIVITY =================
+exports.updateActivity = async (req, res) => {
+  try {
+    const activity = await Activity.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    res.json(activity);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating activity" });
+  }
+};
+
+// ================= UPDATE STATUS =================
 exports.updateActivityStatus = async (req, res) => {
   try {
-    const activity = await Activity.findById(req.params.id);
-    if (!activity) return res.status(404).json({ message: 'Activity not found' });
-    if (activity.user.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
+    const activity = await Activity.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { $set: { status: "Completed" } },
+      { new: true }
+    );
 
-    activity.status = 'Completed';
-    const updatedActivity = await activity.save();
-    res.json(updatedActivity);
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    res.json(activity);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error updating status' });
+    res.status(500).json({ message: "Error updating status" });
   }
 };
 
-// ✅ NEW: Soft Delete function (Move to Backup)
+// ================= SOFT DELETE =================
 exports.deleteActivity = async (req, res) => {
   try {
-    const activity = await Activity.findById(req.params.id);
+    const activity = await Activity.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { $set: { isDeleted: true, deletedAt: new Date() } }
+    );
 
-    if (!activity) return res.status(404).json({ message: 'Activity not found' });
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
 
-    // Verify user ownership
-    if (activity.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    // Flip the "Backup" switches
-    activity.isDeleted = true;
-    activity.deletedAt = new Date();
-    await activity.save();
-
-    res.json({ message: 'Activity moved to backup successfully' });
+    res.json({ message: "Moved to bin" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error during deletion' });
+    res.status(500).json({ message: "Error deleting activity" });
+  }
+};
+
+// ================= BIN: GET DELETED =================
+exports.getDeletedActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find({
+      user: req.user.id,
+      isDeleted: true
+    }).sort({ deletedAt: -1 });
+
+    res.json(activities);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching deleted activities" });
+  }
+};
+
+// ================= BIN: RESTORE =================
+exports.restoreActivity = async (req, res) => {
+  try {
+    const activity = await Activity.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { $set: { isDeleted: false, deletedAt: null } },
+      { new: true }
+    );
+
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    res.json({ message: "Activity restored" });
+  } catch (error) {
+    res.status(500).json({ message: "Restore failed" });
   }
 };

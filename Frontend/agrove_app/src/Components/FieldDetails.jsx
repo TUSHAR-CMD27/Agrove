@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, 
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid 
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid 
 } from 'recharts';
-import { FiArrowLeft, FiCheckCircle, FiClock, FiTrash2 } from 'react-icons/fi'; // ✅ Added FiTrash2
+import { 
+  FiArrowLeft, FiCheckCircle, FiClock, FiTrash2, 
+  FiEdit, FiSettings, FiFileText 
+} from 'react-icons/fi';
 import './FieldDetails.css';
 
 const FieldDetails = () => {
@@ -14,11 +17,14 @@ const FieldDetails = () => {
   const navigate = useNavigate();
   const [field, setField] = useState(null);
   const [activities, setActivities] = useState([]);
+  const [showEditMenu, setShowEditMenu] = useState(false);
   
-  const [progress, setProgress] = useState(0);
-  const [totalCost, setTotalCost] = useState(0);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [currentStage, setCurrentStage] = useState('Planning');
+  const [stats, setStats] = useState({
+    progress: 0,
+    totalCost: 0,
+    totalRevenue: 0,
+    currentStage: 'Planning'
+  });
 
   const COLORS = ['#39ff14', '#333'];
 
@@ -26,188 +32,198 @@ const FieldDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      if (!userInfo) return;
+      if (!userInfo) return navigate('/login');
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       
       try {
         const [fieldRes, actRes] = await Promise.all([
           axios.get(`http://localhost:3000/api/fields/${id}`, config),
-          axios.get(`http://localhost:3000/api/activities/${id}`, config)
+          axios.get(`http://localhost:3000/api/activities?fieldId=${id}`, config)
         ]);
         setField(fieldRes.data);
         setActivities(actRes.data);
         calculateStats(actRes.data);
-      } catch (err) { console.error(err); }
+      } catch (err) { 
+        console.error("Error fetching data:", err); 
+      }
     };
     fetchData();
-  }, [id]);
+  }, [id, navigate]);
 
-  // 2. Logic: Calculate Progress & Financials
+  // 2. Logic: Calculate Stats
   const calculateStats = (logs) => {
     const cost = logs.reduce((acc, curr) => acc + (curr.cost || 0), 0);
     const revenue = logs.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
-    
-    setTotalCost(cost);
-    setTotalRevenue(revenue);
-
     const completed = logs.filter(l => l.status === 'Completed');
     
-    let percent = 0;
+    let progress = 0;
     let stage = "Planning";
 
-    if (completed.some(l => l.activityType === 'Sowing')) { percent = 25; stage = "Sowed"; }
-    if (completed.some(l => l.activityType === 'Irrigation')) { percent = 50; stage = "Growing"; }
-    if (completed.some(l => l.activityType === 'Fertilizer')) { percent = 75; stage = "Maturing"; }
-    if (completed.some(l => l.activityType === 'Harvesting')) { percent = 100; stage = "Harvested"; }
+    if (completed.some(l => l.activityType === 'Sowing')) { progress = 25; stage = "Sowed"; }
+    if (completed.some(l => l.activityType === 'Irrigation')) { progress = 50; stage = "Growing"; }
+    if (completed.some(l => l.activityType === 'Fertilizer')) { progress = 75; stage = "Maturing"; }
+    if (completed.some(l => l.activityType === 'Harvesting')) { progress = 100; stage = "Harvested"; }
 
-    setProgress(percent);
-    setCurrentStage(stage);
+    setStats({ progress, totalCost: cost, totalRevenue: revenue, currentStage: stage });
   };
 
-  // ✅ NEW: Handle Soft Delete Activity
+  // 3. Handle Delete
   const handleDeleteActivity = async (activityId) => {
-    const confirm = window.confirm("⚠️ Move this task to backup? This will update your profitability analysis.");
-    if (!confirm) return;
-
+    if (!window.confirm("⚠️ Move this task to backup?")) return;
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-
-      // Call the new backup route
       await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
       
-      // Update UI: Filter out the deleted activity and recalculate costs/revenue
       const updatedActivities = activities.filter(act => act._id !== activityId);
       setActivities(updatedActivities);
       calculateStats(updatedActivities);
     } catch (err) {
-      alert("Error moving activity to backup.");
+      alert("Error deleting activity");
     }
   };
 
-  const toggleStatus = async (activityId, currentStatus) => {
-    if (currentStatus === 'Completed') return; 
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+  if (!field) return <div className="loading-screen">Loading South Plot...</div>;
 
-    try {
-      const updatedActivities = activities.map(act => 
-        act._id === activityId ? { ...act, status: 'Completed' } : act
-      );
-      setActivities(updatedActivities);
-      calculateStats(updatedActivities);
-      await axios.patch(`http://localhost:3000/api/activities/${activityId}`, {}, config);
-    } catch (err) {
-      alert("Error updating status");
-    }
-  };
-
-  if (!field) return <div className="loading-screen">Loading...</div>;
-
-  const pieData = [{ name: 'Done', value: progress }, { name: 'Left', value: 100 - progress }];
-  const financialData = [{ name: 'Financials', Cost: totalCost, Revenue: totalRevenue }];
-  const netProfit = totalRevenue - totalCost;
+  const pieData = [
+    { name: 'Done', value: stats.progress }, 
+    { name: 'Remaining', value: 100 - stats.progress }
+  ];
+  const netProfit = stats.totalRevenue - stats.totalCost;
 
   return (
     <div className="field-detail-container">
-      <div className="blob-layer">
-        <div className="ag-blob blob-green-1"></div>
-        <div className="ag-blob blob-yellow-1"></div>
-      </div>
-
-      <div className="detail-header" >
-        <button onClick={() => navigate('/dashboard')} className="back-btn-detail"><FiArrowLeft /></button>
+      {/* Header with Plot Name and Crop Badge */}
+      <div className="detail-header" style={{ background: '#0a3d1d' }}>
+        <button onClick={() => navigate('/dashboard')} className="back-btn-detail">
+          <FiArrowLeft />
+        </button>
         <div className="header-content">
-          <h1>{field.fieldName}</h1>
+          <motion.h1 initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
+            {field.fieldName}
+          </motion.h1>
           <span className="crop-pill">{field.currentCrop}</span>
         </div>
       </div>
 
       <div className="detail-content-grid">
+        {/* Left Side: Stats and Financials */}
         <div className="left-panel">
-          <motion.div className="info-card progress-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h3>Field Status</h3>
+          <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+            <h3>FIELD PROGRESS</h3>
             <div className="chart-row">
               <div className="chart-mini">
-                <ResponsiveContainer width="100%" height={120}>
+                <ResponsiveContainer width="100%" height={150}>
                   <PieChart>
-                    <Pie data={pieData} innerRadius={40} outerRadius={55} dataKey="value" startAngle={90} endAngle={-270}>
-                      {pieData.map((entry, index) => <Cell key={index} fill={COLORS[index]} />)}
+                    <Pie 
+                      data={pieData} 
+                      innerRadius={45} 
+                      outerRadius={60} 
+                      paddingAngle={5}
+                      dataKey="value" 
+                      startAngle={90} 
+                      endAngle={-270}
+                    >
+                      <Cell fill={COLORS[0]} />
+                      <Cell fill={COLORS[1]} />
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="center-text"><span className="percent">{progress}%</span></div>
+                <div className="center-text">{stats.progress}%</div>
               </div>
               <div className="progress-labels">
-                <p>Stage: <strong>{currentStage}</strong></p>
-                <p>Next: <strong>{progress === 100 ? 'Sale' : 'Care'}</strong></p>
+                <p>Current Stage: <strong>{stats.currentStage}</strong></p>
               </div>
             </div>
           </motion.div>
 
-          <motion.div className="info-card financial-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h3>Profit & Loss Analysis</h3>
-            <div className="financial-chart-wrapper">
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={financialData} layout="vertical" barSize={20}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
-                  <XAxis type="number" stroke="#666" hide />
-                  <YAxis type="category" dataKey="name" stroke="#666" hide width={10} />
-                  <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }} />
-                  <Legend verticalAlign="top" height={36}/>
-                  <Bar dataKey="Cost" fill="#ef4444" radius={[0, 4, 4, 0]} name="Total Cost" />
-                  <Bar dataKey="Revenue" fill="#39ff14" radius={[0, 4, 4, 0]} name="Revenue" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="net-profit-row">
-              <span>Net Profit:</span>
-              <span className={`profit-val ${netProfit >= 0 ? 'positive' : 'negative'}`}>
-                {netProfit >= 0 ? '+' : '-'} ₹{Math.abs(netProfit).toLocaleString()}
-              </span>
+          <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
+            <h3>FINANCIAL SUMMARY</h3>
+            <div className="financial-stats-row">
+              <div className="fin-item">
+                <label>Total Cost</label>
+                <span className="cost-text">₹{stats.totalCost.toLocaleString()}</span>
+              </div>
+              <div className="fin-item">
+                <label>Net Profit</label>
+                <span className={`profit-text ${netProfit >= 0 ? 'positive' : 'negative'}`}>
+                  ₹{netProfit.toLocaleString()}
+                </span>
+              </div>
             </div>
           </motion.div>
         </div>
 
+        {/* Right Side: Operations Log */}
         <div className="right-panel">
           <div className="activity-header">
             <h3>Operations Log</h3>
-            <button className="add-log-btn" onClick={() => navigate('/add-activity')}>+ Plan Task</button>
+            <button 
+              className="add-log-btn" 
+              onClick={() => navigate('/plan', { state: { fieldId: field._id, fieldName: field.fieldName } })}
+            >
+              + Plan Task
+            </button>
           </div>
 
           <div className="timeline">
-            {activities.length === 0 ? <p className="no-logs">No tasks planned.</p> : activities.map((act) => (
-              <div key={act._id} className="timeline-item">
-                <div className="timeline-line"></div>
-                
-                <div className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`} onClick={() => toggleStatus(act._id, act.status)}>
-                  {act.status === 'Completed' ? <FiCheckCircle /> : <FiClock />}
-                </div>
-
-                <div className="timeline-content">
-                  <div className="timeline-top">
-                    <h4>{act.activityType}</h4>
-                    <div className="timeline-actions"> {/* ✅ Added action group */}
-                      <span className="cost-badge">₹{act.cost}</span>
-                      {/* ✅ DELETE ICON */}
-                      <button 
-                        className="delete-activity-btn" 
-                        onClick={() => handleDeleteActivity(act._id)}
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </div>
+            {activities.length === 0 ? (
+              <p className="no-logs">No activity recorded for this plot.</p>
+            ) : (
+              activities.map((act) => (
+                <div key={act._id} className="timeline-item">
+                  <div className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`}>
+                    {act.status === 'Completed' ? <FiCheckCircle /> : <FiClock />}
                   </div>
-                  <span className="timeline-date">
-                    {new Date(act.activityDate).toDateString()} 
-                    {act.status === 'Planned' && <span className="due-tag"> (Due)</span>}
-                  </span>
-                  {act.notes && <p className="act-notes">{act.notes}</p>}
+                  <div className="timeline-content">
+                    <div className="timeline-top">
+                      <h4>{act.activityType} <span className="cost-badge">₹{act.cost}</span></h4>
+                      <div className="timeline-actions">
+                        <button onClick={() => navigate(`/edit/activity/${act._id}`)}><FiEdit /></button>
+                        <button onClick={() => handleDeleteActivity(act._id)}><FiTrash2 /></button>
+                      </div>
+                    </div>
+                    <span className="timeline-date">{new Date(act.activityDate).toLocaleDateString()}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
+      </div>
+
+      {/* Floating Action Menu (Horizontal Expansion) */}
+      <div className="edit-fab-container">
+        <AnimatePresence>
+          {showEditMenu && (
+            <motion.div 
+              className="fab-options-horizontal"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <div className="fab-option-wrapper">
+                <button className="fab-sub-btn field-color" onClick={() => navigate(`/edit/field/${id}`)}>
+                  <FiSettings />
+                </button>
+                <span className="fab-label-bottom">Field</span>
+              </div>
+              <div className="fab-option-wrapper">
+                <button className="fab-sub-btn activity-color" onClick={() => setShowEditMenu(false)}>
+                  <FiFileText />
+                </button>
+                <span className="fab-label-bottom">Logs</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <motion.button 
+          className={`fab-main-btn ${showEditMenu ? 'active' : ''}`}
+          onClick={() => setShowEditMenu(!showEditMenu)}
+          whileTap={{ scale: 0.9 }}
+        >
+          <FiEdit />
+        </motion.button>
       </div>
     </div>
   );

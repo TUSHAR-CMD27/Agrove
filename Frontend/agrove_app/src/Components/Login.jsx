@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,17 +7,17 @@ import { GoogleLogin } from '@react-oauth/google';
 import './Authentication.css';
 
 const Login = () => {
-  const nav = useNavigate(); // ✅ Defined as 'nav'
-
+  const nav = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
+  // Check if user is already logged in on mount
+  useEffect(() => {
     const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      // Check for missing profile data
+      // If profile is incomplete, force onboarding
       if (!user.age || !user.state || !user.district || !user.pincode) {
         nav('/onboarding');
       } else {
@@ -31,25 +31,27 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // ✅ Matches your backend port 3000
+      // Connect to backend port 3000
       const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
 
-      console.log("Login Success:", res.data);
-      localStorage.setItem('userInfo', JSON.stringify(res.data));
-      if (res.data.age === null || res.data.state === null || res.data.district === null || res.data.pincode === null) {
-        // If any required profile field is null/missing
-        nav('/onboarding');
-      } else {
-        // If all profile fields are present
-        nav('/dashboard');
-      }
-      window.location.reload();
-      // ✅ Fixed: changed 'navigate' to 'nav'
+      if (res.data) {
+        console.log("Login Success:", res.data);
+        localStorage.setItem('userInfo', JSON.stringify(res.data));
 
+        // Navigation logic based on profile completion
+        const { age, state, district, pincode } = res.data;
+        if (!age || !state || !district || !pincode) {
+          nav('/onboarding');
+        } else {
+          nav('/dashboard');
+        }
+        
+        // Use a small delay or state change instead of hard reload if possible
+        window.location.reload(); 
+      }
     } catch (error) {
-      console.error("Login Error:", error);
-      // Simple alert for now since toast is commented out
-      alert(error.response?.data?.message || 'Login Failed');
+      console.error("Login Error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || 'Login Failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -62,27 +64,21 @@ const Login = () => {
         credential: credentialResponse.credential
       });
 
-      console.log("Google Login Success:", res.data);
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      if (res.data.age === null || res.data.state === null || res.data.district === null || res.data.pincode === null) {
-        // If any required profile field is null/missing
+      
+      const { age, state, district, pincode } = res.data;
+      if (!age || !state || !district || !pincode) {
         nav('/onboarding');
       } else {
-        // If all profile fields are present
         nav('/dashboard');
       }
       window.location.reload();
     } catch (error) {
       console.error("Google Login Error:", error);
-      alert(error.response?.data?.message || 'Google Login Failed');
+      alert('Google Login Failed');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    console.error("Google Login Failed");
-    alert('Google Login Failed. Please try again.');
   };
 
   return (
@@ -105,16 +101,16 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Email or User ID</label>
+            <label className="form-label">Email Address</label>
             <div className="input-wrapper">
               <FiMail className="input-icon" />
               <input
                 type="email"
                 className="auth-input"
                 placeholder="farmer@agrove.in"
-                value={email}                       /* ✅ ADDED */
-                onChange={(e) => setEmail(e.target.value)} /* ✅ ADDED */
-                required                            /* ✅ ADDED */
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -127,9 +123,9 @@ const Login = () => {
                 type="password"
                 className="auth-input"
                 placeholder="••••••••"
-                value={password}                    /* ✅ ADDED */
-                onChange={(e) => setPassword(e.target.value)} /* ✅ ADDED */
-                required                            /* ✅ ADDED */
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -139,20 +135,17 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Google OAuth Divider */}
         <div className="auth-divider">
           <span>or continue with</span>
         </div>
 
-        {/* Google Sign-In Button */}
         <div className="google-btn-wrapper">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
+            onError={() => alert('Google Login Failed')}
             theme="filled_black"
             size="large"
             width="100%"
-            text="signin_with"
           />
         </div>
       </motion.div>

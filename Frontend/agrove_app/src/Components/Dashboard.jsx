@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fi';
 import FieldCard from '../Components/FieldCard';
 import QuickNotes from '../Components/QuickNotes';
+
 import './Dashboard.css';
 
 const PIE_COLORS = ['#39ff14', '#2563eb', '#fbbf24', '#ef4444', '#a855f7'];
@@ -90,22 +91,35 @@ const Dashboard = () => {
         }
 
         // 3. News Fetching
+          // 3. News Logic (Fixed for all networks)
         const fetchNews = async () => {
           try {
             const rssUrl = encodeURIComponent('https://krishijagran.com/rss/market-news/');
             const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
             const data = await response.json();
+
             if (data.status === 'ok' && data.items.length > 0) {
-              setNews(data.items.slice(0, 5).map(item => ({ title: item.title, link: item.link, category: "Market" })));
+              setNews(data.items.slice(0, 5).map(item => ({
+                title: item.title,
+                link: item.link,
+                category: "Market"
+              })));
               setNewsLoading(false);
               return;
             }
-          } catch (err) { console.warn("News restricted."); }
-          setNews([{ title: "Today's Mandi Price", link: "https://agmarknet.gov.in/", category: "Live Market" }]);
+          } catch (err) { console.warn("News API restricted."); }
+
+          // Fallback News (ALWAYS visible if API fails)
+          setNews([
+            { title: "Today's Mandi Price (Official Agmarknet)", link: "https://agmarknet.gov.in/", category: "Live Market" },
+            { title: "Weekly Crop Advisory for Farmers (ICAR)", link: "https://icar.org.in/", category: "Seasonal" },
+            { title: "Daily Agriculture News Portal", link: "https://krishijagran.com/", category: "Agri-News" },
+            { title: "Check Latest Weather Alerts", link: "https://mausam.imd.gov.in/", category: "Mausam" }
+          ]);
           setNewsLoading(false);
         };
         fetchNews();
-
+        
         // 4. Govt Schemes
         const fetchSchemes = async () => {
           try {
