@@ -31,10 +31,8 @@ const App = () => {
           <Route path="/add-field" element={<AddField />} />
           <Route path="/field/:id" element={<FieldDetails />} />
           <Route path="/add-activity" element={<AddActivity />} />
-
-
+          <Route path="/onboarding" element={<Onboarding />} />
         </Routes>
-
         <Navbar />
         <FloatingMenu />
       </div>
