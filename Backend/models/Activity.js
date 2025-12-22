@@ -23,19 +23,27 @@ const activitySchema = mongoose.Schema({
     default: 'Planned' 
   },
   
-  // ✅ Detailed Tracking
-  productName: { type: String }, // e.g., "Urea 46%" or "Wheat Seeds"
-  quantity: { type: Number },    // e.g., 50 (kg/liters)
-  unit: { type: String },        // e.g., kg, L, bags
+  productName: { type: String },
+  quantity: { type: Number },
+  unit: { type: String },
   
-  // ✅ Financials
   cost: { type: Number, default: 0 },
-  revenue: { type: Number, default: 0 }, // Only for 'Harvesting' usually
+  revenue: { type: Number, default: 0 }, 
   
-  notes: { type: String }
+  notes: { type: String },
+
+  // 📝 NEW FIELDS FOR BACKUP LOGIC
+  isDeleted: {
+    type: Boolean,
+    default: false // This keeps the activity visible initially
+  },
+  deletedAt: {
+    type: Date,
+    default: null // This will store the timestamp when deleted
+  }
+
 }, {
   timestamps: true
-
 })
 
 module.exports = mongoose.model('Activity', activitySchema)

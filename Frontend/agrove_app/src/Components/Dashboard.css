@@ -14,90 +14,12 @@ html, body {
 }
 
 /* ================================
-   DASH CONTAINER
+   DASH CONTAINER & CONTENT
 ================================ */
-/* ================================
-   LOGGED OUT & GATED STATE
-================================ */
-
-/* Wrapper for the locked content */
-.logged-out-view {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
-  text-align: center;
-}
-
-/* The Glass Overlay that sits on top of a "Blurred" background */
-.locked-overlay {
-  background: rgba(10, 10, 10, 0.4);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(57, 255, 20, 0.2);
-  border-radius: 32px;
-  padding: 3rem 2rem;
-  max-width: 500px;
-  z-index: 20;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-}
-
-/* Skeleton Loading Animation */
-.skeleton-box {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.03) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Locked Icon Glow */
-.lock-icon-glow {
-  font-size: 3rem;
-  color: #39ff14;
-  filter: drop-shadow(0 0 15px rgba(57, 255, 20, 0.6));
-  margin-bottom: 1.5rem;
-}
-
-/* Auth Buttons */
-.auth-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  width: 100%;
-  justify-content: center;
-}
-
-.btn-primary-neon {
-  background: #39ff14;
-  color: #000;
-  padding: 0.8rem 2rem;
-  border-radius: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.3s;
-  border: none;
-}
-
-.btn-primary-neon:hover {
-  box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
-  transform: translateY(-2px);
-}
 .dash-container {
   min-height: 100vh;
   width: 100%;
-  padding: 4rem 2rem 100px;
+  padding: 4rem 2rem 120px;
   position: relative;
   background: #0a0a0a;
 }
@@ -110,7 +32,7 @@ html, body {
 }
 
 /* ================================
-   BACKGROUND BLOBS (VISIBLE)
+   BACKGROUND BLOBS
 ================================ */
 .dash-blob {
   position: absolute;
@@ -142,7 +64,7 @@ html, body {
 .one-liner { margin-top: 0.5rem; font-size: 1.1rem; color: rgba(255,255,255,0.6); }
 
 /* ================================
-   BENTO GRID
+   BENTO GRID LAYOUT (FIXED OVERLAP)
 ================================ */
 .bento-grid {
   display: grid;
@@ -155,7 +77,7 @@ html, body {
 .row-span-2 { grid-row: span 2; }
 
 /* ================================
-   GLASS CARDS
+   GLASS CARDS (STRICT CONTAINMENT)
 ================================ */
 .bento-card {
   background: rgba(20,20,20,0.6);
@@ -166,6 +88,8 @@ html, body {
   display: flex;
   flex-direction: column;
   transition: transform .25s ease, border-color .25s ease;
+  overflow: hidden; /* Prevents content from spilling out */
+  height: 100%;
 }
 
 .bento-card:hover {
@@ -179,11 +103,20 @@ html, body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
-.card-header h3 { margin: 0; color: #e4e4e7; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+
+.card-header h3 { 
+  margin: 0; 
+  color: #e4e4e7; 
+  font-size: 1.1rem; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
 
 /* ================================
-   CHART & WRAPPERS
+   CHART & SCROLLABLE AREAS
 ================================ */
 .chart-wrapper {
   flex: 1;
@@ -192,70 +125,49 @@ html, body {
   overflow: hidden;
 }
 
-/* ================================
-   REFINED NEWS & SCHEMES (AS REQUESTED)
-================================ */
-.news-scroll {
-  max-height: 380px;
+/* Scrollable containers for News and Notes */
+.news-scroll, 
+.notes-container { 
+  flex: 1;
   overflow-y: auto;
   padding-right: 8px;
 }
 
-.news-scroll::-webkit-scrollbar { width: 4px; }
-.news-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.news-scroll::-webkit-scrollbar,
+.notes-container::-webkit-scrollbar { width: 4px; }
+
+.news-scroll::-webkit-scrollbar-thumb,
+.notes-container::-webkit-scrollbar-thumb { 
+  background: rgba(57, 255, 20, 0.2); 
+  border-radius: 10px; 
+}
 
 .news-entry {
   padding: 1.2rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.news-entry:last-child { border-bottom: none; }
-
-/* Headline: Plain White */
 .news-title-text {
   margin: 0 0 10px 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #ffffff; /* White headline */
+  color: #ffffff;
   font-weight: 500;
-  display: -webkit-box;
-
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-/* Link: Light Blue */
 .news-cta-link {
-  color: #39ff14; /* Light Blue */
+  color: #39ff14;
   text-decoration: none;
   font-size: 0.8rem;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 0;
-  transition: 0.2s;
-}
-
-.news-cta-link:hover {
-  color: #39ff14;
-  text-decoration: underline;
-}
-
-.news-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.news-timestamp, .scheme-badge {
-  font-size: 0.75rem;
-  color: #71717a;
 }
 
 /* ================================
    WEATHER CARD
-=============================== */
+================================ */
 .weather-card {
   background: linear-gradient(145deg, rgba(57, 255, 20, 0.05), rgba(255, 255, 255, 0.02));
   min-height: 180px;
@@ -268,9 +180,8 @@ html, body {
   margin: 1rem 0;
 }
 
-.weather-text { display: flex; flex-direction: column; }
 .temp { font-size: 3.2rem; font-weight: 800; line-height: 1; }
-.condition { font-size: 1.1rem; color: #39ff14; margin-top: 4px; font-weight: 600; }
+.condition { font-size: 1.1rem; color: #39ff14; font-weight: 600; }
 
 .weather-details {
   display: flex;
@@ -280,106 +191,152 @@ html, body {
   margin-top: auto;
 }
 
-.weather-detail-item {
-  display: flex;
-  align-items: center;
-  font-size: 0.85rem;
-  color: #a1a1aa;
-  gap: 6px;
-}
-
 /* ================================
-   FIELDS SECTION (Increased Top Margin)
+   FIELDS SECTION
 ================================ */
 .fields-section-container { 
-  /* ✅ UPDATED: Added significant margin and padding to prevent intersection */
   margin-top: 5rem; 
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05); /* Optional: subtle divider */
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   width: 100%;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: white;
 }
 
 .fields-grid-display {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem; /* Increased gap for better breathing room */
-  margin-top: 2rem;
-}
-
-.live-indicator { display: flex; align-items: center; gap: 6px; }
-.live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 8px #ef4444; animation: pulse 2s infinite; }
-.live-text { font-size: 0.7rem; font-weight: 800; color: #ef4444; }
-
-@keyframes pulse {
-  0% { transform: scale(0.95); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.5; }
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 /* ================================
-   RESPONSIVE
+   FLOATING ACTION BUTTONS (FAB)
 ================================ */
+.fab-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.plus-btn { background: #39ff14; color: #000; }
+.plus-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 0 20px rgba(57, 255, 20, 0.5); }
+
+.bin-btn {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(10px);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.bin-btn:hover { background: #ef4444; color: #fff; transform: scale(1.1); }
+.bin-btn.active { background: #ef4444; color: white; transform: rotate(15deg); }
+
+/* ================================
+   RESPONSIVE & UTILS
+================================ */
+.live-indicator { display: flex; align-items: center; gap: 6px; }
+.live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite; }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
 @media (max-width: 1024px) { .bento-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 768px) {
   .bento-grid { grid-template-columns: 1fr; }
-  .col-span-2 { grid-column: span 1; }
-  .user-greeting { font-size: 2.5rem; }
+  .col-span-2, .row-span-2 { grid-column: span 1; grid-row: span 1; }
+  .user-greeting { font-size: 2.2rem; }
+  .dash-container { padding: 4rem 1rem 120px; }
 }
 
-/* --- Optimized Grid for Dashboard --- */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  grid-auto-flow: dense;
+  grid-auto-rows: minmax(180px, auto); /* Cards will grow if content is tall */
+  gap: 1.5rem;
 }
 
-/* Force specific layout for medium screens */
-@media (max-width: 1024px) {
-  .bento-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.col-span-2 { grid-column: span 2; }
+.row-span-2 { grid-row: span 2; }
+
+/* Ensure Notes and Schemes have enough height */
+.notes-card, .schemes-card {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Mobile Specific (Pixel 6a / 412px) */
-@media (max-width: 768px) {
-  .dash-container {
-    padding: 6.5rem 1rem 120px; /* More bottom padding for floating nav */
-  }
-
-  .user-greeting {
-    font-size: 2.2rem;
-  }
-
-  .bento-grid {
-    grid-template-columns: 1fr; /* Single column stack */
-    gap: 1rem;
-  }
-
-  .col-span-2, .row-span-2 {
-    grid-column: span 1 !important;
-    grid-row: span 1 !important;
-  }
-
-  .chart-wrapper {
-    min-height: 200px; /* Reduce chart height on mobile */
-  }
-
-  .weather-main {
-    justify-content: center;
-  }
-
-  .fields-grid-display {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
+.schemes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
 }
 
-/* Scrollbar styling for News */
-.news-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--ag-green) transparent;
+.scheme-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #ddd;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
 }
+
+.scheme-item:hover {
+  background: rgba(57, 255, 20, 0.1);
+  color: #39ff14;
+}
+
+/* Delete Popup Styling */
+.bin-group { position: relative; }
+.delete-popup {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 170px;
+  z-index: 100;
+}
+.delete-popup button {
+  background: none; border: none; color: white;
+  padding: 8px; text-align: left; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+}
+.delete-popup button:hover { color: #ef4444; }
 
 .loading-screen {
   height: 100vh;
@@ -388,5 +345,83 @@ html, body {
   align-items: center;
   background: #0a0a0a;
   color: #39ff14;
-  font-weight: bold;
+  font-family: inherit;
+}
+/* FAB System & Delete Menu */
+.fab-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.plus-btn { background: #39ff14; color: #000; }
+.bin-btn { background: #1a1a1a; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+/* The Red Alert state when a delete mode is active */
+.active-danger {
+  background: #ef4444 !important;
+  color: white !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* The Popup Menu */
+.bin-wrapper { position: relative; }
+
+.delete-popup-options {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 8px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: slideUp 0.2s ease-out;
+}
+
+.delete-popup-options button {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 12px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.delete-popup-options button:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

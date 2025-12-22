@@ -344,3 +344,24 @@ left:  55%;}
   /* Reset Layout Grid Helpers */
   .full-width { grid-column: span 1; }
 }
+.timeline-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.delete-activity-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.delete-activity-btn:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}

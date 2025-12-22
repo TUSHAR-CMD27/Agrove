@@ -1,98 +1,82 @@
-.quick-notes-card {
-  /* Inherits bento-card glassmorphism, adding specific overrides */
+.notes-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  position: relative;
+  width: 100%;
+  /* Match your .bento-card exactly */
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px; 
   overflow: hidden;
-  border-color: rgba(253, 224, 71, 0.2) !important; /* Subtle yellow border */
+  transition: border-color 0.3s ease;
 }
 
-.quick-notes-card:hover {
-  border-color: rgba(253, 224, 71, 0.5) !important;
+/* Highlight the whole card when typing */
+.notes-container:focus-within {
+  border-color: #39ff14;
 }
 
 .notes-header {
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.header-icon {
+  color: #39ff14;
 }
 
 .notes-header h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
   margin: 0;
-  font-size: 1.1rem;
-  color: #fef08a; /* Soft Yellow text */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon-yellow {
-  color: #facc15;
-}
-
-.save-status {
-  font-size: 0.7rem;
-  color: #666;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.save-btn {
+  background: #39ff14;
+  color: #000;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saved-status {
+  color: #39ff14;
+  font-size: 0.65rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: color 0.3s;
+  opacity: 0.8;
 }
 
-.save-status.active {
-  color: #4ade80; /* Green when saved */
-}
-
-.clear-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.clear-btn:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.notes-area {
+.notes-textarea {
   flex: 1;
-  width: 100%;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.9);
-  font-family: 'Courier New', monospace; /* Monospace for note feel */
-  font-size: 0.9rem;
+  padding: 18px;
+  color: #a1a1aa; /* Dimmer text for a cleaner look */
+  font-family: inherit;
+  font-size: 0.95rem;
   line-height: 1.6;
   resize: none;
   outline: none;
 }
 
-.notes-area::placeholder {
-  color: rgba(255, 255, 255, 0.15);
-  font-style: italic;
-}
-
-/* Custom scrollbar for textarea */
-.notes-area::-webkit-scrollbar {
-  width: 4px;
-}
-.notes-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+.notes-textarea::placeholder {
+  color: #3f3f46;
 }

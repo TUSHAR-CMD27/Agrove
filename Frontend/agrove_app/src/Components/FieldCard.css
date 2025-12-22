@@ -4,7 +4,8 @@
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, transform 0.2s;
+  position: relative;
 }
 
 .field-card:hover {
@@ -16,6 +17,32 @@
   background-size: cover;
   background-position: center;
   position: relative;
+}
+
+/* THE TRASH ICON ON CARD */
+.field-delete-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(18, 18, 18, 0.7);
+  color: #ef4444;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.field-delete-btn:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+  transform: scale(1.1);
 }
 
 .crop-badge {
@@ -32,41 +59,17 @@
   backdrop-filter: blur(4px);
 }
 
-.card-info {
-  padding: 16px;
+.status-alert {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(239, 68, 68, 0.9);
   color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
 }
-
-.card-info h3 {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #a1a1aa;
-  margin-bottom: 8px;
-}
-
-.info-row span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.soil-tag {
-  font-size: 11px;
-  color: #39ff14;
-  background: rgba(57, 255, 20, 0.1);
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin: 0;
-}/* FieldCard.css - Updates */
-
-/* ... existing styles ... */
 
 .card-info {
   padding: 16px;
@@ -76,34 +79,30 @@
   gap: 8px;
 }
 
-/* Status Alert on Image */
-.status-alert {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(239, 68, 68, 0.9); /* Red */
-  color: white;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: bold;
+.card-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
 }
 
-/* Activity Footer Section */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.info-row span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .activity-footer {
-  margin-top: 8px;
+  margin-top: 4px;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Loading State */
-.activity-text.loading {
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-}
-
-/* Has Activity State */
 .activity-row {
   display: flex;
   align-items: center;
@@ -118,12 +117,12 @@
 }
 
 .activity-dot.done {
-  background: #39ff14; /* Neon Green for completed */
+  background: #39ff14;
   box-shadow: 0 0 5px #39ff14;
 }
 
 .activity-dot.pending {
-  background: #fbbf24; /* Yellow for planned/pending */
+  background: #fbbf24;
 }
 
 .activity-details {
@@ -146,95 +145,19 @@
   gap: 4px;
 }
 
-/* No Activity State */
 .no-activity {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #52525b; /* Darker gray */
+  color: #52525b;
   font-size: 12px;
   font-style: italic;
 }
 
-/* --- Base Mobile Adjustments --- */
-
+/* MOBILE FIXES */
 @media (max-width: 768px) {
-  .field-card {
-    /* Slightly reduce border-radius for a tighter look on mobile */
-    border-radius: 12px;
-    /* Ensure the card takes full width of its grid container */
-    width: 100%;
-  }
-
-  .card-image {
-    /* Reduce height slightly on mobile to keep more cards visible on screen */
-    height: 120px;
-  }
-
-  .card-info {
-    padding: 12px; /* Tighten internal spacing */
-    gap: 6px;
-  }
-
-  .card-info h3 {
-    font-size: 15px; /* Scale down heading */
-    margin-bottom: 4px;
-  }
-
-  .info-row {
-    font-size: 11px; /* Slightly smaller text for stats */
-    margin-bottom: 4px;
-  }
-
-  /* Activity Footer Adjustments */
-  .activity-footer {
-    padding-top: 10px;
-    margin-top: 4px;
-  }
-
-  .act-type {
-    font-size: 12px; /* Keep activity text readable but compact */
-  }
-
-  .act-date {
-    font-size: 9px;
-  }
-
-  /* Make status alert and crop badge more prominent on small screens */
-  .crop-badge, .status-alert {
-    padding: 3px 8px;
-    font-size: 9px;
-  }
+  .field-card { border-radius: 12px; }
+  .card-image { height: 120px; }
+  .card-info h3 { font-size: 15px; }
+  .field-delete-btn { width: 36px; height: 36px; } /* Slightly bigger for touch */
 }
-
-/* --- Specific "Goldilocks" fix for 412px (Pixel 6a) --- */
-@media (max-width: 420px) {
-  /* Prevent info-row from wrapping awkwardly if field names/values are long */
-  .info-row {
-    flex-wrap: wrap; 
-    gap: 4px;
-  }
-
-  .info-row span {
-    flex-basis: 100%; /* Stack info items vertically on very narrow screens */
-    justify-content: flex-start;
-  }
-  
-  /* Increase the size of the activity dot for easier visual tracking */
-  .activity-dot {
-    width: 10px;
-    height: 10px;
-  }
-}
-
-/* --- Added Touch Feedback --- */
-@media (hover: none) {
-  /* On mobile/touch devices, we use :active instead of :hover */
-  .field-card:active {
-    border-color: #39ff14;
-    background: rgba(255, 255, 255, 0.08);
-    transform: scale(0.98); /* Visual tap feedback */
-    transition: transform 0.1s ease;
-  }
-}
-

@@ -6,7 +6,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, 
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid 
 } from 'recharts';
-import { FiArrowLeft, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { FiArrowLeft, FiCheckCircle, FiClock, FiTrash2 } from 'react-icons/fi'; // ✅ Added FiTrash2
 import './FieldDetails.css';
 
 const FieldDetails = () => {
@@ -15,10 +15,9 @@ const FieldDetails = () => {
   const [field, setField] = useState(null);
   const [activities, setActivities] = useState([]);
   
-  // Stats
   const [progress, setProgress] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-  const [totalRevenue, setTotalRevenue] = useState(0); // ✅ New State for Revenue
+  const [totalRevenue, setTotalRevenue] = useState(0);
   const [currentStage, setCurrentStage] = useState('Planning');
 
   const COLORS = ['#39ff14', '#333'];
@@ -45,16 +44,14 @@ const FieldDetails = () => {
 
   // 2. Logic: Calculate Progress & Financials
   const calculateStats = (logs) => {
-    // Calculate Totals
     const cost = logs.reduce((acc, curr) => acc + (curr.cost || 0), 0);
-    const revenue = logs.reduce((acc, curr) => acc + (curr.revenue || 0), 0); // ✅ Sum Revenue
+    const revenue = logs.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
     
     setTotalCost(cost);
     setTotalRevenue(revenue);
 
     const completed = logs.filter(l => l.status === 'Completed');
     
-    // Determine Stage
     let percent = 0;
     let stage = "Planning";
 
@@ -67,10 +64,29 @@ const FieldDetails = () => {
     setCurrentStage(stage);
   };
 
-  // 3. Handle Click to Complete
+  // ✅ NEW: Handle Soft Delete Activity
+  const handleDeleteActivity = async (activityId) => {
+    const confirm = window.confirm("⚠️ Move this task to backup? This will update your profitability analysis.");
+    if (!confirm) return;
+
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+
+      // Call the new backup route
+      await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
+      
+      // Update UI: Filter out the deleted activity and recalculate costs/revenue
+      const updatedActivities = activities.filter(act => act._id !== activityId);
+      setActivities(updatedActivities);
+      calculateStats(updatedActivities);
+    } catch (err) {
+      alert("Error moving activity to backup.");
+    }
+  };
+
   const toggleStatus = async (activityId, currentStatus) => {
     if (currentStatus === 'Completed') return; 
-
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
 
@@ -80,9 +96,7 @@ const FieldDetails = () => {
       );
       setActivities(updatedActivities);
       calculateStats(updatedActivities);
-
       await axios.patch(`http://localhost:3000/api/activities/${activityId}`, {}, config);
-      
     } catch (err) {
       alert("Error updating status");
     }
@@ -91,18 +105,11 @@ const FieldDetails = () => {
   if (!field) return <div className="loading-screen">Loading...</div>;
 
   const pieData = [{ name: 'Done', value: progress }, { name: 'Left', value: 100 - progress }];
-  
-  // ✅ Data for the new Bar Chart
-  const financialData = [
-    { name: 'Financials', Cost: totalCost, Revenue: totalRevenue }
-  ];
-
-  // Calculate Net Profit
+  const financialData = [{ name: 'Financials', Cost: totalCost, Revenue: totalRevenue }];
   const netProfit = totalRevenue - totalCost;
 
   return (
     <div className="field-detail-container">
-      {/* Background blobs */}
       <div className="blob-layer">
         <div className="ag-blob blob-green-1"></div>
         <div className="ag-blob blob-yellow-1"></div>
@@ -117,11 +124,7 @@ const FieldDetails = () => {
       </div>
 
       <div className="detail-content-grid">
-        
-        {/* Left Panel: Stats & Graphs */}
         <div className="left-panel">
-          
-          {/* 1. Progress Pie Chart */}
           <motion.div className="info-card progress-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <h3>Field Status</h3>
             <div className="chart-row">
@@ -142,13 +145,7 @@ const FieldDetails = () => {
             </div>
           </motion.div>
 
-          {/* ✅ 2. NEW: Profit vs Cost Bar Chart */}
-          <motion.div 
-            className="info-card financial-card" 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
+          <motion.div className="info-card financial-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h3>Profit & Loss Analysis</h3>
             <div className="financial-chart-wrapper">
               <ResponsiveContainer width="100%" height={200}>
@@ -156,17 +153,13 @@ const FieldDetails = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
                   <XAxis type="number" stroke="#666" hide />
                   <YAxis type="category" dataKey="name" stroke="#666" hide width={10} />
-                  <Tooltip 
-                    cursor={{fill: 'transparent'}}
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
-                  />
+                  <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }} />
                   <Legend verticalAlign="top" height={36}/>
                   <Bar dataKey="Cost" fill="#ef4444" radius={[0, 4, 4, 0]} name="Total Cost" />
                   <Bar dataKey="Revenue" fill="#39ff14" radius={[0, 4, 4, 0]} name="Revenue" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            
             <div className="net-profit-row">
               <span>Net Profit:</span>
               <span className={`profit-val ${netProfit >= 0 ? 'positive' : 'negative'}`}>
@@ -174,10 +167,8 @@ const FieldDetails = () => {
               </span>
             </div>
           </motion.div>
-
         </div>
 
-        {/* Right Panel: Interactive Timeline */}
         <div className="right-panel">
           <div className="activity-header">
             <h3>Operations Log</h3>
@@ -189,18 +180,23 @@ const FieldDetails = () => {
               <div key={act._id} className="timeline-item">
                 <div className="timeline-line"></div>
                 
-                <div 
-                  className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`}
-                  onClick={() => toggleStatus(act._id, act.status)}
-                  title={act.status === 'Planned' ? "Click to Mark Done" : "Completed"}
-                >
+                <div className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`} onClick={() => toggleStatus(act._id, act.status)}>
                   {act.status === 'Completed' ? <FiCheckCircle /> : <FiClock />}
                 </div>
 
                 <div className="timeline-content">
                   <div className="timeline-top">
                     <h4>{act.activityType}</h4>
-                    <span className="cost-badge">₹{act.cost}</span>
+                    <div className="timeline-actions"> {/* ✅ Added action group */}
+                      <span className="cost-badge">₹{act.cost}</span>
+                      {/* ✅ DELETE ICON */}
+                      <button 
+                        className="delete-activity-btn" 
+                        onClick={() => handleDeleteActivity(act._id)}
+                      >
+                        <FiTrash2 />
+                      </button>
+                    </div>
                   </div>
                   <span className="timeline-date">
                     {new Date(act.activityDate).toDateString()} 
@@ -212,7 +208,6 @@ const FieldDetails = () => {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

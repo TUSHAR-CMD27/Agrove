@@ -7,9 +7,8 @@ const fieldSchema = mongoose.Schema({
     ref: 'User'
   },
   fieldName: { type: String, required: true },
-  areaSize: { type: Number, required: true }, // In Hectares
+  areaSize: { type: Number, required: true }, 
   
-  // Updated Soil Enum
   soilType: { 
     type: String, 
     enum: ['Alluvial', 'Black', 'Red', 'Laterite', 'Forest', 'Arid', 'Coastal'],
@@ -17,7 +16,6 @@ const fieldSchema = mongoose.Schema({
   },
   fieldImage: { type: String, required: true },
 
-  // ✅ Updated Crop List
   currentCrop: { 
     type: String,
     enum: [
@@ -34,9 +32,19 @@ const fieldSchema = mongoose.Schema({
     default: 'Medium'
   },
   
-  // Smart Data (Auto-filled by Frontend)
   recommendedCrops: { type: String },
-  waterRequirement: { type: String }
+  waterRequirement: { type: String },
+
+  // 📝 NEW FIELDS FOR BACKUP LOGIC
+  isDeleted: {
+    type: Boolean,
+    default: false // Field is active when created
+  },
+  deletedAt: {
+    type: Date,
+    default: null // Empty until the farmer clicks delete
+  }
+
 }, {
   timestamps: true
 });
