@@ -1,16 +1,34 @@
 const express = require('express');
 const router = express.Router();
-// ✅ Added deleteActivity to the import list
-const { addActivity, getFieldActivities, updateActivityStatus, deleteActivity } = require('../controllers/activityController');
+
+const {
+  getFieldActivities,
+  addActivity,
+  getActivityById,
+  updateActivity,
+  updateActivityStatus,
+  deleteActivity,
+  getDeletedActivities,
+  restoreActivity
+} = require('../controllers/activityController');
+
 const { protect } = require('../middlewares/authMiddleware');
 
-router.post('/', protect, addActivity);
-router.get('/:fieldId', protect, getFieldActivities);
+// MAIN
+router.route('/')
+  .get(protect, getFieldActivities)
+  .post(protect, addActivity);
 
-// Route for marking as completed
-router.patch('/:id', protect, updateActivityStatus);
+router.route('/:id')
+  .get(protect, getActivityById)
+  .put(protect, updateActivity);
 
-// ✅ NEW: Route to move activity to backup
+// STATUS & DELETE
+router.patch('/status/:id', protect, updateActivityStatus);
 router.patch('/:id/delete', protect, deleteActivity);
+
+// BIN
+router.get('/bin/all', protect, getDeletedActivities);
+router.patch('/:id/restore', protect, restoreActivity);
 
 module.exports = router;

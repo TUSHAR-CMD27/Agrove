@@ -3,23 +3,34 @@ const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./config/db');
 
-connectDB()
+// Initialize Database
+connectDB();
 
 const app = express();
+
 // Middleware
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'] }));
+// FIX: origins are now explicitly allowed and credentials enabled for tokens
+// --- UPDATED CORS CONFIGURATION ---
+app.use(cors({ 
+    origin: true, // Allows any origin to connect during development
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
-//routes
-const authROute = require('./routes/authRoutes')
+// Routes
+const authRoute = require('./routes/authRoutes');
+const fieldRoute = require('./routes/fieldRoutes');
+const activityRoute = require('./routes/activityRoutes');
 
-app.use('/api/auth', authROute)
-app.use('/api/fields', require('./routes/fieldRoutes'));
 
-app.use('/api/activities', require('./routes/activityRoutes'))
+app.use('/api/auth', authRoute);
+app.use('/api/fields', fieldRoute);
+app.use('/api/activities', activityRoute);
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running at PORT = ${PORT}`)
-})
+    console.log(`Server is running at PORT = ${PORT}`);
+});

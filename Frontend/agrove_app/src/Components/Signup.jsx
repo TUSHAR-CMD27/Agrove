@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import './Authentication.css';
 
 const Signup = () => {
   const nav = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,17 +19,15 @@ const Signup = () => {
     pincode: ''
   });
 
-  const [loading, setLoading] = useState(false);
-
-  React.useEffect(() => {
+  // Check if user is already logged in
+  useEffect(() => {
     const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      // If profile is incomplete, go to onboarding (for Google users)
       if (!user.age || !user.state) {
-        nav('/Onboarding');
+        nav('/onboarding');
       } else {
-        nav('/Dashboard');
+        nav('/dashboard');
       }
     }
   }, [nav]);
@@ -41,53 +39,50 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      // ✅ Corrected URL to match your backend port
-      const res = await axios.post('http://localhost:3000/api/auth/signup', formData);
-      console.log("Success", res.data);
+      // ✅ Explicitly set headers and use full URL
+      const res = await axios.post('http://localhost:3000/api/auth/signup', formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
+      console.log("Signup Success:", res.data);
       localStorage.setItem('userInfo', JSON.stringify(res.data));
+      
+      nav('/dashboard');
+      window.location.reload(); 
 
-      // Navigate to Dashboard or Home after signup
-      nav('/Dashboard');
-      window.location.reload()
     } catch (err) {
-      console.log("Error:", err.response?.data?.message || err.message);
-      alert("Signup Failed: " + (err.response?.data?.message || "Server Error"));
+      // Handle Network Errors vs API Errors
+      if (err.code === 'ERR_NETWORK') {
+        console.error("Connection Refused: Is the backend server running on port 3000?");
+        alert("Network Error: Cannot reach the server. Ensure your backend is running.");
+      } else {
+        console.error("Signup Error Response:", err.response?.data);
+        alert(err.response?.data?.message || "Signup Failed");
+      }
     } finally {
       setLoading(false);
     }
   };
-
-  // Inside Signup.jsx
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
-      // 1. Send Google Token to Backend to create/fetch partial user
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
-
-      console.log("Google Auth Success:", res.data);
-
-      // 2. Save partial user info (Name, Email, ID) to storage
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-
-      // 3. ✅ REDIRECT TO ONBOARDING (To fill Age, State, etc.)
-      nav('/Onboarding');
-
+      nav('/onboarding');
+      window.location.reload();
     } catch (error) {
-      console.error("Google Signup Error:", error);
-      alert(error.response?.data?.message || 'Google Signup Failed');
+      console.error("Google Auth Error:", error);
+      alert('Google Signup Failed');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    console.error("Google Signup Failed");
-    alert('Google Signup Failed. Please try again.');
   };
 
   return (
@@ -95,166 +90,67 @@ const Signup = () => {
       <div className="auth-blob blob-auth-1"></div>
       <div className="auth-blob blob-auth-2"></div>
 
-      <motion.div
-        className="auth-card wide"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div className="auth-card wide" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <div className="auth-header">
           <h2 className="auth-title">Join Agrove</h2>
-          <p className="auth-subtitle">
-            Already have an account? <Link to="/login">Login here</Link>
-          </p>
+          <p className="auth-subtitle">Already have an account? <Link to="/login">Login here</Link></p>
         </div>
 
-        {/* Google Sign-Up Button - Top */}
         <div className="google-btn-wrapper">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            theme="filled_black"
-            size="large"
-            width="330px"
-            text="signup_with"
-          />
+          <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => alert('Google Signup Failed')} theme="filled_black" width="100%" />
         </div>
 
-        {/* Divider */}
-        <div className="auth-divider">
-          <span>or sign up with email</span>
-        </div>
+        <div className="auth-divider"><span>or sign up with email</span></div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
-
-            {/* Full Name */}
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <div className="input-wrapper">
-                <FiUser className="input-icon" />
-                <input
-                  type="text"
-                  name="name" /* ✅ ADDED */
-                  value={formData.name} /* ✅ ADDED */
-                  onChange={handleChange} /* ✅ ADDED */
-                  className="auth-input"
-                  placeholder="Tushar ..."
-                  required
-                />
+                <FiUser className="input-icon" /><input type="text" name="name" value={formData.name} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
 
-            {/* Age */}
             <div className="form-group">
-              <label className="form-label">Age</label>
+              <label className="form-label">Email</label>
               <div className="input-wrapper">
-                <FiCalendar className="input-icon" />
-                <input
-                  type="number"
-                  name="age" /* ✅ ADDED */
-                  value={formData.age}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="24"
-                />
+                <FiMail className="input-icon" /><input type="email" name="email" value={formData.email} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
 
-            {/* Email */}
             <div className="form-group">
-              <label className="form-label">Email Address</label>
+              <label className="form-label">Password</label>
               <div className="input-wrapper">
-                <FiMail className="input-icon" />
-                <input
-                  type="email"
-                  name="email" /* ✅ ADDED */
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="user@email.com"
-                  required
-                />
+                <FiLock className="input-icon" /><input type="password" name="password" value={formData.password} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
 
-            {/* Password */}
-            <div className="form-group">
-              <label className="form-label">Create Password</label>
-              <div className="input-wrapper">
-                <FiLock className="input-icon" />
-                <input
-                  type="password"
-                  name="password" /* ✅ ADDED */
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* State */}
+            {/* Location Fields */}
             <div className="form-group">
               <label className="form-label">State</label>
               <div className="input-wrapper">
-                <FiMapPin className="input-icon" />
-                <input
-                  type="text"
-                  name="state" /* ✅ ADDED */
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="Maharashtra"
-                />
+                <FiMapPin className="input-icon" /><input type="text" name="state" value={formData.state} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
 
-            {/* District */}
             <div className="form-group">
               <label className="form-label">District</label>
               <div className="input-wrapper">
-                <FiMapPin className="input-icon" />
-                <input
-                  type="text"
-                  name="district" /* ✅ ADDED */
-                  value={formData.district}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="Thane"
-                />
+                <FiMapPin className="input-icon" /><input type="text" name="district" value={formData.district} onChange={handleChange} className="auth-input" required />
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Age</label>
+              <div className="input-wrapper">
+                <FiCalendar className="input-icon" /><input type="number" name="age" value={formData.age} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
 
-            {/* Pincode */}
             <div className="form-group">
               <label className="form-label">Pincode</label>
               <div className="input-wrapper">
-                <FiHash className="input-icon" />
-                <input
-                  type="number"
-                  name="pincode" /* ✅ ADDED */
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="421202"
-                />
-              </div>
-            </div>
-
-            {/* Read-only ID */}
-            <div className="form-group">
-              <label className="form-label">User ID (Auto-generated)</label>
-              <div className="input-wrapper">
-                <FiHash className="input-icon" />
-                <input
-                  type="text"
-                  className="auth-input"
-                  value="AG-2025-X89"
-                  disabled
-                  style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                />
+                <FiHash className="input-icon" /><input type="number" name="pincode" value={formData.pincode} onChange={handleChange} className="auth-input" required />
               </div>
             </div>
           </div>

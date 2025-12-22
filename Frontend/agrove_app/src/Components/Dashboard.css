@@ -170,14 +170,17 @@ html, body {
 ================================ */
 .weather-card {
   background: linear-gradient(145deg, rgba(57, 255, 20, 0.05), rgba(255, 255, 255, 0.02));
-  min-height: 180px;
+  min-height: 100px;
+  margin-top: 2rem;
+  margin-bottom: 0.1rem;
 }
 
 .weather-main {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin: 1rem 0;
+  gap: 1.0rem;
+  margin:  0;
+
 }
 
 .temp { font-size: 3.2rem; font-weight: 800; line-height: 1; }
