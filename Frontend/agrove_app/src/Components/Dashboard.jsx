@@ -7,8 +7,10 @@ import {
   PieChart, Pie, Cell
 } from 'recharts';
 import {
-  FiSun, FiLayers, FiDollarSign, FiExternalLink, FiBriefcase, FiMapPin, FiPlus
+  FiSun, FiLayers, FiDollarSign, FiExternalLink, FiBriefcase, FiMapPin, FiPlus, FiDownload
 } from 'react-icons/fi';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import FieldCard from '../Components/FieldCard';
 import QuickNotes from '../Components/QuickNotes';
 
@@ -43,6 +45,7 @@ const Dashboard = () => {
   const [news, setNews] = useState([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [schemes, setSchemes] = useState([]);
+  const [report, setReport] = useState(null);
 
   useEffect(() => {
     const checkUserAndFetch = async () => {
@@ -51,14 +54,14 @@ const Dashboard = () => {
         setLoading(false);
         return navigate('/login');
       }
-      
+
       const parsedUser = JSON.parse(userInfo);
       setUser(parsedUser);
 
       try {
         const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-        
-        // 1. Fetch Field Data
+
+        // Fetch Fields
         const res = await axios.get('http://localhost:3000/api/fields', config);
         setFields(res.data);
         const cropMap = {};
@@ -69,7 +72,11 @@ const Dashboard = () => {
         setPieData(Object.keys(cropMap).map(name => ({ name, value: cropMap[name] })));
         setFinancialData(res.data.map(f => ({ name: f.fieldName, Cost: f.totalCost, Revenue: f.totalRevenue })));
 
-        // 2. Weather & Location
+        // Fetch report for download
+        const reportRes = await axios.get('http://localhost:3000/api/fields/report', config);
+        setReport(reportRes.data);
+
+        // Weather & Location
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
@@ -90,26 +97,17 @@ const Dashboard = () => {
           });
         }
 
-        // 3. News Fetching
-          // 3. News Logic (Fixed for all networks)
+        // News
         const fetchNews = async () => {
           try {
             const rssUrl = encodeURIComponent('https://krishijagran.com/rss/market-news/');
-            const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
-            const data = await response.json();
-
+            const data = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`).then(r => r.json());
             if (data.status === 'ok' && data.items.length > 0) {
-              setNews(data.items.slice(0, 5).map(item => ({
-                title: item.title,
-                link: item.link,
-                category: "Market"
-              })));
+              setNews(data.items.slice(0, 5).map(item => ({ title: item.title, link: item.link, category: "Market" })));
               setNewsLoading(false);
               return;
             }
-          } catch (err) { console.warn("News API restricted."); }
-
-          // Fallback News (ALWAYS visible if API fails)
+          } catch (err) {}
           setNews([
             { title: "Today's Mandi Price (Official Agmarknet)", link: "https://agmarknet.gov.in/", category: "Live Market" },
             { title: "Weekly Crop Advisory for Farmers (ICAR)", link: "https://icar.org.in/", category: "Seasonal" },
@@ -119,8 +117,8 @@ const Dashboard = () => {
           setNewsLoading(false);
         };
         fetchNews();
-        
-        // 4. Govt Schemes
+
+        // Govt Schemes
         const fetchSchemes = async () => {
           try {
             const target = `https://data.gov.in/api/datastore/resource.json?resource_id=6aee3f1e-bc6b-4b2d-9b91-4b9a0d6c5f6a&api-key=579b464db66ec23bdd000001889912a7c0844e435d230832e17f993d&limit=5`;
@@ -138,19 +136,18 @@ const Dashboard = () => {
     checkUserAndFetch();
   }, [navigate]);
 
-  // Handle individual field deletion from the card
+  // Delete field
   const handleDeleteField = async (fieldId, fieldName) => {
     if (window.confirm(`Permanently delete ${fieldName}?`)) {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
         await axios.patch(`http://localhost:3000/api/fields/${fieldId}/delete`, {}, config);
         setFields(fields.filter(f => f._id !== fieldId));
-      } catch (e) {
-        alert("Failed to delete field.");
-      }
+      } catch (e) { alert("Failed to delete field."); }
     }
   };
 
+  // Animate cards
   useLayoutEffect(() => {
     if (loading) return;
     let ctx = gsap.context(() => {
@@ -158,6 +155,19 @@ const Dashboard = () => {
     }, dashRef);
     return () => ctx.revert();
   }, [loading]);
+
+  // Download report function
+  const downloadReport = () => {
+    if (!report) return;
+    const summarySheet = XLSX.utils.json_to_sheet([report.reportSummary]);
+    const fieldsSheet = XLSX.utils.json_to_sheet(report.fieldReports, { header: ["fieldName","areaSize","soilType","currentCrop","totalCost","totalRevenue","netProfit"] });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+    XLSX.utils.book_append_sheet(workbook, fieldsSheet, "Fields");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "User_Report.xlsx");
+  };
 
   if (loading) return <div className="loading-screen">Updating Farm Insights...</div>;
 
@@ -249,12 +259,13 @@ const Dashboard = () => {
             </div>
           </div>
 
-       {/* Quick Notes */}
-          <div >
+          {/* Quick Notes */}
+          <div>
             <QuickNotes />
           </div>
         </div>
 
+        {/* My Managed Fields */}
         <section className="fields-section-container">
           <h2 className="section-title">My Managed Fields</h2>
           <div className="fields-grid-display">
@@ -269,8 +280,14 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* ONLY ADD BUTTON IN FAB */}
+        {/* FAB Buttons */}
         <div className="fab-container">
+          {/* Download Report FAB */}
+          <button className="fab-btn download-btn-fab" onClick={downloadReport}>
+            <FiDownload />
+          </button>
+
+          {/* Add Field FAB */}
           <button className="fab-btn plus-btn" onClick={() => navigate('/add-field')}>
             <FiPlus />
           </button>

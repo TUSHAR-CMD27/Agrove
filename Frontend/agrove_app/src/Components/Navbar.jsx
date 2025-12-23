@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 import {
   FiHome,
   FiGrid,
@@ -154,7 +156,6 @@ const Navbar = () => {
           {/* 1. HOME (only shown when logged out) */}
           {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
            <h1 className='ayo'>AGROVE</h1>
-
           {/* 2. DASHBOARD */}
           <NavItem
             to="/dashboard" // <-- CORRECTED: Links to the proper dashboard route

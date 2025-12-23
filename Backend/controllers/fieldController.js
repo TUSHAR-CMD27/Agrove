@@ -42,7 +42,7 @@ exports.getMyFields = async (req, res) => {
   }
 };
 
-// @desc    Get single field details (Fixes 404/Loading issue)
+// @desc    Get single field details
 exports.getFieldById = async (req, res) => {
   try {
     const field = await Field.findOne({ _id: req.params.id, user: req.user.id });
@@ -53,7 +53,7 @@ exports.getFieldById = async (req, res) => {
   }
 };
 
-// @desc    Update field info (For Circular Edit Menu)
+// @desc    Update field info
 exports.updateField = async (req, res) => {
   try {
     const updatedField = await Field.findOneAndUpdate(
@@ -114,5 +114,52 @@ exports.restoreField = async (req, res) => {
     res.status(200).json({ message: 'Field restored successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error restoring field' });
+  }
+};
+
+// ===================== New: Generate user report =====================
+exports.generateReport = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const fields = await Field.find({ user: userId, isDeleted: { $ne: true } });
+
+    let totalArea = 0;
+    let totalCost = 0;
+    let totalRevenue = 0;
+
+    const fieldReports = await Promise.all(fields.map(async (field) => {
+      const activities = await Activity.find({ field: field._id, isDeleted: { $ne: true } });
+
+      const fieldCost = activities.reduce((acc, act) => acc + (act.cost || 0), 0);
+      const fieldRevenue = activities.reduce((acc, act) => acc + (act.revenue || 0), 0);
+
+      totalArea += field.areaSize || 0;
+      totalCost += fieldCost;
+      totalRevenue += fieldRevenue;
+
+      return {
+        fieldName: field.fieldName,
+        areaSize: field.areaSize,
+        soilType: field.soilType,
+        currentCrop: field.currentCrop,
+        totalCost: fieldCost,
+        totalRevenue: fieldRevenue,
+        netProfit: fieldRevenue - fieldCost,
+      };
+    }));
+
+    const reportSummary = {
+      totalFields: fields.length,
+      totalArea,
+      totalCost,
+      totalRevenue,
+      netProfit: totalRevenue - totalCost,
+    };
+
+    res.status(200).json({ reportSummary, fieldReports });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error generating report" });
   }
 };

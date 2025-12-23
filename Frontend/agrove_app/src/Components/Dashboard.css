@@ -170,7 +170,7 @@ html, body {
 ================================ */
 .weather-card {
   background: linear-gradient(145deg, rgba(57, 255, 20, 0.05), rgba(255, 255, 255, 0.02));
-  min-height: 100px;
+  height:80% ;
   margin-top: 2rem;
   margin-bottom: 0.1rem;
 }
@@ -240,7 +240,7 @@ html, body {
   justify-content: center;
   font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); */
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -378,7 +378,7 @@ html, body {
 .plus-btn { background: #39ff14; color: #000; }
 .bin-btn { background: #1a1a1a; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 
-/* The Red Alert state when a delete mode is active */
+The Red Alert state when a delete mode is active
 .active-danger {
   background: #ef4444 !important;
   color: white !important;

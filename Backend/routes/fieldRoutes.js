@@ -7,7 +7,8 @@ const {
   updateField,
   getBinFields, 
   deleteField, 
-  restoreField 
+  restoreField,
+  generateReport // <-- import the report function
 } = require('../controllers/fieldController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -18,6 +19,9 @@ router.route('/')
 
 // Bin routes: /api/fields/bin
 router.get('/bin', protect, getBinFields);
+
+// Report route: /api/fields/report
+router.get('/report', protect, generateReport); // <-- new report route
 
 // Specific Field routes: /api/fields/:id
 router.route('/:id')
