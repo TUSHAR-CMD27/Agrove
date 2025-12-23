@@ -111,6 +111,23 @@ const EditPage = () => {
                 <label>Planned Date</label>
                 <input type="date" name="activityDate" value={formData.activityDate?.split('T')[0] || ''} onChange={handleChange} />
               </div>
+               {/* Status Selection (Important for Timer Icon) */}
+          <div className="form-group-act">
+            <label>Status</label>
+            <select 
+              name="status" 
+              value={formData.status} 
+              onChange={handleChange}
+              style={{ 
+                borderColor: formData.status === 'Planned' ? '#fbbf24' : '#39ff14',
+                color: formData.status === 'Planned' ? '#fbbf24' : '#39ff14'
+              }}
+            >
+              <option value="Planned">⏳ Planned (Show Timer)</option>
+              <option value="Completed">✅ Completed (Show Check)</option>
+            </select>
+          </div>
+
 
               <div className="form-group-act">
                 <label>Product / Material</label>
