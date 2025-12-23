@@ -155,7 +155,21 @@ const Navbar = () => {
         <ul className="nav-list">
           {/* 1. HOME (only shown when logged out) */}
           {!user && <NavItem to="/" icon={<FiHome size={22} />} label="Home" />}
-           <h1 className='ayo'>AGROVE</h1>
+          {/* <h1 className='ayo'>AGROVE</h1>*/}
+          {/*<Link to="/landing" className="ayo" style={{ textDecoration: 'none', color: 'inherit' }}>
+  AGROVE
+</Link>*/}
+
+<h1
+  className="ayo"
+  style={{ cursor: 'pointer' }}
+  onClick={() => navigate('/')}
+>
+  AGROVE
+</h1>
+
+
+
           {/* 2. DASHBOARD */}
           <NavItem
             to="/dashboard" // <-- CORRECTED: Links to the proper dashboard route
