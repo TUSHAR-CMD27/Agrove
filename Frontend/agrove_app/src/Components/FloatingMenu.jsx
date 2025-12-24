@@ -23,6 +23,11 @@ const FloatingMenu = () => {
           setFieldCount(res.data.length);
         } catch (err) {
           console.error("Field check failed", err);
+          // Clear stale/invalid tokens and return to login so the user can re-authenticate
+          if (err?.response?.status === 401) {
+            localStorage.removeItem('userInfo');
+            navigate('/login');
+          }
         }
       };
       fetchFields();
