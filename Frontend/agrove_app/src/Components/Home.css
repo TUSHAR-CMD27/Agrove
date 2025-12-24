@@ -96,9 +96,9 @@ html, body {
 }
 
 /* Hero blobs */
-.blob-green-1 { top: -20%; left: -10%; width: 900px; height: 900px; background: var(--ag-green); opacity: 0.15;}
-.blob-yellow-1 { top: 10%; right: -15%; width: 800px; height: 800px; background: #fbbf24; opacity: 0.12;}
-.blob-white-1 { bottom: -20%; left: 30%; width: 700px; height: 700px; background: #fff; opacity: 0.05;}
+.blob-green-1 { top: -20%; left: -10%; width: 600px; height: 600px; background: var(--ag-green); opacity: 0.15;}
+.blob-yellow-1 { top: 30%; right: -15%; width: 700px; height: 500px; background: #fbbf24; opacity: 0.12;}
+.blob-white-1 { bottom: -20%; left: 30%; width: 400px; height: 400px; background: #fff; opacity: 0.05;}
 
 /* About section blobs */
 .blob-green-2 { top: 10%; left: -10%; width: 600px; height: 600px; background: rgb(118,233,122); opacity: 0.01;}

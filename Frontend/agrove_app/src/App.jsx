@@ -18,6 +18,8 @@ import FieldDetails from './Components/FieldDetails.jsx'
 import EditPage from './Components/Edit.jsx'
 import Onboarding from './Components/Onboarding.jsx'
 
+
+
 const App = () => {
   return (
     <Router>
@@ -37,6 +39,9 @@ const App = () => {
           <Route path="/plan" element={<Plan />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/bin" element={<Bin />} />
+          <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
         </Routes>
         <Navbar />
         <FloatingMenu />

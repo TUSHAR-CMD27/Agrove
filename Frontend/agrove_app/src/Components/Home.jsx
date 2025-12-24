@@ -39,12 +39,12 @@ const Home = () => {
   const mainRef = useRef(); // Scope for all GSAP animations
 
   // Auth Check
-  useLayoutEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [navigate]);
+ //useLayoutEffect(() => {
+    //const userInfo = localStorage.getItem('userInfo');
+    //if (userInfo) {
+     // navigate('/dashboard', { replace: true });
+   // }
+  //}, [navigate]);
 
   // --- MASTER ANIMATION LOGIC ---
   useLayoutEffect(() => {

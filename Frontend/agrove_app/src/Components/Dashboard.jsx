@@ -130,7 +130,14 @@ const Dashboard = () => {
         };
         fetchSchemes();
 
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error(err);
+        // If the token is missing/invalid, force re-login so the user gets a fresh JWT
+        if (err?.response?.status === 401) {
+          localStorage.removeItem('userInfo');
+          return navigate('/login');
+        }
+      }
       setLoading(false);
     };
     checkUserAndFetch();
