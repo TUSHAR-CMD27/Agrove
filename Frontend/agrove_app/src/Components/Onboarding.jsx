@@ -62,7 +62,7 @@ const Onboarding = () => {
     if (!userInfo) return null; // Wait for data to load
 
     return (
-        <div className="auth-container">
+        <div className="auth-container ">
             <div className="auth-blob blob-auth-1"></div>
 
             <motion.div

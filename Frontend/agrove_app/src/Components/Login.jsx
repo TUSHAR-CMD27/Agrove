@@ -17,8 +17,10 @@ const Login = () => {
     const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      // If profile is incomplete, force onboarding
-      if (!user.age || !user.state || !user.district || !user.pincode) {
+      // Ensure we check for existence clearly
+      const hasProfile = user.age && user.state && user.district && user.pincode;
+
+      if (!hasProfile) {
         nav('/onboarding');
       } else {
         nav('/dashboard');
@@ -40,14 +42,13 @@ const Login = () => {
 
         // Navigation logic based on profile completion
         const { age, state, district, pincode } = res.data;
-        if (!age || !state || !district || !pincode) {
+        const isProfileComplete = age && state && district && pincode;
+
+        if (!isProfileComplete) {
           nav('/onboarding');
         } else {
           nav('/dashboard');
         }
-        
-        // Use a small delay or state change instead of hard reload if possible
-        window.location.reload(); 
       }
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
@@ -65,7 +66,7 @@ const Login = () => {
       });
 
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      
+
       const { age, state, district, pincode } = res.data;
       if (!age || !state || !district || !pincode) {
         nav('/onboarding');

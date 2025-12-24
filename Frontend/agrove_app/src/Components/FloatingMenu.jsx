@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FiPlus, FiLayers, FiActivity, FiTrash2 } from 'react-icons/fi'; // ✅ Added FiTrash2
 import axios from 'axios';
 import './FloatingMenu.css';
@@ -8,9 +8,11 @@ import '../Components/Bin'
 
 const FloatingMenu = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [fieldCount, setFieldCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isOnboardingPage = location.pathname === '/onboarding';
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -19,7 +21,7 @@ const FloatingMenu = () => {
       const fetchFields = async () => {
         try {
           const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-          const res = await axios.get('http://localhost:3000/api/fields', config); 
+          const res = await axios.get('http://localhost:3000/api/fields', config);
           setFieldCount(res.data.length);
         } catch (err) {
           console.error("Field check failed", err);
@@ -29,7 +31,9 @@ const FloatingMenu = () => {
     }
   }, [isOpen]);
 
-  if (!isLoggedIn) return null;
+  // 4. ADD THIS CONDITION: 
+  // If not logged in OR if we are on the onboarding page, return nothing (null)
+  if (!isLoggedIn || isOnboardingPage) return null;
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
