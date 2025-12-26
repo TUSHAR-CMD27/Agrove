@@ -121,7 +121,9 @@ exports.getDeletedActivities = async (req, res) => {
     const activities = await Activity.find({
       user: req.user.id,
       isDeleted: true
-    }).sort({ deletedAt: -1 });
+    })
+    .populate('field', 'fieldName') // <--- ADD THIS LINE
+    .sort({ deletedAt: -1 });
 
     res.json(activities);
   } catch (error) {

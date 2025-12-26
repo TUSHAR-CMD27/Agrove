@@ -4,6 +4,7 @@ import {
   FiRefreshCw,
   FiTrash2,
   FiArrowLeft,
+  FiMap,
   FiClock,
   FiFileText
 } from 'react-icons/fi';
@@ -86,21 +87,27 @@ const Bin = () => {
         )}
       </div>
 
-      {/* ACTIVITIES */}
-      <h3 className="bin-section-title">Deleted Activities</h3>
-      <div className="bin-grid">
-        {deletedActivities.length === 0 ? (
-          <p className="empty-bin-msg">No deleted activities</p>
-        ) : (
-          deletedActivities.map(act => (
-            <div key={act._id} className="bin-card">
-              <h4><FiFileText /> {act.activityType}</h4>
-              <p>₹{act.cost || 0}</p>
-              <p><FiClock /> Deleted on {new Date(act.deletedAt).toLocaleDateString()}</p>
-              <button onClick={() => restoreActivity(act._id)}>
-                <FiRefreshCw /> Restore Activity
-              </button>
-            </div>
+     {/* ACTIVITIES */}
+<h3 className="bin-section-title">Deleted Activities</h3>
+<div className="bin-grid">
+  {deletedActivities.length === 0 ? (
+    <p className="empty-bin-msg">No deleted activities</p>
+  ) : (
+    deletedActivities.map(act => (
+      <div key={act._id} className="bin-card">
+        <h4><FiFileText /> {act.activityType}</h4>
+        
+        {/* ADD THIS LINE TO SHOW THE FIELD NAME */}
+        <p style={{ color: '#4ade80', fontSize: '0.9rem', fontWeight: 'bold' }}>
+          Field: {act.field?.fieldName || 'Original Field Deleted'}
+        </p>
+
+        <p>₹{act.cost || 0}</p>
+        <p><FiClock /> Deleted on {new Date(act.deletedAt).toLocaleDateString()}</p>
+        <button onClick={() => restoreActivity(act._id)}>
+          <FiRefreshCw /> Restore Activity
+        </button>
+      </div>
           ))
         )}
       </div>
