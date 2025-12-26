@@ -1,7 +1,11 @@
+
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast'; // --- IMPORTED TOAST ---
 import { FiUser, FiMapPin, FiMail, FiHash, FiCalendar, FiLogOut, FiLock, FiArrowRight } from 'react-icons/fi';
 import './UserProfile.css';
 
@@ -19,8 +23,6 @@ const UserProfile = () => {
         const storedUser = JSON.parse(userInfo);
 
         try {
-          // 2. Fetch fresh data from MongoDB using the User's ID
-          // Added Authorization header to ensure the request is protected
           const config = {
             headers: { Authorization: `Bearer ${storedUser.token}` }
           };
@@ -30,21 +32,20 @@ const UserProfile = () => {
             config
           );
 
-          // 3. FIX: Merge fresh DB data with the existing token
-          // This prevents the token from being lost, which was causing the logout.
           const updatedUserData = {
             ...res.data,
             token: storedUser.token 
           };
 
           setUser(updatedUserData);
-
-          // 4. Update localStorage with merged data
           localStorage.setItem('userInfo', JSON.stringify(updatedUserData));
+          
+          // Optional: Tiny success toast for data sync
+          console.log("Profile Synced");
         } catch (err) {
           console.error("Error fetching fresh profile:", err);
-          // Fallback to local data if fetch fails
           setUser(storedUser);
+          toast.error("Using offline profile data"); // --- ADDED ERROR TOAST ---
         }
       }
       setLoading(false);
@@ -53,11 +54,32 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-  // --- 2. Logout Logic ---
+  // --- 2. Logout Logic with Custom Toast ---
   const handleLogout = () => {
-    localStorage.removeItem('userInfo'); //
-    navigate('/');
-    window.location.reload();
+    // 1. Show the custom "Visit Again" Toast first
+    toast("Logged out. Visit again soon! 👋", {
+      duration: 4000,
+      position: 'bottom-center',
+      style: {
+        background: '#1b4332', // Deep Agrove Green
+        color: '#fff',
+        borderRadius: '12px',
+        border: '1px solid #39ff14',
+        padding: '16px',
+        fontSize: '1rem',
+        fontWeight: '500'
+      },
+    });
+
+    // 2. Clear user data
+    localStorage.removeItem('userInfo'); 
+
+    // 3. Delay the navigation slightly so the user sees the toast
+    setTimeout(() => {
+      navigate('/');
+      // Removed window.location.reload() as it can clear toasts too fast. 
+      // Navigation is usually enough.
+    }, 1000);
   };
 
   // --- 3. Render: Locked State (Not Logged In) ---

@@ -1,10 +1,12 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import toast from 'react-hot-toast'; 
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, 
-  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid 
 } from 'recharts';
 import { 
   FiArrowLeft, FiCheckCircle, FiClock, FiTrash2, 
@@ -44,7 +46,8 @@ const FieldDetails = () => {
         setActivities(actRes.data);
         calculateStats(actRes.data);
       } catch (err) { 
-        console.error("Error fetching data:", err); 
+        console.error("Error fetching data:", err);
+        toast.error("Failed to load field details."); 
       }
     };
     fetchData();
@@ -67,23 +70,51 @@ const FieldDetails = () => {
     setStats({ progress, totalCost: cost, totalRevenue: revenue, currentStage: stage });
   };
 
-  // 3. Handle Delete
+  // 3. Handle Delete with Custom Confirmation Toast
   const handleDeleteActivity = async (activityId) => {
-    if (!window.confirm("⚠️ Move this task to backup?")) return;
-    try {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
-      
-      const updatedActivities = activities.filter(act => act._id !== activityId);
-      setActivities(updatedActivities);
-      calculateStats(updatedActivities);
-    } catch (err) {
-      alert("Error deleting activity");
-    }
+    toast((t) => (
+      <div className="custom-confirm-toast">
+        <p>Move this task to <b>Recycle Bin</b>?</p>
+        <div className="toast-actions" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <button 
+            className="toast-confirm-btn"
+            style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+            onClick={async () => {
+              toast.dismiss(t.id);
+              const loadingToast = toast.loading("Updating records...");
+              try {
+                const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+                await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
+                
+                const updatedActivities = activities.filter(act => act._id !== activityId);
+                setActivities(updatedActivities);
+                calculateStats(updatedActivities);
+                toast.success("Activity moved to bin.", { id: loadingToast });
+              } catch (err) {
+                toast.error("Error deleting activity", { id: loadingToast });
+              }
+            }}
+          >
+            Yes, Delete
+          </button>
+          <button 
+            className="toast-cancel-btn"
+            style={{ background: '#4b5563', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), {
+      icon: '⚠️',
+      duration: 5000,
+      style: { border: '1px solid #ef4444', padding: '16px', background: '#fff' }
+    });
   };
 
-  if (!field) return <div className="loading-screen">Loading South Plot...</div>;
+  if (!field) return <div className="loading-screen">Loading {field?.fieldName || 'Plot'}...</div>;
 
   const pieData = [
     { name: 'Done', value: stats.progress }, 
@@ -93,7 +124,6 @@ const FieldDetails = () => {
 
   return (
     <div className="field-detail-container">
-      {/* Header with Plot Name and Crop Badge */}
       <div className="detail-header" style={{ background: '#0a3d1d' }}>
         <button onClick={() => navigate('/dashboard')} className="back-btn-detail">
           <FiArrowLeft />
@@ -107,7 +137,6 @@ const FieldDetails = () => {
       </div>
 
       <div className="detail-content-grid">
-        {/* Left Side: Stats and Financials */}
         <div className="left-panel">
           <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
             <h3>FIELD PROGRESS</h3>
@@ -154,7 +183,6 @@ const FieldDetails = () => {
           </motion.div>
         </div>
 
-        {/* Right Side: Operations Log */}
         <div className="right-panel">
           <div className="activity-header">
             <h3>Operations Log</h3>
@@ -192,7 +220,6 @@ const FieldDetails = () => {
         </div>
       </div>
 
-      {/* Floating Action Menu (Horizontal Expansion) */}
       <div className="edit-fab-container">
         <AnimatePresence>
           {showEditMenu && (

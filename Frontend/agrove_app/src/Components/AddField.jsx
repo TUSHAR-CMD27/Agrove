@@ -1,8 +1,15 @@
+
+
+
+
+
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiCheck, FiArrowLeft, FiInfo, FiDroplet, FiImage } from 'react-icons/fi';
+import toast from 'react-hot-toast'; // --- IMPORTED TOAST ---
 import './AddField.css';
 
 // Import your images
@@ -81,9 +88,18 @@ const AddField = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       await axios.post('http://localhost:3000/api/fields', formData, config);
+      
+      // --- ADDED SUCCESS TOAST ---
+      toast.success(`${formData.fieldName} has been added to your farm!`, {
+        icon: '📍',
+        duration: 4000
+      });
+
       navigate('/dashboard');
     } catch (err) {
-      alert("Error adding field: " + (err.response?.data?.message || err.message));
+      // --- REPLACED ALERT WITH ERROR TOAST ---
+      const errorMessage = err.response?.data?.message || err.message;
+      toast.error("Could not add field: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -143,7 +159,7 @@ const AddField = () => {
             </div>
           </div>
 
-          {/* ✅ FIXED: Smart Insights Box is now here! */}
+          {/* Smart Insights Box */}
           {formData.soilType && (
             <motion.div 
               className="smart-insight-box"
@@ -161,7 +177,7 @@ const AddField = () => {
             </motion.div>
           )}
 
-          {/* --- Section 2: Avatar Selection Grid --- */}
+          {/* Section 2: Avatar Selection Grid */}
           <div className="form-section">
             <h3 className="section-title flex items-center gap-2">
               <FiImage /> Select Field Avatar

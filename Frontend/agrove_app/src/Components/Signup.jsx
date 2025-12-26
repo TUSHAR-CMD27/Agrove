@@ -1,9 +1,14 @@
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiMail, FiLock, FiMapPin, FiCalendar, FiHash } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast'; // --- IMPORT ADDED ---
 import './Authentication.css';
 
 const Signup = () => {
@@ -41,7 +46,6 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      // ✅ Explicitly set headers and use full URL
       const res = await axios.post('http://localhost:3000/api/auth/signup', formData, {
         headers: {
           'Content-Type': 'application/json'
@@ -49,19 +53,23 @@ const Signup = () => {
       });
 
       console.log("Signup Success:", res.data);
+      // --- SUCCESS TOAST ---
+      toast.success("Account created successfully!");
+      
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       
       nav('/dashboard');
       window.location.reload(); 
 
     } catch (err) {
-      // Handle Network Errors vs API Errors
+      // --- REPLACED ALERTS WITH TOASTS ---
       if (err.code === 'ERR_NETWORK') {
         console.error("Connection Refused: Is the backend server running on port 3000?");
-        alert("Network Error: Cannot reach the server. Ensure your backend is running.");
+        toast.error("Network Error: Cannot reach the server.");
       } else {
         console.error("Signup Error Response:", err.response?.data);
-        alert(err.response?.data?.message || "Signup Failed");
+        const message = err.response?.data?.message || "Signup Failed";
+        toast.error(message);
       }
     } finally {
       setLoading(false);
@@ -74,12 +82,14 @@ const Signup = () => {
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
+      
+      toast.success("Google Signup Successful!");
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       nav('/onboarding');
       window.location.reload();
     } catch (error) {
       console.error("Google Auth Error:", error);
-      alert('Google Signup Failed');
+      toast.error('Google Signup Failed');
     } finally {
       setLoading(false);
     }
@@ -97,7 +107,12 @@ const Signup = () => {
         </div>
 
         <div className="google-btn-wrapper">
-          <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => alert('Google Signup Failed')} theme="filled_black" width="100%" />
+          <GoogleLogin 
+            onSuccess={handleGoogleSuccess} 
+            onError={() => toast.error('Google Signup Failed')} // --- UPDATED ---
+            theme="filled_black" 
+            width="100%" 
+          />
         </div>
 
         <div className="auth-divider"><span>or sign up with email</span></div>
@@ -125,7 +140,6 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Location Fields */}
             <div className="form-group">
               <label className="form-label">State</label>
               <div className="input-wrapper">

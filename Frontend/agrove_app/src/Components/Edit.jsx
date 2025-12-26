@@ -1,6 +1,9 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast'; // --- IMPORTED TOAST ---
 import { 
   FiSave, FiArrowLeft, FiCalendar, FiPackage 
 } from 'react-icons/fi';
@@ -31,12 +34,13 @@ const EditPage = () => {
         } else {
           const res = await axios.get(`http://localhost:3000/api/activities/${id}`, config);
           setFormData(res.data);
-          setFieldName(res.data.fieldName || ''); // fieldName populated from backend
+          setFieldName(res.data.fieldName || ''); 
           setActivityType(res.data.activityType || '');
         }
       } catch (err) {
         console.error("Error loading data", err);
-        alert("Failed to load data");
+        // --- ADDED ERROR TOAST ---
+        toast.error("Failed to load details. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -61,16 +65,29 @@ const EditPage = () => {
 
     const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
 
+    // --- ADDED LOADING TOAST ---
+    const loadingToast = toast.loading("Updating records...");
+
     try {
       const endpoint = type === 'field'
         ? `http://localhost:3000/api/fields/${id}`
         : `http://localhost:3000/api/activities/${id}`;
       
       await axios.put(endpoint, formData, config);
+      
+      // --- SUCCESS TOAST ---
+      toast.success(`${type === 'field' ? 'Field' : 'Activity'} updated successfully!`, {
+        id: loadingToast, // Replaces the loading toast
+        icon: '📝'
+      });
+
       navigate(-1);
     } catch (err) {
       console.error(err);
-      alert("Update failed. Please try again.");
+      // --- ERROR TOAST ---
+      toast.error("Update failed. Check your connection.", {
+        id: loadingToast // Replaces the loading toast
+      });
     }
   };
 
@@ -100,34 +117,31 @@ const EditPage = () => {
             </>
           ) : (
             <>
-              {/* Constant fields */}
               <div className="form-group-act">
                 <label>Task Type</label>
                 <input type="text" value={activityType} readOnly />
               </div>
 
-              {/* Editable fields */}
               <div className="form-group-act">
                 <label>Planned Date</label>
                 <input type="date" name="activityDate" value={formData.activityDate?.split('T')[0] || ''} onChange={handleChange} />
               </div>
-               {/* Status Selection (Important for Timer Icon) */}
-          <div className="form-group-act">
-            <label>Status</label>
-            <select 
-              name="status" 
-              value={formData.status} 
-              onChange={handleChange}
-              style={{ 
-                borderColor: formData.status === 'Planned' ? '#fbbf24' : '#39ff14',
-                color: formData.status === 'Planned' ? '#fbbf24' : '#39ff14'
-              }}
-            >
-              <option value="Planned">⏳ Planned (Show Timer)</option>
-              <option value="Completed">✅ Completed (Show Check)</option>
-            </select>
-          </div>
-
+              
+              <div className="form-group-act">
+                <label>Status</label>
+                <select 
+                  name="status" 
+                  value={formData.status} 
+                  onChange={handleChange}
+                  style={{ 
+                    borderColor: formData.status === 'Planned' ? '#fbbf24' : '#39ff14',
+                    color: formData.status === 'Planned' ? '#fbbf24' : '#39ff14'
+                  }}
+                >
+                  <option value="Planned">⏳ Planned (Show Timer)</option>
+                  <option value="Completed">✅ Completed (Show Check)</option>
+                </select>
+              </div>
 
               <div className="form-group-act">
                 <label>Product / Material</label>

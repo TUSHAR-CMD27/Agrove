@@ -1,9 +1,12 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast'; 
 import './Authentication.css';
 
 const Login = () => {
@@ -12,14 +15,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Check if user is already logged in on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      // Ensure we check for existence clearly
       const hasProfile = user.age && user.state && user.district && user.pincode;
-
       if (!hasProfile) {
         nav('/onboarding');
       } else {
@@ -33,14 +33,17 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Connect to backend port 3000
       const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
 
       if (res.data) {
-        console.log("Login Success:", res.data);
+        // --- ENHANCED SUCCESS TOAST ---
+        toast.success(`Welcome back, ${res.data.name || 'Farmer'}! 🌾`, {
+          duration: 4000,
+          icon: '🚜',
+        });
+        
         localStorage.setItem('userInfo', JSON.stringify(res.data));
 
-        // Navigation logic based on profile completion
         const { age, state, district, pincode } = res.data;
         const isProfileComplete = age && state && district && pincode;
 
@@ -51,14 +54,16 @@ const Login = () => {
         }
       }
     } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Login Failed. Check your email/password.';
+      toast.error(errorMessage); 
       console.error("Login Error:", error.response?.data || error.message);
-      alert(error.response?.data?.message || 'Login Failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    const loadingToast = toast.loading("Connecting to Google...");
     try {
       setLoading(true);
       const res = await axios.post('http://localhost:3000/api/auth/google', {
@@ -66,6 +71,9 @@ const Login = () => {
       });
 
       localStorage.setItem('userInfo', JSON.stringify(res.data));
+      
+      // --- UPDATED SUCCESS TOAST ---
+      toast.success('Google Login Successful!', { id: loadingToast });
 
       const { age, state, district, pincode } = res.data;
       if (!age || !state || !district || !pincode) {
@@ -75,8 +83,8 @@ const Login = () => {
       }
       window.location.reload();
     } catch (error) {
+      toast.error('Google Login Failed', { id: loadingToast });
       console.error("Google Login Error:", error);
-      alert('Google Login Failed');
     } finally {
       setLoading(false);
     }
@@ -143,7 +151,7 @@ const Login = () => {
         <div className="google-btn-wrapper">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => alert('Google Login Failed')}
+            onError={() => toast.error('Google Login Failed')}
             theme="filled_black"
             size="large"
             width="100%"
