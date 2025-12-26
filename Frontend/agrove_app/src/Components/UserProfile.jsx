@@ -20,16 +20,30 @@ const UserProfile = () => {
 
         try {
           // 2. Fetch fresh data from MongoDB using the User's ID
-          const res = await axios.get(`http://localhost:3000/api/auth/profile/${storedUser._id}`);
+          // Added Authorization header to ensure the request is protected
+          const config = {
+            headers: { Authorization: `Bearer ${storedUser.token}` }
+          };
+          
+          const res = await axios.get(
+            `http://localhost:3000/api/auth/profile/${storedUser._id}`, 
+            config
+          );
 
-          // 3. Update state with real data from the DB
-          setUser(res.data);
+          // 3. FIX: Merge fresh DB data with the existing token
+          // This prevents the token from being lost, which was causing the logout.
+          const updatedUserData = {
+            ...res.data,
+            token: storedUser.token 
+          };
 
-          // 4. Update localStorage so other parts of the app stay in sync
-          localStorage.setItem('userInfo', JSON.stringify(res.data));
+          setUser(updatedUserData);
+
+          // 4. Update localStorage with merged data
+          localStorage.setItem('userInfo', JSON.stringify(updatedUserData));
         } catch (err) {
           console.error("Error fetching fresh profile:", err);
-          // If the server is down, we use the old local data as a backup
+          // Fallback to local data if fetch fails
           setUser(storedUser);
         }
       }
@@ -41,7 +55,7 @@ const UserProfile = () => {
 
   // --- 2. Logout Logic ---
   const handleLogout = () => {
-    localStorage.removeItem('userInfo');
+    localStorage.removeItem('userInfo'); //
     navigate('/');
     window.location.reload();
   };
@@ -74,7 +88,6 @@ const UserProfile = () => {
   // --- 4. Render: Profile (Logged In) ---
   return (
     <div className="profile-container">
-      {/* Background Ambience */}
       <div className="profile-blob blob-profile-1"></div>
       <div className="profile-blob blob-profile-3"></div>
 
@@ -85,21 +98,19 @@ const UserProfile = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Header Section with Avatar */}
           <div className="profile-header">
             <div className="avatar-circle">
               {user?.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="header-info">
               <h1 className="profile-name">{user?.name || "Agrove User"}</h1>
-              <span className="profile-id">ID: {user?.user_id || "AG-2025-7898"}</span>
+              <span className="profile-id">ID: {user?.user_id || "N/A"}</span>
               <span className="status-badge">Active Farmer</span>
             </div>
           </div>
 
           <hr className="divider" />
 
-          {/* Details Grid */}
           <div className="details-grid">
             <DetailItem
               icon={<FiMail />}
@@ -123,7 +134,6 @@ const UserProfile = () => {
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="action-footer">
             <button onClick={handleLogout} className="logout-btn">
               <FiLogOut /> Logout
@@ -136,7 +146,6 @@ const UserProfile = () => {
   );
 };
 
-// Helper Component for neat rows
 const DetailItem = ({ icon, label, value }) => (
   <div className="detail-row">
     <div className="detail-icon">{icon}</div>
