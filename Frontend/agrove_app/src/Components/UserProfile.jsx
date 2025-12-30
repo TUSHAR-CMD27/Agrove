@@ -1,12 +1,10 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import toast from 'react-hot-toast'; // --- IMPORTED TOAST ---
-import { FiUser, FiMapPin, FiMail, FiHash, FiCalendar, FiLogOut, FiLock, FiArrowRight } from 'react-icons/fi';
+import toast from 'react-hot-toast';
+import { FiUser, FiMapPin, FiMail, FiHash, FiCalendar, FiLogOut, FiLock, FiArrowRight, FiShield } from 'react-icons/fi';
+import farmImg from '../assets/f13.png'; // ✅ Your aesthetic image
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -14,154 +12,105 @@ const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // --- 1. Auth & Data Check ---
   useEffect(() => {
     const fetchUserData = async () => {
       const userInfo = localStorage.getItem('userInfo');
-
       if (userInfo) {
         const storedUser = JSON.parse(userInfo);
-
         try {
-          const config = {
-            headers: { Authorization: `Bearer ${storedUser.token}` }
-          };
-          
-          const res = await axios.get(
-            `http://localhost:3000/api/auth/profile/${storedUser._id}`, 
-            config
-          );
-
-          const updatedUserData = {
-            ...res.data,
-            token: storedUser.token 
-          };
-
+          const config = { headers: { Authorization: `Bearer ${storedUser.token}` } };
+          const res = await axios.get(`http://localhost:3000/api/auth/profile/${storedUser._id}`, config);
+          const updatedUserData = { ...res.data, token: storedUser.token };
           setUser(updatedUserData);
           localStorage.setItem('userInfo', JSON.stringify(updatedUserData));
-          
-          // Optional: Tiny success toast for data sync
-          console.log("Profile Synced");
         } catch (err) {
-          console.error("Error fetching fresh profile:", err);
           setUser(storedUser);
-          toast.error("Using offline profile data"); // --- ADDED ERROR TOAST ---
+          toast.error("Using offline profile data");
         }
       }
       setLoading(false);
     };
-
     fetchUserData();
   }, []);
 
-  // --- 2. Logout Logic with Custom Toast ---
   const handleLogout = () => {
-    toast("Logging out...", {
-      duration: 2000,
-      position: 'bottom-center',
-      style: {
-        background: '#000000ff', // Deep Agrove Green
-        color: '#fff',
-        borderRadius: '12px',
-        border: '1px solid #f8f8f818',
-        padding: '8px',
-        fontSize: '1rem',
-        fontWeight: '500'
-      },
-    });
-
-    // 2. Clear user data
-    localStorage.removeItem('userInfo'); 
-
-    // 3. Delay the navigation slightly so the user sees the toast
-    setTimeout(() => {
-      navigate('/');
-      // Removed window.location.reload() as it can clear toasts too fast. 
-      // Navigation is usually enough.
-    }, 1000);
+    toast.success("System Session Terminated");
+    localStorage.removeItem('userInfo');
+    setTimeout(() => { navigate('/'); }, 1000);
   };
 
-  // --- 3. Render: Locked State (Not Logged In) ---
   if (!loading && !user) {
     return (
       <div className="profile-container locked-mode">
-        <div className="profile-blob blob-profile-1"></div>
-        <div className="profile-blob blob-profile-2"></div>
-
-        <motion.div
-          className="access-denied-card"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <div className="lock-icon-wrapper">
-            <FiLock size={40} />
-          </div>
-          <h2>Guest Mode</h2>
-          <p>Please log in to view and manage your profile settings.</p>
-          <Link to="/login" className="profile-btn-primary">
-            Login Now <FiArrowRight />
-          </Link>
-        </motion.div>
+        <div className="profile-split">
+            <div className="profile-image-side" style={{ backgroundImage: `url(${farmImg})` }}>
+                <div className="profile-image-overlay"></div>
+                <div className="brand-overlay">
+                    <h1>AGROVE</h1>
+                    <p>Access Denied // Authentication Required</p>
+                </div>
+            </div>
+            <div className="profile-info-side">
+                <motion.div className="access-denied-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="lock-icon-wrapper"><FiLock size={40} /></div>
+                    <h2>GUEST_MODE</h2>
+                    <p>Please establish a secure connection to manage system credentials.</p>
+                    <Link to="/login" className="profile-btn-primary">LOGIN_SYSTEM <FiArrowRight /></Link>
+                </motion.div>
+            </div>
+        </div>
       </div>
     );
   }
 
-  // --- 4. Render: Profile (Logged In) ---
   return (
     <div className="profile-container">
-      <div className="profile-blob blob-profile-1"></div>
-      <div className="profile-blob blob-profile-3"></div>
+      <div className="profile-split">
+        
+        {/* LEFT SIDE: AESTHETIC IMAGE */}
+        <div className="profile-image-side" style={{ backgroundImage: `url(${farmImg})` }}>
+          <div className="profile-image-overlay"></div>
+          <motion.div 
+            className="brand-overlay"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <h1>HEy, manage your profile </h1>
+            <p>Your data alwayss remails safe with us <br/> we do not store any of your data</p>
+          </motion.div>
+        </div>
 
-      <div className="profile-content">
-        <motion.div
-          className="profile-card"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="profile-header">
-            <div className="avatar-circle">
-              {user?.name?.charAt(0).toUpperCase() || "U"}
+        {/* RIGHT SIDE: PROFILE DATA */}
+        <div className="profile-info-side">
+          <motion.div 
+            className="profile-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="profile-header">
+              <div className="avatar-square">
+                {user?.name?.charAt(0).toUpperCase() || "U"}
+              </div>
+              <div className="header-info">
+                <h1 className="profile-name">{user?.name}</h1>
+                <span className="profile-id">UID // {user?._id?.slice(-8).toUpperCase()}</span>
+                <span className="status-tag"><FiShield size={12}/> VERIFIED_OPERATOR</span>
+              </div>
             </div>
-            <div className="header-info">
-              <h1 className="profile-name">{user?.name || "Agrove User"}</h1>
-              <span className="profile-id">ID: {user?.user_id || "N/A"}</span>
-              <span className="status-badge">Active Farmer</span>
+
+            <div className="details-grid">
+              <DetailItem icon={<FiMail />} label="Network ID" value={user?.email} />
+              <DetailItem icon={<FiMapPin />} label="Coordinates" value={`${user?.district}, ${user?.state}`} />
+              <DetailItem icon={<FiHash />} label="Sector Zip" value={user?.pincode} />
+              <DetailItem icon={<FiCalendar />} label="Operator Age" value={`${user?.age} Cycles`} />
             </div>
-          </div>
 
-          <hr className="divider" />
-
-          <div className="details-grid">
-            <DetailItem
-              icon={<FiMail />}
-              label="Email Address"
-              value={user?.email}
-            />
-            <DetailItem
-              icon={<FiMapPin />}
-              label="Location"
-              value={`${user?.district || 'Unknown'}, ${user?.state || 'India'}`}
-            />
-            <DetailItem
-              icon={<FiHash />}
-              label="Pincode"
-              value={user?.pincode || "---"}
-            />
-            <DetailItem
-              icon={<FiCalendar />}
-              label="Age"
-              value={user?.age ? `${user.age} Years` : "---"}
-            />
-          </div>
-
-          <div className="action-footer">
             <button onClick={handleLogout} className="logout-btn">
-              <FiLogOut /> Logout
+              TERMINATE_SESSION <FiLogOut />
             </button>
-          </div>
+          </motion.div>
+        </div>
 
-        </motion.div>
       </div>
     </div>
   );
@@ -172,7 +121,7 @@ const DetailItem = ({ icon, label, value }) => (
     <div className="detail-icon">{icon}</div>
     <div className="detail-text">
       <span className="label">{label}</span>
-      <span className="value">{value}</span>
+      <span className="value">{value || "NOT_SET"}</span>
     </div>
   </div>
 );

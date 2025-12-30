@@ -1,332 +1,134 @@
-/* Authentication.css */
-
-/* --- Container & Background --- */
+/* ================================
+   GLOBAL AUTH RESET
+================================ */
 .auth-container {
-  min-height: 100vh;
-
+  height: 100vh;
+  width: 100vw;
+  background-color: #050505;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color:transparent;
+  overflow: hidden; /* Strict no-scroll */
   position: relative;
-  padding: 20px;
-  padding-bottom: 100px;
-  /* Space for Navbar */
+  margin: 0;
+  padding: 0;
 }
 
-/* Reusing the Home Blob animation */
-.auth-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.3;
-  animation: floatAuth 10s infinite ease-in-out alternate;
-  z-index: 0;
-}
-
-.blob-auth-1 {
-  top: -10%;
-  left: -10%;
-  width: 400px;
-  height: 400px;
-  background: #39ff14;
-}
-
-.blob-auth-2 {
-  bottom: 0%;
-  right: -10%;
-  width: 350px;
-  height: 350px;
-  background: #fbbf24;
-}
-
-@keyframes floatAuth {
-  0% {
-    transform: translate(0, 0);
-  }
-
-  100% {
-    transform: translate(30px, 30px);
-  }
-}
-
-/* --- Glassmorphism Card --- */
-.auth-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 2.5rem;
+/* ================================
+   SPLIT VIEW LAYOUT
+================================ */
+.auth-split {
+  display: flex;
   width: 100%;
-  max-width: 450px;
-  /* Default width for login */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Left Side: Aesthetic Image (LOCKED 60%) --- */
+.auth-image-side {
+  /* Force exactly 60% of the viewport width */
+  flex: 0 0 60% !important; 
+  width: 60vw !important;
+  min-width: 60vw !important;
+  
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Right Side: Form Content (LOCKED 40%) --- */
+.auth-form-side {
+  /* Force exactly 40% of the viewport width */
+  flex: 0 0 40% !important;
+  width: 40vw !important;
+  min-width: 40vw !important;
+
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;
+  
+  /* Pushing content below Navbar */
+  padding: 100px 20px 20px 20px; 
+  box-sizing: border-box;
+  border-left: 1px solid #222;
   position: relative;
   z-index: 10;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-.auth-card.wide {
-  max-width: 700px;
-  /* Wider for Signup grid */
+/* --- Brand Positioning Fix --- */
+.brand-overlay {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 80%; /* Ensures text wraps nicely within its 60% container */
 }
 
-/* --- Typography --- */
-.auth-header {
-  text-align: center;
-  margin-bottom: 2rem;
+/* ================================
+   SHARP INDUSTRIAL CARDS
+================================ */
+.auth-card {
+  width: 100%;
+  max-width: 360px; /* Keep the card narrow so it doesn't push the 40% boundary */
+  background: transparent;
 }
 
 .auth-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  font-weight: 900;
   color: #ffffff;
-  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
 }
 
-.auth-subtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
+/* --- Industrial Form Elements --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column for Login */
+  gap: 12px;
 }
 
-.auth-subtitle a {
-  color: #39ff14;
-  text-decoration: none;
-  font-weight: 600;
-  transition: opacity 0.2s;
-}
-
-.auth-subtitle a:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
-
-/* --- Form Elements --- */
-.form-group {
-  margin-bottom: 1.25rem;
-  position: relative;
-}
-
-.form-label {
-  display: block;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
+.auth-card.wide .form-grid {
+  grid-template-columns: 1fr 1fr; /* Two columns for Signup */
+  gap: 10px;
 }
 
 .auth-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 16px;
-  padding-left: 40px;
-  /* Space for icon */
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 0;
+  padding: 12px 12px 12px 40px;
   color: #ffffff;
-  font-size: 1rem;
-  outline: none;
-  transition: all 0.3s ease;
+  font-family: monospace;
 }
 
-.auth-input:focus {
-  border-color: #39ff14;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.1);
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 1.2rem;
-  pointer-events: none;
-  transition: color 0.3s;
-}
-
-.auth-input:focus+.input-icon,
-.auth-input:focus~.input-icon {
-  color: #39ff14;
-}
-
-/* --- Grid for Signup --- */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-}
-
-/* --- Submit Button --- */
 .auth-submit-btn {
   width: 100%;
   background: #39ff14;
   color: #000;
-  font-weight: 700;
-  padding: 14px;
+  font-weight: 900;
+  padding: 16px;
   border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.auth-submit-btn:hover {
-  background: #32d613;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(57, 255, 20, 0.2);
-}
-
-/* --- OAuth Divider --- */
-.auth-divider {
-  display: flex;
-  align-items: center;
-  margin: 1.5rem 0;
-  gap: 1rem;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.auth-divider span {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.85rem;
+  border-radius: 0;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* --- Google Button Wrapper --- */
-/* --- Wrapper with spacing --- */
-.google-btn-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 1rem 0;
-  perspective: 1000px;
-  /* For a subtle 3D feel */
-}
-
-/* --- The Main Button Container --- */
-.google-btn-wrapper>div {
-  width: 100%;
-  max-width: 320px;
-  /* Standard width for mobile-friendly buttons */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  /* Glassmorphism */
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  /* Border & Glow */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  /* Pill shape */
-  padding: 12px 24px;
-
-  /* Smooth Transitions */
+  letter-spacing: 2px;
+  margin-top: 20px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
 }
 
-/* --- Hover / Active States --- */
-.google-btn-wrapper>div:hover {
-  background: rgba(11, 11, 11, 0.05);
-  /* Slight neon tint */
-  border-color: rgba(57, 255, 20, 0.5);
-  /* Glowing green border */
-  box-shadow: 0 0 20px rgba(57, 255, 20, 0.2),
-    inset 0 0 10px rgba(57, 255, 20, 0.1);
-
-}
-
-.google-btn-wrapper>div:active {
-  transform: translateY(1px) scale(0.98);
-}
-
-/* --- The "Shine" Effect --- */
-.google-btn-wrapper>div::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-
-  transition: 0.6s;
-}
-
-.google-btn-wrapper>div:hover::before {
-  left: 100%;
-}
-
-/* --- Responsive Adjustments for Pixel 6a (412px) --- */
-@media (max-width: 480px) {
-  .google-btn-wrapper>div {
-    max-width: 100%;
-    /* Take full width within its padding */
-    padding: 14px 20px;
-    /* Thicker for easier thumb tapping */
-    border-radius: 16px;
-    /* Slightly more modern "squircle" on mobile */
+/* --- Mobile Fix (Breakpoint) --- */
+@media (max-width: 1024px) {
+  .auth-split { flex-direction: column; }
+  .auth-image-side { display: none; }
+  .auth-form-side { 
+    width: 100vw !important; 
+    flex: 0 0 100% !important;
+    padding-top: 80px;
   }
-}
-
-/* Authentication.css */
-
-.disabled-wrapper {
-  background-color: #f0f2f5;
-  /* Light grey background */
-  opacity: 0.8;
-  cursor: not-allowed;
-  border-color: #e4e6eb;
-}
-
-.disabled-wrapper input {
-  color: #65676b;
-  /* Darker grey text */
-  cursor: not-allowed;
-}
-
-.valid-icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
-}
-
-/* This will hide any floating button or plus icon while this page is open */
-.onboarding-page-active~button,
-.onboarding-page-active~.floating-action-button,
-.onboarding-page-active~[class*="plus"] {
-  display: none !important;
 }

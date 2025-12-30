@@ -1,0 +1,224 @@
+/* ================================
+   SIGNUP SPECIFIC SPLIT VIEW
+================================ */
+.auth-container {
+  height: 100vh; /* Strict full height */
+  width: 100%;
+  background-color: #050505;
+  display: flex;
+  overflow: hidden; /* Prevent any scrolling */
+}
+
+.auth-split {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Left Side: Aesthetic Image */
+.auth-image-side {
+  flex: 1; /* Slightly smaller ratio to give form more room */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.auth-image-overlay {
+  position: absolute;
+  inset: 0;
+  /* 1. Starts dark on the left (0.9) to make the AGROVE text pop.
+     2. Becomes lighter in the middle (0.2) to showcase the farm image.
+     3. Becomes 100% solid black (#000) at the right edge to blend with the form side.
+  */
+  background: linear-gradient(
+    to right, 
+    rgba(0, 0, 0, 0.9) 0%, 
+    rgba(0, 0, 0, 0.2) 50%, 
+    #000 100%
+  ); 
+  z-index: 2;
+
+}
+
+.brand-overlay {
+  position: absolute;
+  top: 80%;
+  left: 10%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.brand-overlay h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 900;
+  color: #39ff14;
+  text-shadow: 0 0 10px #020202, 0 0 20px #030303, 0 0 30px #000000;
+  margin: 0;
+  letter-spacing: -3px;
+  text-transform: uppercase;
+  line-height: 0.9;
+}
+.brand-overlay p {
+    padding: 10px;
+  font-size: clamp(1rem, 1vw, 1.5rem);
+  font-weight: 900;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: #fafafa;
+
+  text-shadow:  0 0 20px #030303, 0 0 30px #000000;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+/* --- Right Side: Spread Form Content --- */
+.auth-form-side {
+  flex: 1.4;
+  display: flex;
+  align-items: center; /* This keeps the card centered vertically */
+  justify-content: flex-start;
+  padding: 0 5%;
+  background: #000;
+  
+  /* ✅ ADD THIS: Safely pushes content below a fixed navbar */
+  padding-top: 80px; 
+  box-sizing: border-box;
+}
+/* ================================
+   FREE-FLOWING SHARP CARD
+================================ */
+.auth-card.wide {
+  width: 100%;
+  max-width: 800px;
+  padding: 0;
+  background: transparent;
+  
+  /* ✅ OPTIONAL: If the card is still too high, add a small top margin */
+  margin-top: 20px; 
+}
+
+.auth-header {
+  /* Tightened margin to ensure no-scroll logic holds up */
+  margin-bottom: 1.5rem; 
+  text-align: left;
+}
+
+.auth-title {
+  /* Removed negative padding which might have caused the overlap */
+  padding-top: 0; 
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin: 0;
+}
+.auth-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 5px;
+}
+
+.auth-subtitle a { color: #39ff14; font-weight: 700; text-decoration: none; }
+
+/* ================================
+   OPTIMIZED FORM GRID (NO SCROLL)
+================================ */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two column spread */
+  gap: 1.5rem 2.5rem; /* Increased horizontal gap for "freedom" */
+  margin-bottom: 2rem;
+}
+
+/* Make Email or Full Name span full width if desired, 
+   but for "no scroll", keeping them 2-column is safer. */
+
+.form-group {
+  margin: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #39ff14;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.auth-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 0; /* Industrial Sharp Edge */
+  padding: 12px 12px 12px 40px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: #39ff14;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #444;
+}
+
+/* Actions Section */
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 1rem;
+}
+
+.auth-submit-btn {
+  flex: 1;
+  background: #39ff14;
+  color: #000;
+  font-weight: 900;
+  padding: 16px;
+  border: none;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.auth-submit-btn:hover {
+  background: #ffffff;
+  box-shadow: 8px 8px 0px rgba(57, 255, 20, 0.2);
+}
+
+.google-btn-inline {
+  flex: 1;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-height: 800px) {
+  .form-grid { gap: 1rem 2rem; } /* Tighten slightly for small laptops to avoid scroll */
+  .auth-header { margin-bottom: 1.5rem; }
+}
+
+@media (max-width: 1024px) {
+  .auth-image-side { display: none; }
+  .auth-form-side { flex: 1; justify-content: center; padding: 20px; }
+  .auth-container { overflow-y: auto; height: auto; } /* Allow scroll only on mobile */
+}

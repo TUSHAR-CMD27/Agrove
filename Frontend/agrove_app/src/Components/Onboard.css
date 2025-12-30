@@ -1,0 +1,149 @@
+.auth-container {
+    height: 100vh;
+    width: 100%;
+    background: #050505;
+    overflow: hidden;
+}
+
+.auth-split {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Left Side --- */
+.auth-image-side {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.auth-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.4));
+}
+
+.brand-overlay {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+.brand-overlay h1 {
+    font-size: 5rem;
+    font-weight: 900;
+    color: #39ff14;
+    line-height: 0.9;
+    letter-spacing: -3px;
+    margin: 0;
+}
+
+/* --- Right Side --- */
+.auth-form-side {
+    flex: 1.2;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+}
+
+.auth-card.wide {
+    width: 100%;
+    max-width: 650px;
+}
+
+.auth-header {
+    margin-bottom: 40px;
+    border-left: 4px solid #39ff14;
+    padding-left: 20px;
+}
+
+.auth-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+/* --- Form Grid --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+.full-span {
+    grid-column: span 2;
+}
+
+.form-label {
+    display: block;
+    color: #39ff14;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.auth-input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #222;
+    padding: 14px 14px 14px 45px;
+    color: white;
+    border-radius: 0; /* Sharp Edges */
+    outline: none;
+}
+
+.auth-input:focus {
+    border-color: #39ff14;
+}
+
+.disabled-wrapper {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #080808;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #444;
+}
+
+.valid-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.auth-submit-btn {
+    width: 100%;
+    background: #39ff14;
+    color: black;
+    font-weight: 900;
+    padding: 18px;
+    border: none;
+    cursor: pointer;
+    margin-top: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.auth-submit-btn:hover {
+    background: white;
+    box-shadow: 10px 10px 0px rgba(57, 255, 20, 0.2);
+}
+
+@media (max-width: 1024px) {
+    .auth-image-side { display: none; }
+}

@@ -1,12 +1,11 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
-import toast from 'react-hot-toast'; 
+import toast from 'react-hot-toast';
+import farmImg from '../assets/f14.jpg'; // ✅ Your aesthetic image
 import './Authentication.css';
 
 const Login = () => {
@@ -36,7 +35,6 @@ const Login = () => {
       const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
 
       if (res.data) {
-        // --- ENHANCED SUCCESS TOAST ---
         toast.success(`Welcome back, ${res.data.name || 'Farmer'}! `, {
           duration: 7000,
           icon: '🚜',
@@ -56,7 +54,6 @@ const Login = () => {
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Login Failed. Check your email/password.';
       toast.error(errorMessage); 
-      console.error("Login Error:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -71,8 +68,6 @@ const Login = () => {
       });
 
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      
-      // --- UPDATED SUCCESS TOAST ---
       toast.success('Google Login Successful!', { id: loadingToast });
 
       const { age, state, district, pincode } = res.data;
@@ -84,7 +79,6 @@ const Login = () => {
       window.location.reload();
     } catch (error) {
       toast.error('Google Login Failed', { id: loadingToast });
-      console.error("Google Login Error:", error);
     } finally {
       setLoading(false);
     }
@@ -92,72 +86,94 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-blob blob-auth-1"></div>
-      <div className="auth-blob blob-auth-2"></div>
-
-      <motion.div
-        className="auth-card"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="auth-header">
-          <h2 className="auth-title">Welcome Back</h2>
-          <p className="auth-subtitle">
-            New to Agrove? <Link to="/signup">Create an account</Link>
-          </p>
+      <div className="auth-split">
+        
+        {/* LEFT SIDE: AESTHETIC IMAGE */}
+        <div 
+          className="auth-image-side" 
+          style={{ backgroundImage: `url(${farmImg})` }}
+        >
+          <div className="auth-image-overlay"></div>
+          
+          <motion.div 
+            className="brand-overlay"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1>SECURE GATEWAY </h1>
+            <p>Agrove is engineered to synchronize the raw power of nature with advanced digital architecture, providing farmers with a robust command center for every acre under their care.</p>
+          </motion.div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <div className="input-wrapper">
-              <FiMail className="input-icon" />
-              <input
-                type="email"
-                className="auth-input"
-                placeholder="farmer@agrove.in"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+        {/* RIGHT SIDE: LOGIN FORM */}
+        <div className="auth-form-side">
+          <motion.div
+            className="auth-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="auth-header">
+              <h2 className="auth-title">Welcome Back</h2>
+              <p className="auth-subtitle">
+                New to Agrove? <Link to="/signup">Create an account</Link>
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <div className="input-wrapper">
+                  <FiMail className="input-icon" />
+                  <input
+                    type="email"
+                    className="auth-input"
+                    placeholder="farmer@agrove.in"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <div className="input-wrapper">
+                  <FiLock className="input-icon" />
+                  <input
+                    type="password"
+                    className="auth-input"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="auth-submit-btn" disabled={loading}>
+                {loading ? 'Logging In...' : <>Login to Dashboard <FiArrowRight /></>}
+              </button>
+            </form>
+
+            <div className="auth-divider">
+              <span>or continue with</span>
+            </div>
+
+            <div className="google-btn-wrapper">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error('Google Login Failed')}
+                theme="filled_black"
+                size="large"
+                width="100%"
               />
             </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <div className="input-wrapper">
-              <FiLock className="input-icon" />
-              <input
-                type="password"
-                className="auth-input"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <button type="submit" className="auth-submit-btn" disabled={loading}>
-            {loading ? 'Logging In...' : <>Login to Dashboard <FiArrowRight /></>}
-          </button>
-        </form>
-
-        <div className="auth-divider">
-          <span>or continue with</span>
+          </motion.div>
         </div>
 
-        <div className="google-btn-wrapper">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error('Google Login Failed')}
-            theme="filled_black"
-            size="large"
-            width="100%"
-          />
-        </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
