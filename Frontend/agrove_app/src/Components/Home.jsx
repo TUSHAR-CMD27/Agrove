@@ -10,8 +10,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- DATA CONSTANTS ---
 const stats = [
-  { value: '1500+', label: 'Registered Farms' },
-  { value: '50K+', label: 'Acres Managed' },
+  { value: '100+', label: 'Registered Farms' },
+  { value: '20K+', label: 'Acres Managed' },
   { value: '95%', label: 'User Satisfaction' },
   { value: '18', label: 'Crops Supported' },
 ];

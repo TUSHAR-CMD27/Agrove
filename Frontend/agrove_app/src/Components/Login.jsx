@@ -37,8 +37,8 @@ const Login = () => {
 
       if (res.data) {
         // --- ENHANCED SUCCESS TOAST ---
-        toast.success(`Welcome back, ${res.data.name || 'Farmer'}! 🌾`, {
-          duration: 4000,
+        toast.success(`Welcome back, ${res.data.name || 'Farmer'}! `, {
+          duration: 7000,
           icon: '🚜',
         });
         

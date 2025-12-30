@@ -1,7 +1,7 @@
 /* --- Main Container --- */
 .field-detail-container {
   min-height: 100vh;
-  background-color: #0a0a0a; /* Deep dark theme */
+  background-color: transparent; /* Deep dark theme */
   color: white;
   padding-bottom: 120px; /* Space for the floating menu */
   position: relative;
@@ -10,27 +10,22 @@
 
 /* --- Dramatic Header Section --- */
 .detail-header {
-  height: 35vh; 
+  height: 20vh; 
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: flex-end; 
-  padding: 60px;
+  padding: 25px;
   position: relative;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  
 }
 
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, #0a0a0a 5%, rgba(10, 10, 10, 0.2) 60%, transparent 100%);
-  z-index: 1;
-}
+
 
 .back-btn-detail {
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 20px;
+  left: 20px;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
@@ -61,7 +56,7 @@
 
 .header-content h1 {
   margin: 0 0 16px 0;
-  font-size: 5.5rem; /* Massive bold title as seen in screenshot */
+  font-size: 5.9rem; /* Massive bold title as seen in screenshot */
   font-weight: 900;
   line-height: 0.9;
   letter-spacing: -3px;
@@ -69,15 +64,16 @@
 }
 
 .crop-pill {
-  background: #39ff14;
-  color: black;
+  background: transparent;
+  color: rgb(254, 254, 254);
   font-size: 1rem;
   font-weight: 800;
   padding: 8px 24px;
   border-radius: 50px;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.9);
   text-transform: uppercase;
   letter-spacing: 2px;
-  box-shadow: 0 0 25px rgba(57, 255, 20, 0.4);
+  box-shadow: 0 
 }
 
 /* --- Dashboard Grid --- */

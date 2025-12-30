@@ -17,6 +17,7 @@ import Bin from './Components/Bin.jsx'
 import FieldDetails from './Components/FieldDetails.jsx'
 import EditPage from './Components/Edit.jsx'
 import Onboarding from './Components/Onboarding.jsx'
+import GlobalBackground from './Components/GlobalBackground.jsx'
 
 
 
@@ -24,6 +25,7 @@ const App = () => {
   return (
     <Router>
       <div className="app-main">
+        <GlobalBackground />
 
         <Routes>
           <Route path="/" element={<Home />} />

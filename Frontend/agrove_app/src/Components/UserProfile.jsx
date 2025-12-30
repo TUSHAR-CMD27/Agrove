@@ -56,16 +56,15 @@ const UserProfile = () => {
 
   // --- 2. Logout Logic with Custom Toast ---
   const handleLogout = () => {
-    // 1. Show the custom "Visit Again" Toast first
-    toast("Logged out. Visit again soon! 👋", {
-      duration: 4000,
+    toast("Logging out...", {
+      duration: 2000,
       position: 'bottom-center',
       style: {
-        background: '#1b4332', // Deep Agrove Green
+        background: '#000000ff', // Deep Agrove Green
         color: '#fff',
         borderRadius: '12px',
-        border: '1px solid #39ff14',
-        padding: '16px',
+        border: '1px solid #f8f8f818',
+        padding: '8px',
         fontSize: '1rem',
         fontWeight: '500'
       },
