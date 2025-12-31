@@ -22,7 +22,7 @@
 .auth-image-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.4));
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.4));
 }
 
 .brand-overlay {
@@ -96,7 +96,8 @@
     border: 1px solid #222;
     padding: 14px 14px 14px 45px;
     color: white;
-    border-radius: 0; /* Sharp Edges */
+    border-radius: 0;
+    /* Sharp Edges */
     outline: none;
 }
 
@@ -145,5 +146,18 @@
 }
 
 @media (max-width: 1024px) {
-    .auth-image-side { display: none; }
+    .auth-image-side {
+        display: none;
+    }
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+    -webkit-transition-delay: 9999s;
+    transition-delay: 9999s;
+
+    /* Matches your dark theme background */
+    -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
+    -webkit-text-fill-color: #ffffff !important;
 }

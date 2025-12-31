@@ -6,7 +6,8 @@
   width: 100vw;
   background-color: #050505;
   display: flex;
-  overflow: hidden; /* Strict no-scroll */
+  overflow: hidden;
+  /* Strict no-scroll */
   position: relative;
   margin: 0;
   padding: 0;
@@ -26,10 +27,10 @@
 /* --- Left Side: Aesthetic Image (LOCKED 60%) --- */
 .auth-image-side {
   /* Force exactly 60% of the viewport width */
-  flex: 0 0 60% !important; 
+  flex: 0 0 60% !important;
   width: 60vw !important;
   min-width: 60vw !important;
-  
+
   height: 100vh;
   background-size: cover;
   background-position: center;
@@ -47,11 +48,11 @@
   background: #0a0a0a;
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   justify-content: flex-start;
-  
+
   /* Pushing content below Navbar */
-  padding: 100px 20px 20px 20px; 
+  padding: 100px 20px 20px 20px;
   box-sizing: border-box;
   border-left: 1px solid #222;
   position: relative;
@@ -65,7 +66,8 @@
   left: 10%;
   transform: translateY(-50%);
   z-index: 5;
-  width: 80%; /* Ensures text wraps nicely within its 60% container */
+  width: 80%;
+  /* Ensures text wraps nicely within its 60% container */
 }
 
 /* ================================
@@ -73,7 +75,8 @@
 ================================ */
 .auth-card {
   width: 100%;
-  max-width: 360px; /* Keep the card narrow so it doesn't push the 40% boundary */
+  max-width: 360px;
+  /* Keep the card narrow so it doesn't push the 40% boundary */
   background: transparent;
 }
 
@@ -89,12 +92,14 @@
 /* --- Industrial Form Elements --- */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Single column for Login */
+  grid-template-columns: 1fr;
+  /* Single column for Login */
   gap: 12px;
 }
 
 .auth-card.wide .form-grid {
-  grid-template-columns: 1fr 1fr; /* Two columns for Signup */
+  grid-template-columns: 1fr 1fr;
+  /* Two columns for Signup */
   gap: 10px;
 }
 
@@ -124,11 +129,28 @@
 
 /* --- Mobile Fix (Breakpoint) --- */
 @media (max-width: 1024px) {
-  .auth-split { flex-direction: column; }
-  .auth-image-side { display: none; }
-  .auth-form-side { 
-    width: 100vw !important; 
+  .auth-split {
+    flex-direction: column;
+  }
+
+  .auth-image-side {
+    display: none;
+  }
+
+  .auth-form-side {
+    width: 100vw !important;
     flex: 0 0 100% !important;
     padding-top: 80px;
   }
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-transition-delay: 9999s;
+  transition-delay: 9999s;
+
+  /* Matches your dark theme background */
+  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
 }

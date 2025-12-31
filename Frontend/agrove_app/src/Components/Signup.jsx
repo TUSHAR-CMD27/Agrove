@@ -50,7 +50,7 @@ const Signup = () => {
       toast.success("Account created successfully!");
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       nav('/dashboard');
-      window.location.reload(); 
+      window.location.reload();
 
     } catch (err) {
       const message = err.response?.data?.message || "Signup Failed";
@@ -67,7 +67,7 @@ const Signup = () => {
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
-      
+
       toast.success("Google Signup Successful!", { id: loadingToast });
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       nav('/onboarding');
@@ -82,15 +82,15 @@ const Signup = () => {
   return (
     <div className="auth-container">
       <div className="auth-split">
-        
+
         {/* LEFT SIDE: AESTHETIC IMAGE & BRANDING */}
-        <div 
-          className="auth-image-side" 
+        <div
+          className="auth-image-side"
           style={{ backgroundImage: `url(${farmImg})` }}
         >
           <div className="auth-image-overlay"></div>
-          
-          <motion.div 
+
+          <motion.div
             className="brand-overlay"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -103,9 +103,9 @@ const Signup = () => {
 
         {/* RIGHT SIDE: SIGNUP FORM */}
         <div className="auth-form-side">
-          <motion.div 
-            className="auth-card wide" 
-            initial={{ opacity: 0, y: 20 }} 
+          <motion.div
+            className="auth-card wide"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
@@ -117,11 +117,11 @@ const Signup = () => {
             </div>
 
             <div className="google-btn-wrapper">
-              <GoogleLogin 
-                onSuccess={handleGoogleSuccess} 
-                onError={() => toast.error('Google Signup Failed')} 
-                theme="filled_black" 
-                width="100%" 
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error('Google Signup Failed')}
+                theme="filled_black"
+                width="100%"
               />
             </div>
 
@@ -133,7 +133,7 @@ const Signup = () => {
                   <label className="form-label">Full Name</label>
                   <div className="input-wrapper">
                     <FiUser className="input-icon" />
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} className="auth-input" placeholder="Tushar..." required />
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Tushar..." required />
                   </div>
                 </div>
 
@@ -141,7 +141,7 @@ const Signup = () => {
                   <label className="form-label">Email</label>
                   <div className="input-wrapper">
                     <FiMail className="input-icon" />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="auth-input" placeholder="name@email.com" required />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="name@email.com" required />
                   </div>
                 </div>
 
@@ -149,7 +149,7 @@ const Signup = () => {
                   <label className="form-label">Password</label>
                   <div className="input-wrapper">
                     <FiLock className="input-icon" />
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} className="auth-input" placeholder="••••••••" required />
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="••••••••" required />
                   </div>
                 </div>
 
@@ -157,7 +157,7 @@ const Signup = () => {
                   <label className="form-label">State</label>
                   <div className="input-wrapper">
                     <FiMapPin className="input-icon" />
-                    <input type="text" name="state" value={formData.state} onChange={handleChange} className="auth-input" placeholder="Maharashtra" required />
+                    <input type="text" name="state" value={formData.state} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Maharashtra" required />
                   </div>
                 </div>
 
@@ -165,15 +165,15 @@ const Signup = () => {
                   <label className="form-label">District</label>
                   <div className="input-wrapper">
                     <FiMapPin className="input-icon" />
-                    <input type="text" name="district" value={formData.district} onChange={handleChange} className="auth-input" placeholder="District" required />
+                    <input type="text" name="district" value={formData.district} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="District" required />
                   </div>
                 </div>
-                
+
                 <div className="form-group">
                   <label className="form-label">Age</label>
                   <div className="input-wrapper">
                     <FiCalendar className="input-icon" />
-                    <input type="number" name="age" value={formData.age} onChange={handleChange} className="auth-input" placeholder="25" required />
+                    <input type="number" name="age" value={formData.age} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="25" required />
                   </div>
                 </div>
 
@@ -181,7 +181,7 @@ const Signup = () => {
                   <label className="form-label">Pincode</label>
                   <div className="input-wrapper">
                     <FiHash className="input-icon" />
-                    <input type="number" name="pincode" value={formData.pincode} onChange={handleChange} className="auth-input" placeholder="400001" required />
+                    <input type="number" name="pincode" value={formData.pincode} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="400001" required />
                   </div>
                 </div>
               </div>

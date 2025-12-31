@@ -2,11 +2,13 @@
    SIGNUP SPECIFIC SPLIT VIEW
 ================================ */
 .auth-container {
-  height: 100vh; /* Strict full height */
+  height: 100vh;
+  /* Strict full height */
   width: 100%;
   background-color: #050505;
   display: flex;
-  overflow: hidden; /* Prevent any scrolling */
+  overflow: hidden;
+  /* Prevent any scrolling */
 }
 
 .auth-split {
@@ -17,7 +19,8 @@
 
 /* Left Side: Aesthetic Image */
 .auth-image-side {
-  flex: 1; /* Slightly smaller ratio to give form more room */
+  flex: 1;
+  /* Slightly smaller ratio to give form more room */
   background-size: cover;
   background-position: center;
   position: relative;
@@ -30,12 +33,10 @@
      2. Becomes lighter in the middle (0.2) to showcase the farm image.
      3. Becomes 100% solid black (#000) at the right edge to blend with the form side.
   */
-  background: linear-gradient(
-    to right, 
-    rgba(0, 0, 0, 0.9) 0%, 
-    rgba(0, 0, 0, 0.2) 50%, 
-    #000 100%
-  ); 
+  background: linear-gradient(to right,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.2) 50%,
+      #000 100%);
   z-index: 2;
 
 }
@@ -58,32 +59,36 @@
   text-transform: uppercase;
   line-height: 0.9;
 }
+
 .brand-overlay p {
-    padding: 10px;
+  padding: 10px;
   font-size: clamp(1rem, 1vw, 1.5rem);
   font-weight: 900;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color: #fafafa;
 
-  text-shadow:  0 0 20px #030303, 0 0 30px #000000;
+  text-shadow: 0 0 20px #030303, 0 0 30px #000000;
   margin: 0;
   letter-spacing: 1px;
   text-transform: uppercase;
   line-height: 1;
 }
+
 /* --- Right Side: Spread Form Content --- */
 .auth-form-side {
   flex: 1.4;
   display: flex;
-  align-items: center; /* This keeps the card centered vertically */
+  align-items: center;
+  /* This keeps the card centered vertically */
   justify-content: flex-start;
   padding: 0 5%;
   background: #000;
-  
+
   /* ✅ ADD THIS: Safely pushes content below a fixed navbar */
-  padding-top: 80px; 
+  padding-top: 80px;
   box-sizing: border-box;
 }
+
 /* ================================
    FREE-FLOWING SHARP CARD
 ================================ */
@@ -92,40 +97,47 @@
   max-width: 800px;
   padding: 0;
   background: transparent;
-  
+
   /* ✅ OPTIONAL: If the card is still too high, add a small top margin */
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
 .auth-header {
   /* Tightened margin to ensure no-scroll logic holds up */
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
   text-align: left;
 }
 
 .auth-title {
   /* Removed negative padding which might have caused the overlap */
-  padding-top: 0; 
+  padding-top: 0;
   font-size: 2.5rem;
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
   margin: 0;
 }
+
 .auth-subtitle {
   color: rgba(255, 255, 255, 0.5);
   margin-top: 5px;
 }
 
-.auth-subtitle a { color: #39ff14; font-weight: 700; text-decoration: none; }
+.auth-subtitle a {
+  color: #39ff14;
+  font-weight: 700;
+  text-decoration: none;
+}
 
 /* ================================
    OPTIMIZED FORM GRID (NO SCROLL)
 ================================ */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two column spread */
-  gap: 1.5rem 2.5rem; /* Increased horizontal gap for "freedom" */
+  grid-template-columns: repeat(2, 1fr);
+  /* Two column spread */
+  gap: 1.5rem 2.5rem;
+  /* Increased horizontal gap for "freedom" */
   margin-bottom: 2rem;
 }
 
@@ -154,7 +166,8 @@
   width: 100%;
   background: #111;
   border: 1px solid #222;
-  border-radius: 0; /* Industrial Sharp Edge */
+  border-radius: 0;
+  /* Industrial Sharp Edge */
   padding: 12px 12px 12px 40px;
   color: #ffffff;
   font-size: 0.95rem;
@@ -213,12 +226,42 @@
    RESPONSIVE
 ================================ */
 @media (max-height: 800px) {
-  .form-grid { gap: 1rem 2rem; } /* Tighten slightly for small laptops to avoid scroll */
-  .auth-header { margin-bottom: 1.5rem; }
+  .form-grid {
+    gap: 1rem 2rem;
+  }
+
+  /* Tighten slightly for small laptops to avoid scroll */
+  .auth-header {
+    margin-bottom: 1.5rem;
+  }
 }
 
 @media (max-width: 1024px) {
-  .auth-image-side { display: none; }
-  .auth-form-side { flex: 1; justify-content: center; padding: 20px; }
-  .auth-container { overflow-y: auto; height: auto; } /* Allow scroll only on mobile */
+  .auth-image-side {
+    display: none;
+  }
+
+  .auth-form-side {
+    flex: 1;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .auth-container {
+    overflow-y: auto;
+    height: auto;
+  }
+
+  /* Allow scroll only on mobile */
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-transition-delay: 9999s;
+  transition-delay: 9999s;
+
+  /* Matches your dark theme background */
+  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
 }

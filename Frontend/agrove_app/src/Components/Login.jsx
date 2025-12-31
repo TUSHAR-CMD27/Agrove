@@ -39,7 +39,7 @@ const Login = () => {
           duration: 7000,
           icon: '🚜',
         });
-        
+
         localStorage.setItem('userInfo', JSON.stringify(res.data));
 
         const { age, state, district, pincode } = res.data;
@@ -53,7 +53,7 @@ const Login = () => {
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Login Failed. Check your email/password.';
-      toast.error(errorMessage); 
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -87,15 +87,15 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-split">
-        
+
         {/* LEFT SIDE: AESTHETIC IMAGE */}
-        <div 
-          className="auth-image-side" 
+        <div
+          className="auth-image-side"
           style={{ backgroundImage: `url(${farmImg})` }}
         >
           <div className="auth-image-overlay"></div>
-          
-          <motion.div 
+
+          <motion.div
             className="brand-overlay"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -128,10 +128,12 @@ const Login = () => {
                   <FiMail className="input-icon" />
                   <input
                     type="email"
+                    name="email"
                     className="auth-input"
                     placeholder="farmer@agrove.in"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -143,10 +145,12 @@ const Login = () => {
                   <FiLock className="input-icon" />
                   <input
                     type="password"
+                    name="password"
                     className="auth-input"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onBlur={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
