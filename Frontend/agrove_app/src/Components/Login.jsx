@@ -150,7 +150,7 @@ const Login = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onBlur={(e) => setEmail(e.target.value)}
+                    onBlur={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>

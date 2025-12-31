@@ -70,7 +70,15 @@ const Signup = () => {
 
       toast.success("Google Signup Successful!", { id: loadingToast });
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      nav('/onboarding');
+
+      const { age, state, district, pincode } = res.data;
+      const isProfileComplete = age && state && district && pincode;
+
+      if (!isProfileComplete) {
+        nav('/onboarding');
+      } else {
+        nav('/dashboard');
+      }
       window.location.reload();
     } catch (error) {
       toast.error('Google Signup Failed', { id: loadingToast });
