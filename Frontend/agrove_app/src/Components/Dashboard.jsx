@@ -176,7 +176,7 @@ const Dashboard = () => {
                   <Pie data={pieData} innerRadius="60%" outerRadius="80%" dataKey="value">
                     {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % 5]} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ background: '#111', border: '1px solid #333' }} />
+                  <Tooltip contentStyle={{ background: '#dadadaff', border: '1px solid #333' }} />
                   <Legend verticalAlign="bottom" height={36}/>
                 </PieChart>
               </ResponsiveContainer>

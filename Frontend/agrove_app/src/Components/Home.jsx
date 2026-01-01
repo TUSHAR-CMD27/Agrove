@@ -1,21 +1,26 @@
-import React, { useLayoutEffect, useRef, useEffect } from 'react';
+import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiUser, FiGrid } from 'react-icons/fi'; // Added icons for dashboard/profile
 import './Home.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
-  const { t, i18n } = useTranslation(); // 2. Initialize translation
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const mainRef = useRef();
+  
+  // --- NEW: LOGIN CHECK STATE ---
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // --- 3. REFRESH GSAP ON LANGUAGE CHANGE ---
-  // When text length changes (English to Hindi), ScrollTrigger needs to recalculate positions.
   useEffect(() => {
+    const userInfo = localStorage.getItem('userInfo');
+    if (userInfo) {
+      setIsLoggedIn(true);
+    }
     ScrollTrigger.refresh();
   }, [i18n.language]);
 
@@ -49,7 +54,7 @@ const Home = () => {
       const tl = gsap.timeline();
 
       gsap.from(
-        [".cards", ".cards2", ".cards3", ".cardY1",".cardY2",".cardY3"],
+        [".cards", ".cards2", ".cards3", ".cardY1", ".cardY2", ".cardY3"],
         { x: 10, opacity: 0, duration: 2, ease: "expo.out", stagger: 0.15, delay: 0.5 }
       );
 
@@ -71,14 +76,14 @@ const Home = () => {
       tl.fromTo(".hero-char", { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "back.out(1.7)", stagger: 0.05 }, "-=1.5");
       tl.fromTo(".accent-dot", { scale: 0, rotation: -180 }, { scale: 1, rotation: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" }, "-=0.5");
       tl.fromTo([".hero-subtitle", ".hero-description"], { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "-=0.8");
-      tl.fromTo(".ag-btn", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.5)" }, "-=0.4" );
+      tl.fromTo(".ag-btn", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.5)" }, "-=0.4");
 
-      gsap.fromTo(".section-title", 
+      gsap.fromTo(".section-title",
         { y: 50, opacity: 0, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" },
         { y: 0, opacity: 1, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1, ease: "power4.out", scrollTrigger: { trigger: ".stats-section", start: "top 80%" } }
       );
 
-      gsap.fromTo(".stat-item", 
+      gsap.fromTo(".stat-item",
         { y: 50, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out", scrollTrigger: { trigger: ".stats-grid", start: "top 85%" } }
       );
@@ -121,16 +126,32 @@ const Home = () => {
           <p className="hero-description">{t('auth.login_description')}</p>
 
           <div className="cta-group">
-            <Link to="/signup" className="ag-btn ag-btn-primary">
-              {t('auth.create_account')} <FiArrowRight />
-            </Link>
-            <Link to="/login" className="ag-btn ag-btn-secondary">
-              {t('nav.login')}
-            </Link>
+            {isLoggedIn ? (
+              /* --- LOGGED IN BUTTONS --- */
+              <>
+                <Link to="/dashboard" className="ag-btn ag-btn-primary">
+                  {t('nav.dashboard') || 'Dashboard'} <FiGrid style={{marginLeft: '8px'}} />
+                </Link>
+                <Link to="/profile" className="ag-btn ag-btn-secondary">
+                   <FiUser style={{marginRight: '8px'}} /> {t('nav.profile') || 'Profile'}
+                </Link>
+              </>
+            ) : (
+              /* --- LOGGED OUT BUTTONS --- */
+              <>
+                <Link to="/signup" className="ag-btn ag-btn-primary">
+                  {t('auth.create_account')} <FiArrowRight />
+                </Link>
+                <Link to="/login" className="ag-btn ag-btn-secondary">
+                  {t('nav.login')}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
 
+      {/* ... Rest of your sections (stats, testimonials, footer) remain the same ... */}
       <section className="stats-section">
         <div className="blob blob-lower blob-green-2"></div>
         <div className="content-container">
