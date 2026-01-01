@@ -11,13 +11,14 @@ const app = express();
 // Middleware
 // FIX: origins are now explicitly allowed and credentials enabled for tokens
 // --- UPDATED CORS CONFIGURATION ---
-app.use(cors({ 
+app.use(cors({
     origin: true, // Allows any origin to connect during development
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const authRoute = require('./routes/authRoutes');

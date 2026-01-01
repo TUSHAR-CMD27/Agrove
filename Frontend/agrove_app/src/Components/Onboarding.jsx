@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiMapPin, FiCalendar, FiHash, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
+import { FiUser, FiMail, FiMapPin, FiCalendar, FiHash, FiCheckCircle, FiArrowRight, FiLock } from 'react-icons/fi';
 import farmImg from '../assets/f12.png';
 import './Onboard.css';
 
@@ -15,7 +15,8 @@ const Onboarding = () => {
         age: '',
         state: '',
         district: '',
-        pincode: ''
+        pincode: '',
+        password: '' // ✅ Added password field
     });
 
     useEffect(() => {
@@ -55,11 +56,9 @@ const Onboarding = () => {
     return (
         <div className="auth-container">
             <div className="auth-split">
-                
-                {/* LEFT SIDE: AESTHETIC IMAGE */}
                 <div className="auth-image-side" style={{ backgroundImage: `url(${farmImg})` }}>
                     <div className="auth-image-overlay"></div>
-                    <motion.div 
+                    <motion.div
                         className="brand-overlay"
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -69,9 +68,8 @@ const Onboarding = () => {
                     </motion.div>
                 </div>
 
-                {/* RIGHT SIDE: ONBOARDING FORM */}
                 <div className="auth-form-side">
-                    <motion.div 
+                    <motion.div
                         className="auth-card wide"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -83,7 +81,6 @@ const Onboarding = () => {
 
                         <form onSubmit={handleSubmit}>
                             <div className="form-grid">
-                                {/* LOCKED FIELDS */}
                                 <div className="form-group">
                                     <label className="form-label">Email (Verified)</label>
                                     <div className="input-wrapper disabled-wrapper">
@@ -93,11 +90,29 @@ const Onboarding = () => {
                                     </div>
                                 </div>
 
+                                {/* ✅ NEW: Set Password Field */}
+                                <div className="form-group">
+                                    <label className="form-label">Set Account Password</label>
+                                    <div className="input-wrapper">
+                                        <FiLock className="input-icon" />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            onBlur={handleChange}
+                                            className="auth-input"
+                                            placeholder="Create new password"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="form-group">
                                     <label className="form-label">Age</label>
                                     <div className="input-wrapper">
                                         <FiCalendar className="input-icon" />
-                                        <input type="number" name="age" value={formData.age} onChange={handleChange} className="auth-input" placeholder="e.g. 28" required />
+                                        <input type="number" name="age" value={formData.age} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="e.g. 28" required />
                                     </div>
                                 </div>
 
@@ -105,7 +120,7 @@ const Onboarding = () => {
                                     <label className="form-label">State</label>
                                     <div className="input-wrapper">
                                         <FiMapPin className="input-icon" />
-                                        <input type="text" name="state" value={formData.state} onChange={handleChange} className="auth-input" placeholder="Maharashtra" required />
+                                        <input type="text" name="state" value={formData.state} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Maharashtra" required />
                                     </div>
                                 </div>
 
@@ -113,15 +128,15 @@ const Onboarding = () => {
                                     <label className="form-label">District</label>
                                     <div className="input-wrapper">
                                         <FiMapPin className="input-icon" />
-                                        <input type="text" name="district" value={formData.district} onChange={handleChange} className="auth-input" placeholder="Nashik" required />
+                                        <input type="text" name="district" value={formData.district} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Nashik" required />
                                     </div>
                                 </div>
 
-                                <div className="form-group full-span">
+                                <div className="form-group">
                                     <label className="form-label">Pincode</label>
                                     <div className="input-wrapper">
                                         <FiHash className="input-icon" />
-                                        <input type="number" name="pincode" value={formData.pincode} onChange={handleChange} className="auth-input" placeholder="422001" required />
+                                        <input type="number" name="pincode" value={formData.pincode} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="422001" required />
                                     </div>
                                 </div>
                             </div>

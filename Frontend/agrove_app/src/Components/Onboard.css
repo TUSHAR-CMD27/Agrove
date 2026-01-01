@@ -161,3 +161,30 @@
     -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
     -webkit-text-fill-color: #ffffff !important;
 }
+
+/* Ensure the wrapper is the reference point for the absolute icons */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Remove or comment out .full-span to keep 2 columns even */
+/* .full-span { grid-column: span 2; } */
+
+/* Optional: Slight tweak to subtitles for clarity */
+.auth-subtitle strong {
+    color: #39ff14;
+}
+
+/* Maintain that sharp look */
+.auth-input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #222;
+    padding: 14px 14px 14px 45px;
+    color: white;
+    border-radius: 0;
+    /* Keep it sharp as requested */
+    outline: none;
+    font-family: inherit;
+}

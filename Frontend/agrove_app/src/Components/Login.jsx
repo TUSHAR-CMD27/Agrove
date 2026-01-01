@@ -30,9 +30,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    const loginData = {
+      email: email,
+      password: password
+    };
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      const res = await axios.post('http://localhost:3000/api/auth/login', loginData);
 
       if (res.data) {
         toast.success(`Welcome back, ${res.data.name || 'Farmer'}! `, {
