@@ -2,6 +2,7 @@ import React, { useEffect, useState, useLayoutEffect, useRef, useMemo } from 're
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { gsap } from 'gsap';
+import Bgimg from '../assets/bg.png';
 import { useTranslation } from 'react-i18next'; // 1. Added i18n
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -38,9 +39,9 @@ const Dashboard = () => {
   // 3. Translated Weather helper
   const getWeatherDescription = (code) => {
     const mapping = {
-      0: t('weather.clear'), 1: t('weather.mainly_clear'), 2: t('weather.partly_cloudy'), 3: t('weather.overcast'),
-      45: t('weather.foggy'), 48: t('weather.rime_fog'), 51: t('weather.light_drizzle'), 61: t('weather.slight_rain'),
-      63: t('weather.moderate_rain'), 80: t('weather.slight_showers'), 95: t('weather.thunderstorm'),
+      0: t(' clear'), 1: t(' clear'), 2: t(' partly cloudy'), 3: t(' overcast'),
+      45: t(' foggy'), 48: t(' rime fog'), 51: t(' light drizzle'), 61: t(' slight rain'),
+      63: t(' moderate rain'), 80: t(' slight showers'), 95: t(' thunderstorm'),
     };
     return mapping[code] || t('weather.clear');
   };
@@ -138,7 +139,7 @@ const Dashboard = () => {
   if (loading) return <div className="loading-screen">{t('dash.loading')}</div>;
 
   return (
-    <div className="dash-container" ref={dashRef}>
+    <div className="dash-container" ref={dashRef} style={{backgroundImage : `url(${Bgimg})`}}>
       <div className="dash-content">
         <header className="dash-header">
           <div>

@@ -235,9 +235,9 @@
 @media (max-width: 800px) {
   .floating-navbar {
     top: 15px;
-    left: 50%; /* Standard center for mobile */
+    left: 45%; /* Standard center for mobile */
     transform: translateX(-50%);
-    padding: 0.4rem 0.8rem;
+    padding: 0.4rem 0.2rem;
   }
 
   /* Hide Clutter */

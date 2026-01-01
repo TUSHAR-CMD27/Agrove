@@ -39,13 +39,14 @@
   transform: translateY(-50%);
   z-index: 5;
 }
-
 .brand-overlay h1 {
-  font-size: clamp(3rem, 8vw, 6rem);
+  /* Adjusted clamp: Min 2.5rem, Preferred 6vw, Max 5rem */
+  /* This ensures it doesn't scale too aggressively on narrow mobile screens */
+  font-size: clamp(2.5rem, 6vw, 5rem); 
   font-weight: 900;
   color: #39ff14;
   margin: 0;
-  letter-spacing: -4px;
+  letter-spacing: -3px; /* Reduced slightly for better mobile legibility */
   text-transform: uppercase;
   line-height: 0.9;
 }
@@ -198,11 +199,162 @@
 }
 
 /* --- Mobile Fixes --- */
-@media (max-width: 1024px) {
-  .profile-container {
-    overflow-y: auto; /* Allow scroll only on small mobile */
-    height: auto;
+/* ================================
+   MOBILE RESPONSIVE & ADAPTIVE
+================================ */
+
+/* Tablet View: Shrink text and balance split */
+@media (max-width: 1200px) {
+  
+  .brand-overlay h1 {
+    font-size: 4.5rem;
+    letter-spacing: -2px;
   }
-  .profile-image-side { display: none; }
-  .profile-info-side { flex: 1; padding: 20px; border-left: none; }
+  
+  .profile-info-side {
+    padding: 30px;
+  }
+
+  .avatar-square {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+}
+
+/* Mobile View: Stack Layout (768px and below) */
+/* ================================
+   MOBILE RESPONSIVE & ADAPTIVE
+================================ */
+
+/* Tablet View (1200px and below) */
+@media (max-width: 1200px) {
+  .profile-info-side {
+    padding: 30px;
+    flex: 1; /* Give more room to the form side */
+  }
+
+  .brand-overlay h1 {
+    font-size: 4rem;
+    letter-spacing: -2px;
+  }
+
+  .avatar-square {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+}
+
+/* Mobile View (768px and below) */
+/* ================================
+   MOBILE RESPONSIVE & ADAPTIVE
+================================ */
+
+/* Tablet View (1200px and below) */
+@media (max-width: 1200px) {
+  .brand-overlay h1 {
+    font-size: 3.5rem; /* Balanced size */
+    letter-spacing: -2px;
+  }
+  
+  .profile-info-side {
+    padding: 30px;
+    flex: 1; 
+  }
+
+  .avatar-square {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+}
+
+/* Mobile View (768px and below) */
+@media (max-width: 768px) {
+  .profile-container {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto; /* Allow scrolling on phone */
+    padding-top: 70px; 
+    display: block; 
+  }
+
+  .profile-split {
+    flex-direction: column;
+  }
+
+  .profile-image-side {
+    flex: none;
+    height: 25vh; /* Shorter banner */
+    width: 100%;
+    display: block !important;
+  }
+
+  .brand-overlay {
+    text-align: left;
+  }
+  .brand-overlay p {
+  display: none;
+  }
+
+  .profile-info-side {
+    flex: none;
+    width: 100%;
+    padding: 30px 15px;
+    border-left: none;
+    background: #050505;
+  }
+
+  .profile-card {
+    max-width: 100%;
+  }
+
+  .profile-header {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar-square {
+    width: 65px;
+    height: 65px;
+    font-size: 1.8rem;
+  }
+
+  .header-info h1 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Extra Small Devices (480px and below) */
+@media (max-width: 480px) {
+  .brand-overlay h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .detail-row {
+    padding: 10px;
+    gap: 0.8rem;
+  }
+
+  .detail-text .value {
+    font-size: 0.85rem;
+  }
+}
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .brand-overlay h1 {
+    font-size: 2.2rem;
+  }
+  
+  .avatar-square {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .detail-row {
+    padding: 12px;
+    gap: 1rem;
+  }
 }

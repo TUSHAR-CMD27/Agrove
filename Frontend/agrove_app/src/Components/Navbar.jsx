@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { MdLanguage } from 'react-icons/md';
+import { IoLanguage } from "react-icons/io5";
 import {
   FiHome, FiGrid, FiUser, FiLogIn, FiUserPlus, FiPlus, FiLayers, FiActivity
 } from 'react-icons/fi';
@@ -123,7 +123,7 @@ const Navbar = () => {
         <li className="nav-item">
           <button className="lang-toggle-btn" onClick={toggleLanguage} style={{background:'none', border:'none', color:'inherit', cursor:'pointer'}}>
             <motion.div variants={iconVariants} whileHover="hover">
-              <MdLanguage size={24} color="#39ff14" />
+              <IoLanguage size={24} color="#39ff14" />
             </motion.div>
             <span className="nav-tooltip">{i18n.language === 'en' ? 'हिन्दी' : 'English'}</span>
           </button>

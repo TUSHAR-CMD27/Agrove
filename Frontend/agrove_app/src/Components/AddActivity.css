@@ -1,99 +1,103 @@
-.add-activity-container {
-  min-height: 100vh; /* Fixed typo: was 0.6vh */
-  background-color: #0a0a0a;
-  color: white;
-  padding: 20px;
-  padding-bottom: 100px; /* Space for scrolling past navbar */
-  position: relative;
+/* ================================================================
+   ADD ACTIVITY - INDUSTRIAL SHARP THEME
+   ================================================================ */
 
+.add-activity-container {
+  min-height: 100vh;
+  background-color: #050505; /* Deeper black */
+  color: white;
+  padding: 80px 20px 120px; /* Top padding for navbar */
+  position: relative;
+  overflow-x: hidden;
 }
 
+
+/* Header Section */
 .activity-header-section {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 30px;
-  max-width: 600px;
+  max-width: 1000px;
   margin: 0 auto 30px auto;
   position: relative;
-  z-index: 2; /* Keep above blobs */
+  z-index: 2;
 }
 
 .back-btn-simple {
-  background: rgba(255,255,255,0.1);
+  background: #39ff14;
   border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 50%;
+  color: #000;
+  padding: 12px;
+  border-radius: 0; /* ✅ SHARP */
   cursor: pointer;
-  transition: 0.2s;
+  display: flex;
+  transition: 0.3s;
 }
 
 .back-btn-simple:hover {
-  background: rgba(255,255,255,0.2);
+  background: #fff;
+  transform: translateX(-5px);
 }
 
 .activity-header-section h1 {
-  font-size: 24px;
-  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
 }
 
+/* Form Card - Sharp Industrial */
 .form-card {
-  background: rgba(17, 17, 17, 0.9); /* Slight transparency */
-  backdrop-filter: blur(10px);
-  border: 1px solid #333;
-  border-radius: 20px;
-  padding: 24px;
-  max-width: 600px;
+  background: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0; /* ✅ SHARP */
+  padding: 40px;
+  max-width: 1000px;
   margin: 0 auto;
   position: relative;
-  z-index: 2; /* Keep above blobs */
+  z-index: 2;
+  box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.5); /* ✅ OFFSET SHADOW */
 }
 
+/* Group & Labels */
 .form-group-act {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .form-group-act label {
-  color: #a1a1aa;
-  font-size: 14px;
+  color: #39ff14; /* Neon Labels */
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 800;
 }
 
+/* Inputs - Sharp & Tactical */
 .form-group-act input, 
 .form-group-act select, 
 .form-group-act textarea {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #111;
+  border: 1px solid #222;
   color: white;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 0; /* ✅ SHARP */
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .form-group-act input:focus, 
 .form-group-act select:focus, 
 .form-group-act textarea:focus {
-  border-color: #39ff14; /* Green focus */
+  border-color: #39ff14;
+  background: #151515;
 }
 
-/* Fix Dropdown visibility */
-.form-group-act select option {
-  background: #1f1f1f;
-  color: white;
-  padding: 10px;
-}
-
-.row-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
+/* Icons */
 .input-with-icon {
   position: relative;
   display: flex;
@@ -102,156 +106,86 @@
 
 .input-with-icon svg {
   position: absolute;
-  left: 12px;
-  color: #666;
-  font-size: 14px;
+  left: 14px;
+  color: #444;
+  font-size: 1.1rem;
 }
 
 .input-with-icon input {
-  padding-left: 36px;
-  width: 100%;
+  padding-left: 45px !important;
 }
 
-.cost-input input:focus { border-color: #ef4444; } 
-.revenue-input input:focus { border-color: #39ff14; } 
-.revenue-label { color: #39ff14 !important; }
-
-/* Blobs */
-.dash-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.3;
-  z-index: 0;
-  pointer-events: none;
+/* Split Rows */
+.row-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.blob-dash-1 { top: -100px; left: -100px; width: 500px; height: 500px; background: #39ff14; }
-.blob-dash-2 { bottom: 300px; left: -100px; width: 400px; height: 400px; background: #ffffff75; }
-.blob-dash-3 { bottom: 20%; right: -5%; width: 300px; height: 300px; background: #3b82f6; }
-
-.warning-text {
-  color: #fbbf24;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 5px;
-}
-
+/* Submit Button - Neon Block */
 .submit-act-btn {
-  width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #8bc540, #02ae35);
-  color: white;
+  width: 40%;
+  padding: 20px;
+  background: #39ff14;
+  color: #000;
   border: none;
-  border-radius: 12px;
-  font-weight: bold;
-  font-size: 16px;
+  border-radius: 0; /* ✅ SHARP */
+  font-weight: 900;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   margin-top: 10px;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0px 5px 0px #1a7a0a;
 }
 
 .submit-act-btn:hover {
-  transform: scale(1.02);
-}
-
-.submit-act-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-
-/* ================================================================
-   ADD ACTIVITY - MOBILE RESPONSIVE
-   ================================================================ */
-
-/* --- Container & Layout --- */
-.add-activity-container {
-  padding: 16px;
-  padding-top: 6rem;
-  padding-bottom: 120px; /* Space for navbar/floating buttons */
-  overflow-x: hidden;
-}
-
-.activity-header-section {
-  max-width: 100%;
-  margin: 0 0 20px 0;
-  gap: 12px;
-}
-
-.activity-header-section h1 {
-  font-size: clamp(1.2rem, 5vw, 1.5rem);
-}
-
-/* --- Form Card Adjustments --- */
-.form-card {
-  padding: 20px;
-  border-radius: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* --- Grid System (Responsive Row) --- */
-.row-split {
-  display: grid;
-  /* Stacks on mobile, splits on tablets and above */
-  grid-template-columns: 1fr; 
-  gap: 12px;
-}
-
-@media (min-width: 480px) {
-  .row-split {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-}
-
-/* --- Tappable Inputs --- */
-.form-group-act input, 
-.form-group-act select, 
-.form-group-act textarea {
-  padding: 14px; /* Larger touch target for mobile */
-  font-size: 16px; /* Prevents auto-zoom on mobile browsers */
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.input-with-icon input {
-  padding-left: 40px; /* More room for the icon on smaller screens */
-}
-
-/* --- Background Blobs (Mobile Performance) --- */
-@media (max-width: 768px) {
- 
-
-}
-/* --- Submit Button --- */
-.submit-act-btn {
-  padding: 18px; /* High-visibility, easy-to-tap button */
-  font-size: 1.1rem;
-  box-shadow: 0 4px 15px rgba(2, 174, 53, 0.3);
+  background: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 0px rgba(57, 255, 20, 0.2);
 }
 
 .submit-act-btn:active {
-  transform: scale(0.96); /* Instant haptic-like feedback on tap */
+  transform: translateY(2px);
+  box-shadow: none;
 }
 
-/* --- Warning/Small Text --- */
-.warning-text {
-  font-size: 11px;
-  line-height: 1.4;
-}
+/* ================================================================
+   MOBILE RESPONSIVENESS
+   ================================================================ */
 
-/* --- Keyboard Visibility Fix --- */
-@media (max-height: 600px) {
-  /* Adjusts padding when the on-screen keyboard might be covering things */
+@media (max-width: 768px) {
   .add-activity-container {
-    padding-bottom: 20px;
+    padding: 100px 15px 120px;
+  }
+
+  .activity-header-section h1 {
+    font-size: 1.4rem;
+  }
+
+  .form-card {
+    padding: 25px 20px;
+    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5); /* Smaller shadow for mobile */
+  }
+
+  .row-split {
+    grid-template-columns: 1fr; /* ✅ Stack on mobile */
+    gap: 0; /* Form groups already have bottom margin */
+  }
+
+  .form-group-act {
+    margin-bottom: 20px;
+  }
+
+  .submit-act-btn {
+    padding: 0px 5px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 650px) {
+  .add-activity-container {
+    padding-top: 40px;
   }
 }

@@ -97,12 +97,12 @@ html, body {
 
 /* Hero blobs */
 .blob-green-1 { top: -20%; left: -10%; width: 600px; height: 600px; background: var(--ag-green); opacity: 0.15;}
-.blob-yellow-1 { top: 30%; right: -15%; width: 700px; height: 500px; background: #fbbf24; opacity: 0.12;}
-.blob-white-1 { bottom: -20%; left: 30%; width: 400px; height: 400px; background: #fff; opacity: 0.05;}
+.blob-yellow-1 { top: 30%; right: -15%; width: 700px; height: 500px; background: #3bce9a; opacity: 0.12;}
+.blob-white-1 { bottom: -20%; left: 30%; width: 400px; height: 400px; background: #ffffffc6; opacity: 0.05;}
 
 /* About section blobs */
 .blob-green-2 { top: 10%; left: -10%; width: 600px; height: 600px; background: rgb(118,233,122); opacity: 0.01;}
-.blob-white-2 { bottom: 20%; right: 20%; width: 500px; height: 500px; background: #c42b2b; opacity: 0.25;}
+.blob-white-2 { bottom: 20%; right: 20%; width: 500px; height: 500px; background: #a7f225; opacity: 0.25;}
 
 /* Optional extra blobs for depth */
 .blob-purple-3 { top: 40%; right: 10%; width: 450px; height: 450px; background: #6366f1; opacity: 0.08;}
