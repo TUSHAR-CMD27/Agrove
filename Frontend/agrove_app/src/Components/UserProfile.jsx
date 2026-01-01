@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 import toast from 'react-hot-toast';
 import { FiUser, FiMapPin, FiMail, FiHash, FiCalendar, FiLogOut, FiLock, FiArrowRight, FiShield } from 'react-icons/fi';
-import farmImg from '../assets/f13.png'; // ✅ Your aesthetic image
+import farmImg from '../assets/f13.png';
 import './UserProfile.css';
 
 const UserProfile = () => {
+  const { t } = useTranslation(); // 2. Initialize translation
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,16 +27,16 @@ const UserProfile = () => {
           localStorage.setItem('userInfo', JSON.stringify(updatedUserData));
         } catch (err) {
           setUser(storedUser);
-          toast.error("Using offline profile data");
+          toast.error(t('profile.offline_msg'));
         }
       }
       setLoading(false);
     };
     fetchUserData();
-  }, []);
+  }, [t]);
 
   const handleLogout = () => {
-    toast.success("System Session Terminated");
+    toast.success(t('profile.logout_success'));
     localStorage.removeItem('userInfo');
     setTimeout(() => { navigate('/'); }, 1000);
   };
@@ -47,15 +49,15 @@ const UserProfile = () => {
                 <div className="profile-image-overlay"></div>
                 <div className="brand-overlay">
                     <h1>AGROVE</h1>
-                    <p>Access Denied // Authentication Required</p>
+                    <p>{t('profile.access_denied')}</p>
                 </div>
             </div>
             <div className="profile-info-side">
                 <motion.div className="access-denied-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <div className="lock-icon-wrapper"><FiLock size={40} /></div>
-                    <h2>GUEST_MODE</h2>
-                    <p>Please establish a secure connection to manage system credentials.</p>
-                    <Link to="/login" className="profile-btn-primary">LOGIN_SYSTEM <FiArrowRight /></Link>
+                    <h2>{t('profile.guest_mode')}</h2>
+                    <p>{t('profile.establish_connection')}</p>
+                    <Link to="/login" className="profile-btn-primary">{t('nav.login')} <FiArrowRight /></Link>
                 </motion.div>
             </div>
         </div>
@@ -75,8 +77,8 @@ const UserProfile = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h1>HEy, manage your profile </h1>
-            <p>Your data alwayss remails safe with us <br/> we do not store any of your data</p>
+            <h1>{t('profile.hero_title')}</h1>
+            <p>{t('profile.hero_subtitle')}</p>
           </motion.div>
         </div>
 
@@ -94,19 +96,19 @@ const UserProfile = () => {
               <div className="header-info">
                 <h1 className="profile-name">{user?.name}</h1>
                 <span className="profile-id">UID // {user?._id?.slice(-8).toUpperCase()}</span>
-                <span className="status-tag"><FiShield size={12}/> VERIFIED_OPERATOR</span>
+                <span className="status-tag"><FiShield size={12}/> {t('profile.verified')}</span>
               </div>
             </div>
 
             <div className="details-grid">
-              <DetailItem icon={<FiMail />} label="Network ID" value={user?.email} />
-              <DetailItem icon={<FiMapPin />} label="Coordinates" value={`${user?.district}, ${user?.state}`} />
-              <DetailItem icon={<FiHash />} label="Sector Zip" value={user?.pincode} />
-              <DetailItem icon={<FiCalendar />} label="Operator Age" value={`${user?.age} Cycles`} />
+              <DetailItem icon={<FiMail />} label={t('profile.label_network')} value={user?.email} />
+              <DetailItem icon={<FiMapPin />} label={t('profile.label_coordinates')} value={`${user?.district}, ${user?.state}`} />
+              <DetailItem icon={<FiHash />} label={t('profile.label_zip')} value={user?.pincode} />
+              <DetailItem icon={<FiCalendar />} label={t('profile.label_age')} value={`${user?.age} ${t('profile.cycles')}`} />
             </div>
 
             <button onClick={handleLogout} className="logout-btn">
-              TERMINATE_SESSION <FiLogOut />
+              {t('profile.terminate_btn')} <FiLogOut />
             </button>
           </motion.div>
         </div>

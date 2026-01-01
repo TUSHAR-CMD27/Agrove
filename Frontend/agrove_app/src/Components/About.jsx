@@ -1,43 +1,46 @@
-import React, { useLayoutEffect, useRef } from 'react';
+
+
+import React, { useLayoutEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTranslation } from 'react-i18next';
 import './About.css';
 
-// Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-const stats = [
-  { value: '1500+', label: 'Registered Farms' },
-  { value: '50K+', label: 'Acres Managed' },
-  { value: '95%', label: 'User Satisfaction' },
-  { value: '18', label: 'Crops Supported' },
-];
-
-const testimonials = [
-  {
-    name: 'Ramesh Patil',
-    location: 'Maharashtra, IN',
-    feedback: "Agrove transformed how I manage my cotton fields. The task logging and tailored advice are spot-on.",
-  },
-  {
-    name: 'Viraj Gupta',
-    location: 'Uttar Pradesh, IN',
-    feedback: "The yield analytics helped me identify underperforming areas instantly. It's truly a practical tool.",
-  },
-  {
-    name: 'Sayali Mane',
-    location: 'Maharashtra, IN',
-    feedback: "Simple, clean interface. I use it directly on my tablet in the field. Essential for my cocoa harvest.",
-  },
-];
-
 const About = () => {
-  const comp = useRef(); 
+  // 1. Destructure i18n to track language changes
+  const { t, i18n } = useTranslation(); 
+  const comp = useRef();
+
+  // 2. Use useMemo to recreate the arrays ONLY when the language changes
+  const stats = useMemo(() => [
+    { value: '1500+', label: t('about.stats.farms') },
+    { value: '50K+', label: t('about.stats.acres') },
+    { value: '95%', label: t('about.stats.satisfaction') },
+    { value: '18', label: t('about.stats.crops') },
+  ], [t, i18n.language]); // Recalculates when i18n.language changes
+
+  const testimonials = useMemo(() => [
+    {
+      name: 'Ramesh Patil',
+      location: 'Maharashtra, IN',
+      feedback: t('about.testimonials.ramesh'),
+    },
+    {
+      name: 'Viraj Gupta',
+      location: 'Uttar Pradesh, IN',
+      feedback: t('about.testimonials.viraj'),
+    },
+    {
+      name: 'Sayali Mane',
+      location: 'Maharashtra, IN',
+      feedback: t('about.testimonials.sayali'),
+    },
+  ], [t, i18n.language]);
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
-      
-      // 1. Section Title Reveal
       gsap.fromTo(".section-title", 
         { y: 50, opacity: 0, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" },
         { 
@@ -47,7 +50,6 @@ const About = () => {
         }
       );
 
-      // 2. Stats Cards Stagger
       gsap.fromTo(".stat-item", 
         { y: 50, opacity: 0 },
         { 
@@ -56,17 +58,11 @@ const About = () => {
         }
       );
 
-      // 3. Blob Floating (About Section Specific)
       gsap.to(".blob-about", {
-        y: "40px",
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
+        y: "40px", duration: 4, repeat: -1, yoyo: true, ease: "sine.inOut",
         stagger: { amount: 2, from: "random" }
       });
 
-      // 4. Testimonials Stagger
       gsap.fromTo(".testimonial-card",
         { y: 100, opacity: 0, rotationX: 10 },
         {
@@ -78,7 +74,6 @@ const About = () => {
           }
         }
       );
-
     }, comp);
 
     return () => ctx.revert();
@@ -86,13 +81,12 @@ const About = () => {
 
   return (
     <div className="about-wrapper" ref={comp}>
-      {/* Background Blobs (Specific to About) */}
       <div className="blob blob-about blob-green-about"></div>
       <div className="blob blob-about blob-white-about"></div>
 
       <div className="content-wrapper">
         <section className="about-stats">
-          <h2 className="section-title">Cultivating Trust</h2>
+          <h2 className="section-title">{t('about.title_trust')}</h2>
           <div className="stats-container">
             {stats.map((stat, index) => (
               <div key={index} className="glass-card stat-item">
@@ -104,15 +98,15 @@ const About = () => {
         </section>
 
         <section className="about-feedback">
-          <h2 className="section-title">Farmer Stories</h2>
+          <h2 className="section-title">{t('about.title_stories')}</h2>
           <div className="testimonials-container">
-            {testimonials.map((t, index) => (
+            {testimonials.map((t_item, index) => (
               <div key={index} className="glass-card testimonial-card">
                 <div className="quote-icon">“</div>
-                <p className="testimonial-quote">{t.feedback}</p>
+                <p className="testimonial-quote">{t_item.feedback}</p>
                 <div className="testimonial-source">
                   <div className="source-line"></div>
-                  <p><strong>{t.name}</strong>, {t.location}</p>
+                  <p><strong>{t_item.name}</strong>, {t_item.location}</p>
                 </div>
                 <div className="card-shine"></div>
               </div>
@@ -121,7 +115,7 @@ const About = () => {
         </section>
 
         <footer className="about-footer">
-          <p>Built for the future of farming. &copy; 2025 Agrove.</p>
+          <p>{t('about.footer')}</p>
         </footer>
       </div>
     </div>

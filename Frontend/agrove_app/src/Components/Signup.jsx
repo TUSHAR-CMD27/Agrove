@@ -1,36 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiMail, FiLock, FiMapPin, FiCalendar, FiHash, FiArrowRight } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
-import farmImg from '../assets/f12.png'; // ✅ Using the same aesthetic image
+import farmImg from '../assets/f12.png';
 import './Signup.css';
 
 const Signup = () => {
+  const { t } = useTranslation(); // 2. Initialize translation
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    age: '',
-    state: '',
-    district: '',
-    pincode: ''
+    name: '', email: '', password: '', age: '', state: '', district: '', pincode: ''
   });
 
-  // Check if user is already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      if (!user.age || !user.state) {
-        nav('/onboarding');
-      } else {
-        nav('/dashboard');
-      }
+      if (!user.age || !user.state) { nav('/onboarding'); } 
+      else { nav('/dashboard'); }
     }
   }, [nav]);
 
@@ -41,166 +33,96 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/signup', formData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      toast.success("Account created successfully!");
+      const res = await axios.post('http://localhost:3000/api/auth/signup', formData);
+      toast.success(t('auth.success_signup'));
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       nav('/dashboard');
       window.location.reload();
-
     } catch (err) {
-      const message = err.response?.data?.message || "Signup Failed";
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
+      toast.error(t('auth.error_signup'));
+    } finally { setLoading(false); }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
-    const loadingToast = toast.loading("Connecting to Google...");
+    const loadingToast = toast.loading(t('auth.connecting_google'));
     try {
       setLoading(true);
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
-
-      toast.success("Google Signup Successful!", { id: loadingToast });
+      toast.success(t('auth.google_success'), { id: loadingToast });
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-
-      const { age, state, district, pincode } = res.data;
-      const isProfileComplete = age && state && district && pincode;
-
-      if (!isProfileComplete) {
-        nav('/onboarding');
-      } else {
-        nav('/dashboard');
-      }
+      nav(res.data.age ? '/dashboard' : '/onboarding');
       window.location.reload();
     } catch (error) {
-      toast.error('Google Signup Failed', { id: loadingToast });
-    } finally {
-      setLoading(false);
-    }
+      toast.error(t('auth.google_fail'), { id: loadingToast });
+    } finally { setLoading(false); }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-split">
-
-        {/* LEFT SIDE: AESTHETIC IMAGE & BRANDING */}
-        <div
-          className="auth-image-side"
-          style={{ backgroundImage: `url(${farmImg})` }}
-        >
+        {/* LEFT SIDE */}
+        <div className="auth-image-side" style={{ backgroundImage: `url(${farmImg})` }}>
           <div className="auth-image-overlay"></div>
-
-          <motion.div
-            className="brand-overlay"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          <motion.div className="brand-overlay" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }}>
             <h1>AGROVE</h1>
-            <p>Join the next generation of precision farming.</p>
+            <p>{t('auth.hero_text')}</p>
           </motion.div>
         </div>
 
-        {/* RIGHT SIDE: SIGNUP FORM */}
+        {/* RIGHT SIDE */}
         <div className="auth-form-side">
-          <motion.div
-            className="auth-card wide"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div className="auth-card wide" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="auth-header">
-              <h2 className="auth-title">Join in</h2>
+              <h2 className="auth-title">{t('auth.signup_title')}</h2>
               <p className="auth-subtitle">
-                Already have an account? <Link to="/login">Login here</Link>
+                {t('auth.have_account')} <Link to="/login">{t('auth.login_here')}</Link>
               </p>
             </div>
 
             <div className="google-btn-wrapper">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast.error('Google Signup Failed')}
-                theme="filled_black"
-                width="100%"
-              />
+              <GoogleLogin onSuccess={handleGoogleSuccess} theme="filled_black" width="100%" />
             </div>
 
-            <div className="auth-divider"><span>or sign up with email</span></div>
+            <div className="auth-divider"><span>{t('auth.or_email')}</span></div>
 
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                <div className="form-group">
-                  <label className="form-label">Full Name</label>
-                  <div className="input-wrapper">
-                    <FiUser className="input-icon" />
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Tushar..." required />
+                {[
+                  { name: 'name', icon: <FiUser />, label: t('auth.full_name'), placeholder: 'Tushar...', type: 'text' },
+                  { name: 'email', icon: <FiMail />, label: t('auth.email'), placeholder: 'name@email.com', type: 'email' },
+                  { name: 'password', icon: <FiLock />, label: t('auth.password'), placeholder: '••••••••', type: 'password' },
+                  { name: 'state', icon: <FiMapPin />, label: t('auth.state'), placeholder: 'Maharashtra', type: 'text' },
+                  { name: 'district', icon: <FiMapPin />, label: t('auth.district'), placeholder: 'Dombivli', type: 'text' },
+                  { name: 'age', icon: <FiCalendar />, label: t('auth.age'), placeholder: '25', type: 'number' },
+                  { name: 'pincode', icon: <FiHash />, label: t('auth.pincode'), placeholder: '400001', type: 'number' },
+                ].map((input) => (
+                  <div className="form-group" key={input.name}>
+                    <label className="form-label">{input.label}</label>
+                    <div className="input-wrapper">
+                      <span className="input-icon">{input.icon}</span>
+                      <input 
+                        type={input.type} 
+                        name={input.name} 
+                        value={formData[input.name]} 
+                        onChange={handleChange} 
+                        className="auth-input" 
+                        placeholder={input.placeholder} 
+                        required 
+                      />
+                    </div>
                   </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Email</label>
-                  <div className="input-wrapper">
-                    <FiMail className="input-icon" />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="name@email.com" required />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Password</label>
-                  <div className="input-wrapper">
-                    <FiLock className="input-icon" />
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="••••••••" required />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">State</label>
-                  <div className="input-wrapper">
-                    <FiMapPin className="input-icon" />
-                    <input type="text" name="state" value={formData.state} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="Maharashtra" required />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">District</label>
-                  <div className="input-wrapper">
-                    <FiMapPin className="input-icon" />
-                    <input type="text" name="district" value={formData.district} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="District" required />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Age</label>
-                  <div className="input-wrapper">
-                    <FiCalendar className="input-icon" />
-                    <input type="number" name="age" value={formData.age} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="25" required />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Pincode</label>
-                  <div className="input-wrapper">
-                    <FiHash className="input-icon" />
-                    <input type="number" name="pincode" value={formData.pincode} onChange={handleChange} onBlur={handleChange} className="auth-input" placeholder="400001" required />
-                  </div>
-                </div>
+                ))}
               </div>
 
               <button type="submit" className="auth-submit-btn" disabled={loading}>
-                {loading ? "Creating Account..." : <>Create Account <FiArrowRight /></>}
+                {loading ? t('auth.creating') : <>{t('auth.signup_btn')} <FiArrowRight /></>}
               </button>
             </form>
           </motion.div>
         </div>
-
       </div>
     </div>
   );

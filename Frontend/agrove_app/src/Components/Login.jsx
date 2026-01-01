@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
-import farmImg from '../assets/f14.jpg'; // ✅ Your aesthetic image
+import farmImg from '../assets/f14.jpg';
 import './Authentication.css';
 
 const Login = () => {
+  const { t } = useTranslation(); // 2. Initialize translation
   const nav = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,66 +21,47 @@ const Login = () => {
     if (storedUser) {
       const user = JSON.parse(storedUser);
       const hasProfile = user.age && user.state && user.district && user.pincode;
-      if (!hasProfile) {
-        nav('/onboarding');
-      } else {
-        nav('/dashboard');
-      }
+      nav(hasProfile ? '/dashboard' : '/onboarding');
     }
   }, [nav]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
-
       if (res.data) {
-        toast.success(`Welcome back, ${res.data.name || 'Farmer'}! `, {
+        // 3. Translated Toast with dynamic name
+        toast.success(`${t('auth.welcome_back')}, ${res.data.name || t('auth.farmer')}!`, {
           duration: 7000,
           icon: '🚜',
         });
 
         localStorage.setItem('userInfo', JSON.stringify(res.data));
-
         const { age, state, district, pincode } = res.data;
-        const isProfileComplete = age && state && district && pincode;
-
-        if (!isProfileComplete) {
-          nav('/onboarding');
-        } else {
-          nav('/dashboard');
-        }
+        nav(age && state && district && pincode ? '/dashboard' : '/onboarding');
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login Failed. Check your email/password.';
-      toast.error(errorMessage);
+      // 4. Translated error message
+      toast.error(t('auth.error_login'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
-    const loadingToast = toast.loading("Connecting to Google...");
+    const loadingToast = toast.loading(t('auth.connecting_google'));
     try {
       setLoading(true);
       const res = await axios.post('http://localhost:3000/api/auth/google', {
         credential: credentialResponse.credential
       });
-
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      toast.success('Google Login Successful!', { id: loadingToast });
-
-      const { age, state, district, pincode } = res.data;
-      if (!age || !state || !district || !pincode) {
-        nav('/onboarding');
-      } else {
-        nav('/dashboard');
-      }
+      toast.success(t('auth.google_success'), { id: loadingToast });
+      nav(res.data.age ? '/dashboard' : '/onboarding');
       window.location.reload();
     } catch (error) {
-      toast.error('Google Login Failed', { id: loadingToast });
+      toast.error(t('auth.google_fail'), { id: loadingToast });
     } finally {
       setLoading(false);
     }
@@ -87,96 +70,68 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-split">
-
-        {/* LEFT SIDE: AESTHETIC IMAGE */}
-        <div
-          className="auth-image-side"
-          style={{ backgroundImage: `url(${farmImg})` }}
-        >
+        {/* LEFT SIDE */}
+        <div className="auth-image-side" style={{ backgroundImage: `url(${farmImg})` }}>
           <div className="auth-image-overlay"></div>
-
-          <motion.div
-            className="brand-overlay"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <h1>SECURE GATEWAY </h1>
-            <p>Agrove is engineered to synchronize the raw power of nature with advanced digital architecture, providing farmers with a robust command center for every acre under their care.</p>
+          <motion.div className="brand-overlay" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }}>
+            <h1>{t('auth.secure_gateway')}</h1>
+            <p>{t('auth.login_description')}</p>
           </motion.div>
         </div>
 
-        {/* RIGHT SIDE: LOGIN FORM */}
+        {/* RIGHT SIDE */}
         <div className="auth-form-side">
-          <motion.div
-            className="auth-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div className="auth-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="auth-header">
-              <h2 className="auth-title">Welcome Back</h2>
+              <h2 className="auth-title">{t('auth.welcome_title')}</h2>
               <p className="auth-subtitle">
-                New to Agrove? <Link to="/signup">Create an account</Link>
+                {t('auth.new_user')} <Link to="/signup">{t('auth.create_account')}</Link>
               </p>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Email Address</label>
+                <label className="form-label">{t('auth.email')}</label>
                 <div className="input-wrapper">
                   <FiMail className="input-icon" />
                   <input
                     type="email"
-                    name="email"
                     className="auth-input"
                     placeholder="farmer@agrove.in"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    onBlur={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Password</label>
+                <label className="form-label">{t('auth.password')}</label>
                 <div className="input-wrapper">
                   <FiLock className="input-icon" />
                   <input
                     type="password"
-                    name="password"
                     className="auth-input"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onBlur={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
               </div>
 
               <button type="submit" className="auth-submit-btn" disabled={loading}>
-                {loading ? 'Logging In...' : <>Login to Dashboard <FiArrowRight /></>}
+                {loading ? t('auth.logging_in') : <>{t('auth.login_btn')} <FiArrowRight /></>}
               </button>
             </form>
 
-            <div className="auth-divider">
-              <span>or continue with</span>
-            </div>
+            <div className="auth-divider"><span>{t('auth.or_continue')}</span></div>
 
             <div className="google-btn-wrapper">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast.error('Google Login Failed')}
-                theme="filled_black"
-                size="large"
-                width="100%"
-              />
+              <GoogleLogin onSuccess={handleGoogleSuccess} theme="filled_black" width="100%" />
             </div>
           </motion.div>
         </div>
-
       </div>
     </div>
   );
