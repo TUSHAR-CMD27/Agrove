@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import './Bin.css';
+import Bgimg from '../assets/bg.png'
 
 const Bin = () => {
   const [deletedFields, setDeletedFields] = useState([]);
@@ -61,6 +62,7 @@ const Bin = () => {
 
   return (
     <div className="bin-page-container">
+      
       <div className="bin-header">
         <button onClick={() => navigate('/dashboard')} className="back-dashboard-btn">
           <FiArrowLeft /> Back

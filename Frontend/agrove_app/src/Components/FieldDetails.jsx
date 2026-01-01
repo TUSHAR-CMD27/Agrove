@@ -1,17 +1,14 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast'; 
-import { 
-  PieChart, Pie, Cell, ResponsiveContainer, 
-} from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { 
   FiArrowLeft, FiCheckCircle, FiClock, FiTrash2, 
   FiEdit, FiSettings, FiFileText 
 } from 'react-icons/fi';
+import farmBg from '../assets/f17.png'; 
 import './FieldDetails.css';
 
 const FieldDetails = () => {
@@ -28,7 +25,7 @@ const FieldDetails = () => {
     currentStage: 'Planning'
   });
 
-  const COLORS = ['#39ff14', '#333'];
+  const COLORS = ['#39ff14', '#111'];
 
   // 1. Fetch Data
   useEffect(() => {
@@ -47,7 +44,7 @@ const FieldDetails = () => {
         calculateStats(actRes.data);
       } catch (err) { 
         console.error("Error fetching data:", err);
-        toast.error("Failed to load field details."); 
+        toast.error("SYSTEM_ERROR: Failed to load field records."); 
       }
     };
     fetchData();
@@ -70,112 +67,106 @@ const FieldDetails = () => {
     setStats({ progress, totalCost: cost, totalRevenue: revenue, currentStage: stage });
   };
 
-  // 3. Handle Delete with Custom Confirmation Toast
+  // 3. Handle Delete Activity
   const handleDeleteActivity = async (activityId) => {
     toast((t) => (
       <div className="custom-confirm-toast">
-        <p>Move this task to <b>Recycle Bin</b>?</p>
-        <div className="toast-actions" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-          <button 
-            className="toast-confirm-btn"
-            style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-            onClick={async () => {
-              toast.dismiss(t.id);
-              const loadingToast = toast.loading("Updating records...");
-              try {
-                const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-                const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
-                
-                const updatedActivities = activities.filter(act => act._id !== activityId);
-                setActivities(updatedActivities);
-                calculateStats(updatedActivities);
-                toast.success("Activity moved to bin.", { id: loadingToast });
-              } catch (err) {
-                toast.error("Error deleting activity", { id: loadingToast });
-              }
-            }}
-          >
-            Yes, Delete
-          </button>
-          <button 
-            className="toast-cancel-btn"
-            style={{ background: '#4b5563', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Cancel
-          </button>
+        <p>TERMINATE LOG ITEM? // ID: {activityId.slice(-4)}</p>
+        <div className="toast-actions">
+          <button className="confirm" onClick={async () => {
+            toast.dismiss(t.id);
+            try {
+              const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+              const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+              await axios.patch(`http://localhost:3000/api/activities/${activityId}/delete`, {}, config);
+              const updated = activities.filter(act => act._id !== activityId);
+              setActivities(updated);
+              calculateStats(updated);
+              toast.success("DATA_PURGED");
+            } catch (err) { toast.error("ACCESS_DENIED"); }
+          }}>YES</button>
+          <button className="cancel" onClick={() => toast.dismiss(t.id)}>NO</button>
         </div>
       </div>
-    ), {
-      icon: '⚠️',
-      duration: 5000,
-      style: { border: '1px solid #ef4444', padding: '16px', background: '#fff' }
-    });
+    ));
   };
 
-  if (!field) return <div className="loading-screen">Loading {field?.fieldName || 'Plot'}...</div>;
+  if (!field) return <div className="loading-screen">INITIALIZING_TERMINAL...</div>;
 
-  const pieData = [
-    { name: 'Done', value: stats.progress }, 
-    { name: 'Remaining', value: 100 - stats.progress }
-  ];
+  const pieData = [{ value: stats.progress }, { value: 100 - stats.progress }];
   const netProfit = stats.totalRevenue - stats.totalCost;
 
   return (
-    <div className="field-detail-container">
-      <div className="detail-header" style={{ background: '#0a3d1d' }}>
+    <div className="field-detail-container" style={{ backgroundImage: `url(${farmBg})` }}>
+      
+
+      <div className="detail-header">
         <button onClick={() => navigate('/dashboard')} className="back-btn-detail">
-          <FiArrowLeft />
+          <FiArrowLeft size={15}/>
         </button>
         <div className="header-content">
+          <span className="crop-pill">{field.currentCrop}</span>
           <motion.h1 initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
             {field.fieldName}
           </motion.h1>
-          <span className="crop-pill">{field.currentCrop}</span>
         </div>
       </div>
 
       <div className="detail-content-grid">
+        {/* LEFT PANEL: DATA VIZ */}
         <div className="left-panel">
           <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-            <h3>FIELD PROGRESS</h3>
+            <h3>FIELD PROGRESS METRICS</h3>
             <div className="chart-row">
-              <div className="chart-mini">
-                <ResponsiveContainer width="100%" height={150}>
+              <div className="chart-mini big-chart">
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie 
                       data={pieData} 
-                      innerRadius={45} 
-                      outerRadius={60} 
-                      paddingAngle={5}
+                      innerRadius={80} 
+                      outerRadius={105} 
+                      paddingAngle={0} 
                       dataKey="value" 
                       startAngle={90} 
                       endAngle={-270}
+                      stroke="none"
                     >
-                      <Cell fill={COLORS[0]} />
-                      <Cell fill={COLORS[1]} />
+                      <Cell fill="#39ff14" />
+                      <Cell fill="#111" />
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="center-text">{stats.progress}%</div>
+                <div className="center-text bigger">{stats.progress}%</div>
               </div>
               <div className="progress-labels">
-                <p>Current Stage: <strong>{stats.currentStage}</strong></p>
+                <p>STAGE: <span className="neon-text">{stats.currentStage}</span></p>
+                <p>STATUS: <span className="neon-text">OPERATIONAL</span></p>
               </div>
             </div>
           </motion.div>
 
           <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-            <h3>FINANCIAL SUMMARY</h3>
-            <div className="financial-stats-row">
-              <div className="fin-item">
-                <label>Total Cost</label>
-                <span className="cost-text">₹{stats.totalCost.toLocaleString()}</span>
+            <h3>FINANCIAL ARCHITECTURE</h3>
+            <div className="finance-horizontal-bars">
+              <div className="bar-group">
+                <div className="bar-header"><span>OPERATIONAL_COST</span><span>₹{stats.totalCost.toLocaleString()}</span></div>
+                <div className="bar-track"><motion.div className="bar-fill cost" initial={{ width: 0 }} animate={{ width: '100%' }} /></div>
               </div>
-              <div className="fin-item">
-                <label>Net Profit</label>
-                <span className={`profit-text ${netProfit >= 0 ? 'positive' : 'negative'}`}>
+
+              <div className="bar-group">
+                <div className="bar-header"><span>PROJECTED_REVENUE</span><span>₹{stats.totalRevenue.toLocaleString()}</span></div>
+                <div className="bar-track">
+                  <motion.div 
+                    className="bar-fill revenue" 
+                    initial={{ width: 0 }} 
+                    animate={{ width: stats.totalRevenue > 0 ? (stats.totalRevenue / (stats.totalCost || 1) * 50) + '%' : '0%' }} 
+                  />
+                </div>
+              </div>
+
+              <div className="net-profit-footer">
+                <label>NET CAPITAL GAIN</label>
+                <span className={`profit-val ${netProfit >= 0 ? 'positive' : 'negative'}`}>
                   ₹{netProfit.toLocaleString()}
                 </span>
               </div>
@@ -183,35 +174,30 @@ const FieldDetails = () => {
           </motion.div>
         </div>
 
+        {/* RIGHT PANEL: TERMINAL LOGS */}
         <div className="right-panel">
           <div className="activity-header">
-            <h3>Operations Log</h3>
-            <button 
-              className="add-log-btn" 
-              onClick={() => navigate('/plan', { state: { fieldId: field._id, fieldName: field.fieldName } })}
-            >
-              + Plan Task
-            </button>
+            <h3>OPERATIONS HISTORY</h3>
+            <button className="add-log-btn" onClick={() => navigate('/plan')}>+ ADD LOG</button>
           </div>
-
-          <div className="timeline">
+          
+          <div className="terminal-timeline">
             {activities.length === 0 ? (
-              <p className="no-logs">No activity recorded for this plot.</p>
+              <p className="no-logs">NO DATA LOGGED</p>
             ) : (
               activities.map((act) => (
-                <div key={act._id} className="timeline-item">
-                  <div className={`timeline-dot ${act.status === 'Completed' ? 'done' : 'pending'}`}>
-                    {act.status === 'Completed' ? <FiCheckCircle /> : <FiClock />}
-                  </div>
-                  <div className="timeline-content">
-                    <div className="timeline-top">
-                      <h4>{act.activityType} <span className="cost-badge">₹{act.cost}</span></h4>
-                      <div className="timeline-actions">
-                        <button onClick={() => navigate(`/edit/activity/${act._id}`)}><FiEdit /></button>
-                        <button onClick={() => handleDeleteActivity(act._id)}><FiTrash2 /></button>
-                      </div>
+                <div key={act._id} className="terminal-log-item">
+                  <div className={`status-line ${act.status === 'Completed' ? 'done' : 'pending'}`} />
+                  <div className="log-body">
+                    <div className="log-main">
+                      <span className="log-type">{act.activityType}</span>
+                      <span className="log-cost">₹{act.cost}</span>
                     </div>
-                    <span className="timeline-date">{new Date(act.activityDate).toLocaleDateString()}</span>
+                    <span className="log-date">{new Date(act.activityDate).toLocaleDateString()} // STATUS_OK</span>
+                  </div>
+                  <div className="log-actions">
+                    <button onClick={() => navigate(`/edit/activity/${act._id}`)}><FiEdit /></button>
+                    <button onClick={() => handleDeleteActivity(act._id)}><FiTrash2 /></button>
                   </div>
                 </div>
               ))
@@ -220,6 +206,7 @@ const FieldDetails = () => {
         </div>
       </div>
 
+      {/* FAB MENU */}
       <div className="edit-fab-container">
         <AnimatePresence>
           {showEditMenu && (
@@ -230,16 +217,12 @@ const FieldDetails = () => {
               exit={{ opacity: 0, x: 20 }}
             >
               <div className="fab-option-wrapper">
-                <button className="fab-sub-btn field-color" onClick={() => navigate(`/edit/field/${id}`)}>
-                  <FiSettings />
-                </button>
-                <span className="fab-label-bottom">Field</span>
+                <button className="fab-sub-btn field-color" onClick={() => navigate(`/edit/field/${id}`)}><FiSettings /></button>
+                <span className="fab-label-bottom">FIELD</span>
               </div>
               <div className="fab-option-wrapper">
-                <button className="fab-sub-btn activity-color" onClick={() => setShowEditMenu(false)}>
-                  <FiFileText />
-                </button>
-                <span className="fab-label-bottom">Logs</span>
+                <button className="fab-sub-btn activity-color" onClick={() => setShowEditMenu(false)}><FiFileText /></button>
+                <span className="fab-label-bottom">LOGS</span>
               </div>
             </motion.div>
           )}
