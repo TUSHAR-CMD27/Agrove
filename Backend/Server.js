@@ -12,7 +12,7 @@ const app = express();
 // FIX: origins are now explicitly allowed and credentials enabled for tokens
 // --- UPDATED CORS CONFIGURATION ---
 app.use(cors({
-    origin: true, // Allows any origin to connect during development
+    origin: 'https://agrove.onrender.com', // Allows any origin to connect during development
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -30,7 +30,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/fields', fieldRoute);
 app.use('/api/activities', activityRoute);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
     console.log(`Server is running at PORT = ${PORT}`);
