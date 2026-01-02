@@ -220,10 +220,6 @@ const FieldDetails = () => {
                 <button className="fab-sub-btn field-color" onClick={() => navigate(`/edit/field/${id}`)}><FiSettings /></button>
                 <span className="fab-label-bottom">FIELD</span>
               </div>
-              <div className="fab-option-wrapper">
-                <button className="fab-sub-btn activity-color" onClick={() => setShowEditMenu(false)}><FiFileText /></button>
-                <span className="fab-label-bottom">LOGS</span>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
