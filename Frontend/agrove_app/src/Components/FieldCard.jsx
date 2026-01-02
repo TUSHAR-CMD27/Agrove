@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
 import { FiDroplet, FiMap, FiActivity, FiClock, FiTrash2 } from 'react-icons/fi';
 import './FieldCard.css';
 
 const FieldCard = ({ field, onClick, onDelete }) => {
-  const { t } = useTranslation(); // 2. Initialize translation
+  const { t } = useTranslation();
   const [latestLog, setLatestLog] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -77,8 +77,13 @@ const FieldCard = ({ field, onClick, onDelete }) => {
           <FiTrash2 size={16} />
         </div>
 
-        <span className="crop-badge">{t(`fields.crops_list.${field.currentCrop}`) || field.currentCrop}</span>
-        {field.waterAvailability === 'Scarce' && (
+        {/* ✅ FIXED: Added .toLowerCase() to match JSON keys */}
+        <span className="crop-badge">
+          {t(`fields.crops_list.${(field.currentCrop || "other").toLowerCase()}`)}
+        </span>
+
+        {/* ✅ FIXED: Localized Low Water alert comparison */}
+        {field.waterAvailability?.toLowerCase() === 'scarce' && (
           <span className="status-alert">{t('cards.low_water')}</span>
         )}
       </div>
@@ -87,7 +92,6 @@ const FieldCard = ({ field, onClick, onDelete }) => {
         <h3>{field.fieldName}</h3>
         <div className="info-row">
           <span><FiMap /> {field.areaSize} Ha</span>
-          {/* ✅ FIX 1: Added optional chaining and fallback for waterAvailability */}
           <span>
             <FiDroplet /> {t(`fields.water_levels.${(field.waterAvailability || "medium").toLowerCase()}`)}
           </span>
@@ -100,7 +104,6 @@ const FieldCard = ({ field, onClick, onDelete }) => {
             <div className="activity-row">
               <div className={`activity-dot ${latestLog.status === 'Completed' ? 'done' : 'pending'}`}></div>
               <div className="activity-details">
-                {/* ✅ FIX 2: Added optional chaining and fallback for activityType */}
                 <span className="act-type">
                   {t(`activity.types.${(latestLog.activityType || "other").toLowerCase()}`)}
                 </span>
