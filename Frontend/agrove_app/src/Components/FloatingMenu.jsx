@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiPlus, FiLayers, FiActivity, FiTrash2 } from 'react-icons/fi'; // ✅ Added FiTrash2
+import { FiPlus, FiLayers, FiActivity, FiTrash2 } from 'react-icons/fi';
 import axios from 'axios';
+import toast from 'react-hot-toast'; // Import toast
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 import './FloatingMenu.css';
-import '../Components/Bin'
 
 const FloatingMenu = () => {
+  const { t } = useTranslation(); // 2. Initialize translation
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -24,8 +26,6 @@ const FloatingMenu = () => {
           const res = await axios.get('http://localhost:3000/api/fields', config);
           setFieldCount(res.data.length);
         } catch (err) {
-          console.error("Field check failed", err);
-          // Clear stale/invalid tokens and return to login so the user can re-authenticate
           if (err?.response?.status === 401) {
             localStorage.removeItem('userInfo');
             navigate('/login');
@@ -34,13 +34,20 @@ const FloatingMenu = () => {
       };
       fetchFields();
     }
-  }, [isOpen]);
+  }, [isOpen, navigate]);
 
-  // 4. ADD THIS CONDITION: 
-  // If not logged in OR if we are on the onboarding page, return nothing (null)
   if (!isLoggedIn || isOnboardingPage) return null;
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleActivityClick = () => {
+    if (fieldCount > 0) {
+      navigate('/add-activity');
+      setIsOpen(false);
+    } else {
+      toast.error(t('nav.err_no_fields')); // Localized toast
+    }
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.8 },
@@ -53,7 +60,7 @@ const FloatingMenu = () => {
       <AnimatePresence>
         {isOpen && (
           <div className="fab-options">
-            {/* ✅ NEW: Recycle Bin Option */}
+            {/* Recycle Bin */}
             <motion.button
               variants={itemVariants}
               initial="hidden"
@@ -63,38 +70,38 @@ const FloatingMenu = () => {
               onClick={() => { navigate('/bin'); setIsOpen(false); }}
               className="fab-option"
             >
-              <span className="fab-label">Recycle Bin</span>
+             
               <div className="fab-icon-small bin-color">
                 <FiTrash2 />
               </div>
             </motion.button>
 
-            {/* Option 2: Add Activity */}
+            {/* Add Activity */}
             <motion.button
               variants={itemVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
               transition={{ delay: 0.05 }}
-              onClick={() => fieldCount > 0 ? navigate('/add-activity') : alert("Please add a field first!")}
+              onClick={handleActivityClick}
               className={`fab-option ${fieldCount === 0 ? 'disabled' : ''}`}
             >
-              <span className="fab-label">Add Activity</span>
+              <span className="fab-label">{t('nav.add_activity')}</span>
               <div className="fab-icon-small activity-color">
                 <FiActivity />
               </div>
             </motion.button>
 
-            {/* Option 1: Add Field */}
+            {/* Add Field */}
             <motion.button
               variants={itemVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              onClick={() => navigate('/add-field')}
+              onClick={() => { navigate('/add-field'); setIsOpen(false); }}
               className="fab-option"
             >
-              <span className="fab-label">Add Field</span>
+              <span className="fab-label">{t('nav.add_field')}</span>
               <div className="fab-icon-small field-color">
                 <FiLayers />
               </div>

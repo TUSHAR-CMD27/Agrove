@@ -6,8 +6,10 @@
     "login": "लॉगिन",
     "signup": "साइनअप",
     "add_activity": "गतिविधि जोड़ें",
-    "add_field": "खेत जोड़ें",
+    "add_field": "नया खेत जोड़ें",
+    "recycle_bin": "रीसायकल बिन",
     "alert_field": "पहले एक खेत जोड़ें!",
+    "err_no_fields": "कृपया पहले एक खेत जोड़ें!",
     "login_required": "कृपया पहले लॉगिन करें"
   },
   "about": {
@@ -187,5 +189,65 @@
   "access_denied": "पहुँच वर्जित // प्रमाणीकरण आवश्यक",
   "guest_mode": "अतिथि मोड",
   "establish_connection": "क्रेडेन्शियल्स प्रबंधित करने के लिए कृपया एक सुरक्षित कनेक्शन स्थापित करें।"
+},
+"edit": {
+  "title": "संपादन करें",
+  "updating": "अपडेट किया जा रहा है...",
+  "success_msg": "सफलतापूर्वक अपडेट किया गया!",
+  "error_load": "डेटा लोड करने में विफल",
+  "error_update": "अपडेट विफल रहा",
+  "save_btn": "परिवर्तन सहेजें"
+},
+"details": {
+  "error_load": "सिस्टम त्रुटि: फ़ील्ड रिकॉर्ड लोड करने में विफल।",
+  "initializing": "टर्मिनल शुरू हो रहा है...",
+  "progress_metrics": "खेत प्रगति मेट्रिक्स",
+  "label_stage": "चरण",
+  "label_status": "स्थिति",
+  "operational": "परिचालन",
+  "financial_arch": "वित्तीय संरचना",
+  "op_cost": "परिचालन लागत (COST)",
+  "proj_revenue": "अनुमानित आय (REVENUE)",
+  "net_gain": "कुल पूंजीगत लाभ",
+  "ops_history": "संचालन इतिहास",
+  "add_log": "लॉग जोड़ें",
+  "no_data": "कोई डेटा लॉग नहीं किया गया",
+  "status_ok": "स्थिति_ठीक_है",
+  "status_pending": "स्थिति_लंबित",
+  "fab_field": "खेत",
+  "confirm_delete_id": "लॉग आइटम को हटा दें? // आईडी:",
+  "data_purged": "डेटा_साफ_किया_गया",
+  "access_denied": "पहुँच_अस्वीकृत",
+  "yes": "हाँ",
+  "no": "नहीं",
+  "stages": {
+    "planning": "योजना",
+    "sowed": "बुवाई",
+    "growing": "बढ़ रही है",
+    "maturing": "परिपक्व हो रही है",
+    "harvested": "कटाई"
+  }
+},
+"cards": {
+  "delete_warning": "यह सारा डेटा रीसायकल बिन में ले जाएगा।",
+  "low_water": "कम पानी",
+  "recent_activity": "हाल की गतिविधि"
+},
+"notes": {
+  "title": "खेत के नोट्स",
+  "placeholder": "यहाँ अपने खेत के कार्य लिखें...",
+  "saved_status": "सहेजा गया"
+},
+"bin": {
+  "back": "वापस",
+  "deleted_fields": "हटाए गए खेत",
+  "deleted_activities": "हटाए गए कार्य",
+  "no_fields": "कोई हटाए गए खेत नहीं",
+  "no_activities": "कोई हटाए गए कार्य नहीं",
+  "deleted_on": "हटाया गया:",
+  "restore_btn": "पुनर्स्थापित करें",
+  "restore_success": "सफलतापूर्वक पुनर्स्थापित किया गया!",
+  "restore_fail": "पुनर्स्थापित करने में विफल",
+  "original_deleted": "मूल खेत हटा दिया गया"
 }
 }

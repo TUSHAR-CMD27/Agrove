@@ -4,15 +4,16 @@ import {
   FiRefreshCw,
   FiTrash2,
   FiArrowLeft,
-  FiMap,
   FiClock,
   FiFileText
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Import
+import toast from 'react-hot-toast'; // Consistent notifications
 import './Bin.css';
-import Bgimg from '../assets/bg.png'
 
 const Bin = () => {
+  const { t } = useTranslation(); // 2. Initialize
   const [deletedFields, setDeletedFields] = useState([]);
   const [deletedActivities, setDeletedActivities] = useState([]);
   const navigate = useNavigate();
@@ -43,9 +44,10 @@ const Bin = () => {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       await axios.patch(`http://localhost:3000/api/fields/${id}/restore`, {}, config);
+      toast.success(t('bin.restore_success'));
       fetchBin();
     } catch {
-      alert("Field restore failed");
+      toast.error(t('bin.restore_fail'));
     }
   };
 
@@ -54,9 +56,10 @@ const Bin = () => {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       await axios.patch(`http://localhost:3000/api/activities/${id}/restore`, {}, config);
+      toast.success(t('bin.restore_success'));
       fetchBin();
     } catch {
-      alert("Activity restore failed");
+      toast.error(t('bin.restore_fail'));
     }
   };
 
@@ -65,51 +68,51 @@ const Bin = () => {
       
       <div className="bin-header">
         <button onClick={() => navigate('/dashboard')} className="back-dashboard-btn">
-          <FiArrowLeft /> Back
+          <FiArrowLeft /> {t('bin.back')}
         </button>
 
-        <h2><FiTrash2 /> Recycle Bin</h2>
+        <h2><FiTrash2 /> {t('nav.recycle_bin')}</h2>
       </div>
 
-      {/* FIELDS */}
-      <h3 className="bin-section-title">Deleted Fields</h3>
+      {/* FIELDS SECTION */}
+      <h3 className="bin-section-title">{t('bin.deleted_fields')}</h3>
       <div className="bin-grid">
         {deletedFields.length === 0 ? (
-          <p className="empty-bin-msg">No deleted fields</p>
+          <p className="empty-bin-msg">{t('bin.no_fields')}</p>
         ) : (
           deletedFields.map(field => (
             <div key={field._id} className="bin-card">
               <h4>{field.fieldName}</h4>
-              <p><FiClock /> Deleted on {new Date(field.deletedAt).toLocaleDateString()}</p>
+              <p><FiClock /> {t('bin.deleted_on')} {new Date(field.deletedAt).toLocaleDateString()}</p>
               <button onClick={() => restoreField(field._id)}>
-                <FiRefreshCw /> Restore Field
+                <FiRefreshCw /> {t('bin.restore_btn')}
               </button>
             </div>
           ))
         )}
       </div>
 
-     {/* ACTIVITIES */}
-<h3 className="bin-section-title">Deleted Activities</h3>
-<div className="bin-grid">
-  {deletedActivities.length === 0 ? (
-    <p className="empty-bin-msg">No deleted activities</p>
-  ) : (
-    deletedActivities.map(act => (
-      <div key={act._id} className="bin-card">
-        <h4><FiFileText /> {act.activityType}</h4>
-        
-        {/* ADD THIS LINE TO SHOW THE FIELD NAME */}
-        <p style={{ color: '#4ade80', fontSize: '0.9rem', fontWeight: 'bold' }}>
-          Field: {act.field?.fieldName || 'Original Field Deleted'}
-        </p>
+     {/* ACTIVITIES SECTION */}
+      <h3 className="bin-section-title">{t('bin.deleted_activities')}</h3>
+      <div className="bin-grid">
+        {deletedActivities.length === 0 ? (
+          <p className="empty-bin-msg">{t('bin.no_activities')}</p>
+        ) : (
+          deletedActivities.map(act => (
+            <div key={act._id} className="bin-card">
+              {/* Localized Activity Type */}
+              <h4><FiFileText /> {t(`activity.types.${(act.activityType || 'other').toLowerCase()}`)}</h4>
+              
+              <p style={{ color: '#4ade80', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                {t('details.fab_field')}: {act.field?.fieldName || t('bin.original_deleted')}
+              </p>
 
-        <p>₹{act.cost || 0}</p>
-        <p><FiClock /> Deleted on {new Date(act.deletedAt).toLocaleDateString()}</p>
-        <button onClick={() => restoreActivity(act._id)}>
-          <FiRefreshCw /> Restore Activity
-        </button>
-      </div>
+              <p>₹{act.cost || 0}</p>
+              <p><FiClock /> {t('bin.deleted_on')} {new Date(act.deletedAt).toLocaleDateString()}</p>
+              <button onClick={() => restoreActivity(act._id)}>
+                <FiRefreshCw /> {t('bin.restore_btn')}
+              </button>
+            </div>
           ))
         )}
       </div>

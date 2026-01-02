@@ -3,15 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast'; 
+import { useTranslation } from 'react-i18next'; // 1. Import
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { 
-  FiArrowLeft, FiCheckCircle, FiClock, FiTrash2, 
-  FiEdit, FiSettings, FiFileText 
+  FiArrowLeft, FiTrash2, 
+  FiEdit, FiSettings 
 } from 'react-icons/fi';
 import farmBg from '../assets/f17.png'; 
 import './FieldDetails.css';
 
 const FieldDetails = () => {
+  const { t } = useTranslation(); // 2. Initialize
   const { id } = useParams();
   const navigate = useNavigate();
   const [field, setField] = useState(null);
@@ -27,7 +29,6 @@ const FieldDetails = () => {
 
   const COLORS = ['#39ff14', '#111'];
 
-  // 1. Fetch Data
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -43,14 +44,12 @@ const FieldDetails = () => {
         setActivities(actRes.data);
         calculateStats(actRes.data);
       } catch (err) { 
-        console.error("Error fetching data:", err);
-        toast.error("SYSTEM_ERROR: Failed to load field records."); 
+        toast.error(t('details.error_load')); 
       }
     };
     fetchData();
-  }, [id, navigate]);
+  }, [id, navigate, t]);
 
-  // 2. Logic: Calculate Stats
   const calculateStats = (logs) => {
     const cost = logs.reduce((acc, curr) => acc + (curr.cost || 0), 0);
     const revenue = logs.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
@@ -67,14 +66,13 @@ const FieldDetails = () => {
     setStats({ progress, totalCost: cost, totalRevenue: revenue, currentStage: stage });
   };
 
-  // 3. Handle Delete Activity
   const handleDeleteActivity = async (activityId) => {
-    toast((t) => (
+    toast((t_toast) => (
       <div className="custom-confirm-toast">
-        <p>TERMINATE LOG ITEM? // ID: {activityId.slice(-4)}</p>
+        <p>{t('details.confirm_delete_id')} {activityId.slice(-4)}</p>
         <div className="toast-actions">
           <button className="confirm" onClick={async () => {
-            toast.dismiss(t.id);
+            toast.dismiss(t_toast.id);
             try {
               const userInfo = JSON.parse(localStorage.getItem('userInfo'));
               const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
@@ -82,30 +80,28 @@ const FieldDetails = () => {
               const updated = activities.filter(act => act._id !== activityId);
               setActivities(updated);
               calculateStats(updated);
-              toast.success("DATA_PURGED");
-            } catch (err) { toast.error("ACCESS_DENIED"); }
-          }}>YES</button>
-          <button className="cancel" onClick={() => toast.dismiss(t.id)}>NO</button>
+              toast.success(t('details.data_purged'));
+            } catch (err) { toast.error(t('details.access_denied')); }
+          }}>{t('details.yes')}</button>
+          <button className="cancel" onClick={() => toast.dismiss(t_toast.id)}>{t('details.no')}</button>
         </div>
       </div>
     ));
   };
 
-  if (!field) return <div className="loading-screen">INITIALIZING_TERMINAL...</div>;
+  if (!field) return <div className="loading-screen">{t('details.initializing')}</div>;
 
   const pieData = [{ value: stats.progress }, { value: 100 - stats.progress }];
   const netProfit = stats.totalRevenue - stats.totalCost;
 
   return (
     <div className="field-detail-container" style={{ backgroundImage: `url(${farmBg})` }}>
-      
-
       <div className="detail-header">
         <button onClick={() => navigate('/dashboard')} className="back-btn-detail">
           <FiArrowLeft size={15}/>
         </button>
         <div className="header-content">
-          <span className="crop-pill">{field.currentCrop}</span>
+          <span className="crop-pill">{t(`fields.crops_list.${field.currentCrop}`) || field.currentCrop}</span>
           <motion.h1 initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
             {field.fieldName}
           </motion.h1>
@@ -113,24 +109,14 @@ const FieldDetails = () => {
       </div>
 
       <div className="detail-content-grid">
-        {/* LEFT PANEL: DATA VIZ */}
         <div className="left-panel">
           <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-            <h3>FIELD PROGRESS METRICS</h3>
+            <h3>{t('details.progress_metrics')}</h3>
             <div className="chart-row">
               <div className="chart-mini big-chart">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie 
-                      data={pieData} 
-                      innerRadius={80} 
-                      outerRadius={105} 
-                      paddingAngle={0} 
-                      dataKey="value" 
-                      startAngle={90} 
-                      endAngle={-270}
-                      stroke="none"
-                    >
+                    <Pie data={pieData} innerRadius={80} outerRadius={105} dataKey="value" startAngle={90} endAngle={-270} stroke="none">
                       <Cell fill="#39ff14" />
                       <Cell fill="#111" />
                     </Pie>
@@ -139,33 +125,29 @@ const FieldDetails = () => {
                 <div className="center-text bigger">{stats.progress}%</div>
               </div>
               <div className="progress-labels">
-                <p>STAGE: <span className="neon-text">{stats.currentStage}</span></p>
-                <p>STATUS: <span className="neon-text">OPERATIONAL</span></p>
+                <p>{t('details.label_stage')}: <span className="neon-text">{t(`details.stages.${stats.currentStage.toLowerCase()}`)}</span></p>
+                <p>{t('details.label_status')}: <span className="neon-text">{t('details.operational')}</span></p>
               </div>
             </div>
           </motion.div>
 
           <motion.div className="info-card" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-            <h3>FINANCIAL ARCHITECTURE</h3>
+            <h3>{t('details.financial_arch')}</h3>
             <div className="finance-horizontal-bars">
               <div className="bar-group">
-                <div className="bar-header"><span>OPERATIONAL_COST</span><span>₹{stats.totalCost.toLocaleString()}</span></div>
+                <div className="bar-header"><span>{t('details.op_cost')}</span><span>₹{stats.totalCost.toLocaleString()}</span></div>
                 <div className="bar-track"><motion.div className="bar-fill cost" initial={{ width: 0 }} animate={{ width: '100%' }} /></div>
               </div>
 
               <div className="bar-group">
-                <div className="bar-header"><span>PROJECTED_REVENUE</span><span>₹{stats.totalRevenue.toLocaleString()}</span></div>
+                <div className="bar-header"><span>{t('details.proj_revenue')}</span><span>₹{stats.totalRevenue.toLocaleString()}</span></div>
                 <div className="bar-track">
-                  <motion.div 
-                    className="bar-fill revenue" 
-                    initial={{ width: 0 }} 
-                    animate={{ width: stats.totalRevenue > 0 ? (stats.totalRevenue / (stats.totalCost || 1) * 50) + '%' : '0%' }} 
-                  />
+                  <motion.div className="bar-fill revenue" initial={{ width: 0 }} animate={{ width: stats.totalRevenue > 0 ? (stats.totalRevenue / (stats.totalCost || 1) * 50) + '%' : '0%' }} />
                 </div>
               </div>
 
               <div className="net-profit-footer">
-                <label>NET CAPITAL GAIN</label>
+                <label>{t('details.net_gain')}</label>
                 <span className={`profit-val ${netProfit >= 0 ? 'positive' : 'negative'}`}>
                   ₹{netProfit.toLocaleString()}
                 </span>
@@ -174,26 +156,25 @@ const FieldDetails = () => {
           </motion.div>
         </div>
 
-        {/* RIGHT PANEL: TERMINAL LOGS */}
         <div className="right-panel">
           <div className="activity-header">
-            <h3>OPERATIONS HISTORY</h3>
-            <button className="add-log-btn" onClick={() => navigate('/plan')}>+ ADD LOG</button>
+            <h3>{t('details.ops_history')}</h3>
+            <button className="add-log-btn" onClick={() => navigate('/plan')}>+ {t('details.add_log')}</button>
           </div>
           
           <div className="terminal-timeline">
             {activities.length === 0 ? (
-              <p className="no-logs">NO DATA LOGGED</p>
+              <p className="no-logs">{t('details.no_data')}</p>
             ) : (
               activities.map((act) => (
                 <div key={act._id} className="terminal-log-item">
                   <div className={`status-line ${act.status === 'Completed' ? 'done' : 'pending'}`} />
                   <div className="log-body">
                     <div className="log-main">
-                      <span className="log-type">{act.activityType}</span>
+                      <span className="log-type">{t(`activity.types.${act.activityType.toLowerCase()}`)}</span>
                       <span className="log-cost">₹{act.cost}</span>
                     </div>
-                    <span className="log-date">{new Date(act.activityDate).toLocaleDateString()} // STATUS_OK</span>
+                    <span className="log-date">{new Date(act.activityDate).toLocaleDateString()} // {act.status === 'Completed' ? t('details.status_ok') : t('details.status_pending')}</span>
                   </div>
                   <div className="log-actions">
                     <button onClick={() => navigate(`/edit/activity/${act._id}`)}><FiEdit /></button>
@@ -206,28 +187,18 @@ const FieldDetails = () => {
         </div>
       </div>
 
-      {/* FAB MENU */}
       <div className="edit-fab-container">
         <AnimatePresence>
           {showEditMenu && (
-            <motion.div 
-              className="fab-options-horizontal"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-            >
+            <motion.div className="fab-options-horizontal" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
               <div className="fab-option-wrapper">
                 <button className="fab-sub-btn field-color" onClick={() => navigate(`/edit/field/${id}`)}><FiSettings /></button>
-                <span className="fab-label-bottom">FIELD</span>
+                <span className="fab-label-bottom">{t('details.fab_field')}</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-        <motion.button 
-          className={`fab-main-btn ${showEditMenu ? 'active' : ''}`}
-          onClick={() => setShowEditMenu(!showEditMenu)}
-          whileTap={{ scale: 0.9 }}
-        >
+        <motion.button className={`fab-main-btn ${showEditMenu ? 'active' : ''}`} onClick={() => setShowEditMenu(!showEditMenu)} whileTap={{ scale: 0.9 }}>
           <FiEdit />
         </motion.button>
       </div>
