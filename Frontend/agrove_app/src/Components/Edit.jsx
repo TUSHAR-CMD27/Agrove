@@ -1,46 +1,71 @@
-
-
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import toast from 'react-hot-toast'; // --- IMPORTED TOAST ---
-import { 
-  FiSave, FiArrowLeft, FiCalendar, FiPackage 
-} from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { FiSave, FiArrowLeft, FiCheck } from "react-icons/fi";
 import { FaRupeeSign } from "react-icons/fa";
-import './AddActivity.css'; 
+import "./AddActivity.css";
+
+/* ======================
+   FIELD IMAGES
+====================== */
+import Arid from "../assets/arid.jpg";
+import BlackSoil from "../assets/black.jpg";
+import RedSoil from "../assets/red.jpg";
+import Alluvial from "../assets/alluvial.jpg";
+import Laterite from "../assets/laterite.jpg";
+import Coastal from "../assets/coastal.jpg";
+import Forest from "../assets/forest.jpg";
+
+const fieldAvatars = [
+  { name: "Arid", src: Arid },
+  { name: "Black", src: BlackSoil },
+  { name: "Red", src: RedSoil },
+  { name: "Alluvial", src: Alluvial },
+  { name: "Laterite", src: Laterite },
+  { name: "Coastal", src: Coastal },
+  { name: "Forest", src: Forest },
+];
+
+const soilDatabase = {
+  Black: { crops: "Cotton, Soybean, Wheat", water: "Medium" },
+  Red: { crops: "Millets, Pulses", water: "High" },
+  Alluvial: { crops: "Rice, Sugarcane", water: "Very High" },
+  Laterite: { crops: "Cashew, Coffee", water: "High" },
+  Arid: { crops: "Bajra, Jowar", water: "Scarce" },
+  Coastal: { crops: "Coconut, Rice", water: "Very High" },
+  Forest: { crops: "Spices, Tea", water: "High" },
+};
 
 const EditPage = () => {
-  const { type, id } = useParams(); 
+  const { type, id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({});
-  
-  // Constant fields
-  const [fieldName, setFieldName] = useState('');
-  const [activityType, setActivityType] = useState('');
 
+  const [formData, setFormData] = useState({});
+
+  /* ======================
+     FETCH DATA
+  ====================== */
   useEffect(() => {
     const fetchData = async () => {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      if (!userInfo?.token) return navigate('/login');
-
-      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      if (!userInfo?.token) return navigate("/login");
 
       try {
-        if(type === 'field') {
-          const res = await axios.get(`http://localhost:3000/api/fields/${id}`, config);
-          setFormData(res.data);
-        } else {
-          const res = await axios.get(`http://localhost:3000/api/activities/${id}`, config);
-          setFormData(res.data);
-          setFieldName(res.data.fieldName || ''); 
-          setActivityType(res.data.activityType || '');
-        }
+        const config = {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        };
+
+        const endpoint =
+          type === "field"
+            ? `http://localhost:3000/api/fields/${id}`
+            : `http://localhost:3000/api/activities/${id}`;
+
+        const res = await axios.get(endpoint, config);
+        setFormData(res.data);
       } catch (err) {
-        console.error("Error loading data", err);
-        // --- ADDED ERROR TOAST ---
-        toast.error("Failed to load details. Please try again.");
+        toast.error("Failed to load data");
       } finally {
         setLoading(false);
       }
@@ -49,151 +74,204 @@ const EditPage = () => {
     fetchData();
   }, [id, type, navigate]);
 
+  /* ======================
+     HANDLERS
+  ====================== */
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name === 'cost' || name === 'quantity' || name === 'revenue') {
+
+    if (["cost", "quantity", "revenue"].includes(name)) {
       setFormData({ ...formData, [name]: Number(value) });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  const handleSoilChange = (e) => {
+    const soil = e.target.value;
+    const soilData = soilDatabase[soil];
+
+    setFormData({
+      ...formData,
+      soilType: soil,
+      recommendedCrops: soilData?.crops || "",
+      waterRequirement: soilData?.water || "",
+      waterAvailability: soil === "Arid" ? "Scarce" : formData.waterAvailability,
+    });
+  };
+
+  const selectAvatar = (src) => {
+    setFormData({ ...formData, fieldImage: src });
+  };
+
+  /* ======================
+     SUBMIT
+  ====================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    if(!userInfo?.token) return navigate('/login');
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+    const config = {
+      headers: { Authorization: `Bearer ${userInfo.token}` },
+    };
 
-    // --- ADDED LOADING TOAST ---
-    const loadingToast = toast.loading("Updating records...");
+    const loadingToast = toast.loading("Updating...");
 
     try {
-      const endpoint = type === 'field'
-        ? `http://localhost:3000/api/fields/${id}`
-        : `http://localhost:3000/api/activities/${id}`;
-      
+      const endpoint =
+        type === "field"
+          ? `http://localhost:3000/api/fields/${id}`
+          : `http://localhost:3000/api/activities/${id}`;
+
       await axios.put(endpoint, formData, config);
-      
-      // --- SUCCESS TOAST ---
-      toast.success(`${type === 'field' ? 'Field' : 'Activity'} updated successfully!`, {
-        id: loadingToast, // Replaces the loading toast
-        icon: '📝'
+
+      toast.success("Updated successfully!", {
+        id: loadingToast,
+        icon: "📝",
       });
 
       navigate(-1);
     } catch (err) {
-      console.error(err);
-      // --- ERROR TOAST ---
-      toast.error("Update failed. Check your connection.", {
-        id: loadingToast // Replaces the loading toast
-      });
+      toast.error("Update failed", { id: loadingToast });
     }
   };
 
-  if(loading) return <div className="loading-screen">Loading Data...</div>;
+  if (loading) return <div className="loading-screen">Loading...</div>;
 
+  /* ======================
+     UI
+  ====================== */
   return (
     <div className="add-activity-container">
-      <div className="activity-header-section">
-        <button onClick={() => navigate(-1)} className="back-btn-simple">
-          <FiArrowLeft size={24} />
-        </button>
-        <h1>Edit {type === 'field' ? 'Field Plot' : 'Planned Task'}</h1>
-      </div>
+      <button onClick={() => navigate(-1)} className="back-btn-simple">
+        <FiArrowLeft size={24} />
+      </button>
 
-      <div className="form-card">
-        <form onSubmit={handleSubmit}>
-          {type === 'field' ? (
-            <>
-              <div className="form-group-act">
-                <label>Field Name</label>
-                <input type="text" name="fieldName" value={formData.fieldName || ''} readOnly />
-              </div>
-              <div className="form-group-act">
-                <label>Current Crop</label>
-                <input type="text" name="currentCrop" value={formData.currentCrop || ''} onChange={handleChange} />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="form-group-act">
-                <label>Task Type</label>
-                <input type="text" value={activityType} readOnly />
-              </div>
+      <h1>Edit {type === "field" ? "Field" : "Activity"}</h1>
 
-              <div className="form-group-act">
-                <label>Planned Date</label>
-                <input type="date" name="activityDate" value={formData.activityDate?.split('T')[0] || ''} onChange={handleChange} />
+      <form className="form-card" onSubmit={handleSubmit}>
+        {/* ================= FIELD EDIT ================= */}
+        {type === "field" && (
+          <>
+            <div className="form-group-act">
+              <label>Field Name</label>
+              <input
+                type="text"
+                name="fieldName"
+                value={formData.fieldName || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group-act">
+              <label>Area Size (Acres)</label>
+              <input
+                type="number"
+                step="0.01"
+                name="areaSize"
+                value={formData.areaSize || ""}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group-act">
+              <label>Soil Type</label>
+              <select
+                name="soilType"
+                value={formData.soilType || ""}
+                onChange={handleSoilChange}
+              >
+                <option value="">Select Soil</option>
+                {Object.keys(soilDatabase).map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group-act">
+              <label>Current Crop</label>
+              <input
+                type="text"
+                name="currentCrop"
+                value={formData.currentCrop || ""}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group-act">
+              <label>Water Availability</label>
+              <select
+                name="waterAvailability"
+                value={formData.waterAvailability || ""}
+                onChange={handleChange}
+              >
+                <option value="Scarce">Scarce</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Very High">Very High</option>
+              </select>
+            </div>
+
+            <div className="form-group-act">
+              <label>Field Image</label>
+              <div className="avatar-grid">
+                {fieldAvatars.map((img) => (
+                  <div
+                    key={img.name}
+                    onClick={() => selectAvatar(img.src)}
+                    className={`avatar-card ${
+                      formData.fieldImage === img.src ? "selected" : ""
+                    }`}
+                  >
+                    <img src={img.src} alt={img.name} />
+                    {formData.fieldImage === img.src && <FiCheck />}
+                  </div>
+                ))}
               </div>
-              
-              <div className="form-group-act">
-                <label>Status</label>
-                <select 
-                  name="status" 
-                  value={formData.status} 
+            </div>
+          </>
+        )}
+
+        {/* ================= ACTIVITY EDIT ================= */}
+        {type === "activity" && (
+          <>
+            <div className="form-group-act">
+              <label>Task Type</label>
+              <input value={formData.activityType || ""} readOnly />
+            </div>
+
+            <div className="form-group-act">
+              <label>Date</label>
+              <input
+                type="date"
+                name="activityDate"
+                value={formData.activityDate?.split("T")[0] || ""}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group-act">
+              <label>Cost</label>
+              <div className="input-with-icon">
+                <FaRupeeSign />
+                <input
+                  type="number"
+                  name="cost"
+                  value={formData.cost || ""}
                   onChange={handleChange}
-                  style={{ 
-                    borderColor: formData.status === 'Planned' ? '#fbbf24' : '#39ff14',
-                    color: formData.status === 'Planned' ? '#fbbf24' : '#39ff14'
-                  }}
-                >
-                  <option value="Planned">⏳ Planned (Show Timer)</option>
-                  <option value="Completed">✅ Completed (Show Check)</option>
-                </select>
+                />
               </div>
+            </div>
+          </>
+        )}
 
-              <div className="form-group-act">
-                <label>Product / Material</label>
-                <input type="text" name="productName" value={formData.productName || ''} onChange={handleChange} />
-              </div>
-
-              <div className="row-split">
-                <div className="form-group-act">
-                  <label>Quantity</label>
-                  <input type="number" name="quantity" value={formData.quantity || ''} onChange={handleChange} />
-                </div>
-                <div className="form-group-act">
-                  <label>Unit</label>
-                  <select name="unit" value={formData.unit || 'kg'} onChange={handleChange}>
-                    <option value="kg">kg</option>
-                    <option value="L">Liters</option>
-                    <option value="bags">Bags</option>
-                    <option value="hours">Hours</option>
-                    <option value="units">Units</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="row-split">
-                <div className="form-group-act">
-                  <label>Cost (₹)</label>
-                  <div className="input-with-icon cost-input">
-                    <FaRupeeSign />
-                    <input type="number" name="cost" value={formData.cost || ''} onChange={handleChange} />
-                  </div>
-                </div>
-                <div className="form-group-act">
-                  <label>Revenue (₹)</label>
-                  <div className="input-with-icon cost-input">
-                    <FaRupeeSign />
-                    <input type="number" name="revenue" value={formData.revenue || ''} onChange={handleChange} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-group-act">
-                <label>Notes / Instructions</label>
-                <textarea name="notes" rows="3" value={formData.notes || ''} onChange={handleChange}></textarea>
-              </div>
-            </>
-          )}
-
-          <button type="submit" className="submit-act-btn">
-            <FiSave /> Save Changes
-          </button>
-        </form>
-      </div>
+        <button type="submit" className="submit-act-btn">
+          <FiSave /> Save Changes
+        </button>
+      </form>
     </div>
   );
 };
