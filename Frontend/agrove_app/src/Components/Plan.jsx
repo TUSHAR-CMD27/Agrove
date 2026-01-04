@@ -40,7 +40,7 @@ const PlanTask = () => {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       
       try {
-        const res = await axios.get('http://localhost:3000/api/fields', config);
+        const res = await axios.get('http://localhost:10000/api/fields', config);
         setFields(res.data);
       } catch (err) {
         console.error("Error fetching fields:", err);
@@ -60,7 +60,7 @@ const PlanTask = () => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post('http://localhost:3000/api/activities', formData, config);
+      await axios.post('http://localhost:10000/api/activities', formData, config);
       navigate(`/field/${formData.fieldId}`);
     } catch (err) {
       alert("Error planning task: " + (err.response?.data?.message || err.message));

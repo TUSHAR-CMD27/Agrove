@@ -37,7 +37,7 @@ const Onboarding = () => {
         setLoading(true);
         try {
             const res = await axios.put(
-                `http://localhost:3000/api/auth/update-profile/${userInfo._id}`,
+                `http://localhost:10000/api/auth/update-profile/${userInfo._id}`,
                 formData
             );
             const completeUser = { ...userInfo, ...res.data };

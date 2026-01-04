@@ -54,7 +54,8 @@ const Navbar = () => {
     try {
       const parsedUser = JSON.parse(userInfo);
       setUser(parsedUser);
-      const res = await axios.get('http://localhost:3000/api/fields', {
+      const res = await axios.get('http://localhost:10000/api/fields', {
+
         headers: { Authorization: `Bearer ${parsedUser.token}` }
       });
       setFieldCount(res.data.length);

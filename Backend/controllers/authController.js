@@ -66,13 +66,19 @@ exports.login = async (req, res) => {
 
 exports.googleLogin = async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(401).json({ message: 'Google token missing' });
+    }
+
     const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const { sub: googleId, email, name } = ticket.getPayload();
+
     let user = await User.findOne({ email });
 
     if (user) {
@@ -84,18 +90,32 @@ exports.googleLogin = async (req, res) => {
     } else {
       const count = await User.countDocuments();
       const user_id = `AG-2025-${100 + count + 1}`;
-      user = await User.create({ user_id, name, email, googleId, authProvider: 'google' });
+      user = await User.create({
+        user_id,
+        name,
+        email,
+        googleId,
+        authProvider: 'google',
+      });
     }
 
-    res.json({
-      _id: user.id, name: user.name, email: user.email,
-      age: user.age, state: user.state, district: user.district,
-      pincode: user.pincode, token: generateToken(user._id)
+    res.status(200).json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      age: user.age,
+      state: user.state,
+      district: user.district,
+      pincode: user.pincode,
+      token: generateToken(user._id),
     });
   } catch (error) {
+    console.error('Google auth error:', error);
     res.status(401).json({ message: 'Google authentication failed' });
   }
 };
+
+
 
 exports.updateProfile = async (req, res) => {
   try {

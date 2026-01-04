@@ -28,8 +28,8 @@ const Bin = () => {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
 
       const [fieldsRes, activitiesRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/fields/bin', config),
-        axios.get('http://localhost:3000/api/activities/bin/all', config)
+        axios.get('http://localhost:10000/api/fields/bin', config),
+        axios.get('http://localhost:10000/api/activities/bin/all', config)
       ]);
 
       setDeletedFields(fieldsRes.data);
@@ -43,7 +43,7 @@ const Bin = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.patch(`http://localhost:3000/api/fields/${id}/restore`, {}, config);
+      await axios.patch(`http://localhost:10000/api/fields/${id}/restore`, {}, config);
       toast.success(t('bin.restore_success'));
       fetchBin();
     } catch {
@@ -55,7 +55,7 @@ const Bin = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.patch(`http://localhost:3000/api/activities/${id}/restore`, {}, config);
+      await axios.patch(`http://localhost:10000/api/activities/${id}/restore`, {}, config);
       toast.success(t('bin.restore_success'));
       fetchBin();
     } catch {

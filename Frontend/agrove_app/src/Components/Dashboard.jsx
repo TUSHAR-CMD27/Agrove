@@ -61,7 +61,7 @@ const Dashboard = () => {
         const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
 
         // Fetch Fields
-        const res = await axios.get('http://localhost:3000/api/fields', config);
+        const res = await axios.get('http://localhost:10000/api/fields', config);
         setFields(res.data);
         
         const cropMap = {};
@@ -79,7 +79,7 @@ const Dashboard = () => {
             [t('dash.cost')]: f.totalCost 
         })));
 
-        const reportRes = await axios.get('http://localhost:3000/api/fields/report', config);
+        const reportRes = await axios.get('http://localhost:10000/api/fields/report', config);
         setReport(reportRes.data);
 
         // Weather
@@ -142,7 +142,7 @@ const Dashboard = () => {
     if (window.confirm(`${t('dash.confirm_delete')} ${fieldName}?`)) {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
-        await axios.patch(`http://localhost:3000/api/fields/${fieldId}/delete`, {}, config);
+        await axios.patch(`http://localhost:10000/api/fields/${fieldId}/delete`, {}, config);
         setFields(fields.filter(f => f._id !== fieldId));
       } catch (e) { alert(t('dash.delete_error')); }
     }

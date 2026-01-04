@@ -21,7 +21,7 @@ const FieldCard = ({ field, onClick, onDelete }) => {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const res = await axios.get(`http://localhost:3000/api/activities/field/${field._id}`, config);
+        const res = await axios.get(`http://localhost:10000/api/activities/field/${field._id}`, config);
         if (res.data.length > 0) {
           setLatestLog(res.data[res.data.length - 1]);
         }

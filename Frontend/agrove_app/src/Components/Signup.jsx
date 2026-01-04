@@ -34,7 +34,7 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/signup', formData);
+      const res = await axios.post('http://localhost:10000/api/auth/signup', formData);
       toast.success(t('auth.success_signup'));
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       nav('/dashboard');
@@ -48,7 +48,7 @@ const Signup = () => {
     const loadingToast = toast.loading(t('auth.connecting_google'));
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:3000/api/auth/google', {
+      const res = await axios.post('http://localhost:10000/api/auth/google', {
         credential: credentialResponse.credential
       });
       toast.success(t('auth.google_success'), { id: loadingToast });

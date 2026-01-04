@@ -29,7 +29,8 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      const res = await axios.post('http://localhost:10000/api/auth/login', { email, password });
+
       if (res.data) {
         // 3. Translated Toast with dynamic name
         toast.success(`${t('auth.welcome_back')}, ${res.data.name || t('auth.farmer')}!`, {
@@ -49,23 +50,28 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const loadingToast = toast.loading(t('auth.connecting_google'));
-    try {
-      setLoading(true);
-      const res = await axios.post('http://localhost:3000/api/auth/google', {
-        credential: credentialResponse.credential
-      });
-      localStorage.setItem('userInfo', JSON.stringify(res.data));
-      toast.success(t('auth.google_success'), { id: loadingToast });
-      nav(res.data.age ? '/dashboard' : '/onboarding');
-      window.location.reload();
-    } catch (error) {
-      toast.error(t('auth.google_fail'), { id: loadingToast });
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleGoogleSuccess = async (credentialResponse) => {
+  const loadingToast = toast.loading(t('auth.connecting_google'));
+  try {
+    setLoading(true);
+
+    const res = await axios.post('http://localhost:10000/api/auth/google', {
+  token: credentialResponse.credential,
+});
+
+
+    localStorage.setItem('userInfo', JSON.stringify(res.data));
+    toast.success(t('auth.google_success'), { id: loadingToast });
+
+    nav(res.data.age ? '/dashboard' : '/onboarding');
+  } catch (error) {
+    console.error(error);
+    toast.error(t('auth.google_fail'), { id: loadingToast });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="auth-container">
