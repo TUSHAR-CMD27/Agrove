@@ -18,24 +18,14 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-<<<<<<< HEAD
     // allow requests with no origin (Postman, mobile apps)
-=======
-    // allow requests with no origin (like Postman)
->>>>>>> 405616fff8e4542aa62d1e1d43c9030a9d08c043
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
-<<<<<<< HEAD
     }
 
     return callback(new Error('Not allowed by CORS'));
-=======
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
->>>>>>> 405616fff8e4542aa62d1e1d43c9030a9d08c043
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
