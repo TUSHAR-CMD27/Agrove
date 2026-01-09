@@ -101,7 +101,7 @@ const FieldDetails = () => {
           <FiArrowLeft size={15}/>
         </button>
         <div className="header-content">
-          <span className="crop-pill">{t(`fields.crops_list.${field.currentCrop}`) || field.currentCrop}</span>
+          <span className="crop-pill">{t(`${field.currentCrop}`) || field.currentCrop}</span>
           <motion.h1 initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
             {field.fieldName}
           </motion.h1>
@@ -174,7 +174,7 @@ const FieldDetails = () => {
                       <span className="log-type">{t(`activity.types.${act.activityType.toLowerCase()}`)}</span>
                       <span className="log-cost">₹{act.cost}</span>
                     </div>
-                    <span className="log-date">{new Date(act.activityDate).toLocaleDateString()} // {act.status === 'Completed' ? t('details.status_ok') : t('details.status_pending')}</span>
+                    <span className="log-date">{new Date(act.activityDate).toLocaleDateString()} | {act.status === 'Completed' ? t('completed') : t('pending')}</span>
                   </div>
                   <div className="log-actions">
                     <button onClick={() => navigate(`/edit/activity/${act._id}`)}><FiEdit /></button>
