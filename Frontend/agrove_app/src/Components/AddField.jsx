@@ -79,7 +79,7 @@ const AddField = () => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post('http://localhost:3000/api/fields', formData, config);
+      await axios.post('http://localhost:10000/api/fields', formData, config);
       
       toast.success(`${formData.fieldName} ${t('fields.success_msg')}`, {
         icon: '📍',

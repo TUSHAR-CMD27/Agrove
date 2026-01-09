@@ -23,7 +23,7 @@ const FloatingMenu = () => {
       const fetchFields = async () => {
         try {
           const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-          const res = await axios.get('http://localhost:3000/api/fields', config);
+          const res = await axios.get('http://localhost:10000/api/fields', config);
           setFieldCount(res.data.length);
         } catch (err) {
           if (err?.response?.status === 401) {
