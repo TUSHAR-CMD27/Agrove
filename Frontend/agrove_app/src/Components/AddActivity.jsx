@@ -9,6 +9,15 @@ import './AddActivity.css';
 const AddActivity = () => {
   const { t } = useTranslation(); // 2. Initialize translation
   const navigate = useNavigate();
+  
+  // Auth Guard
+  useEffect(() => {
+    const userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
   
@@ -53,7 +62,8 @@ const AddActivity = () => {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/activities/${formData.fieldId}`, config);
+        // Fix: Use query param ?fieldId= instead of path param
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/activities?fieldId=${formData.fieldId}`, config);
         const logs = res.data;
 
         const hasSowing = logs.some(l => l.activityType === 'Sowing');

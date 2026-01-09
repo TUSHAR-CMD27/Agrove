@@ -33,8 +33,10 @@ const FloatingMenu = () => {
         }
       };
       fetchFields();
+    } else {
+      setIsLoggedIn(false);
     }
-  }, [isOpen, navigate]);
+  }, [isOpen, navigate, location]);
 
   if (!isLoggedIn || isOnboardingPage) return null;
 

@@ -22,23 +22,23 @@ const AddField = () => {
   const [loading, setLoading] = useState(false);
 
   const fieldAvatars = [
-    { id: 'img1', name: t('fields.soils.Arid'), src: Arid },
-    { id: 'img2', name: t('fields.soils.Black'), src: BlackSoil },
-    { id: 'img3', name: t('fields.soils.Red'), src: RedSoil },
-    { id: 'img4', name: t('fields.soils.Alluvial'), src: Alluvial },
-    { id: 'img5', name: t('fields.soils.Laterite'), src: Laterite },
-    { id: 'img6', name: t('fields.soils.Coastal'), src: Coastal },
-    { id: 'img7', name: t('fields.soils.Forest'), src: Forest },
+    { id: 'img1', name: t('Arid'), src: Arid },
+    { id: 'img2', name: t('Black'), src: BlackSoil },
+    { id: 'img3', name: t('Red'), src: RedSoil },
+    { id: 'img4', name: t('Alluvial'), src: Alluvial },
+    { id: 'img5', name: t('Laterite'), src: Laterite },
+    { id: 'img6', name: t('Coastal'), src: Coastal },
+    { id: 'img7', name: t('Forest'), src: Forest },
   ];
 
   const soilDatabase = {
-    'Black': { crops: t('fields.crop_suggestions.black'), water: t('fields.water_levels.medium') },
-    'Red': { crops: t('fields.crop_suggestions.red'), water: t('fields.water_levels.high') },
-    'Alluvial': { crops: t('fields.crop_suggestions.alluvial'), water: t('fields.water_levels.v_high') },
-    'Laterite': { crops: t('fields.crop_suggestions.laterite'), water: t('fields.water_levels.high') },
-    'Arid': { crops: t('fields.crop_suggestions.arid'), water: t('fields.water_levels.scarce') },
-    'Coastal': { crops: t('fields.crop_suggestions.coastal'), water: t('fields.water_levels.v_high') },
-    'Forest': { crops: t('fields.crop_suggestions.forest'), water: t('fields.water_levels.high') }
+    'Black': { crops: t('black'), water: t('medium') },
+    'Red': { crops: t('red'), water: t('high') },
+    'Alluvial': { crops: t('alluvial'), water: t('very high') },
+    'Laterite': { crops: t('laterite'), water: t('high') },
+    'Arid': { crops: t('arid'), water: t('scarce') },
+    'Coastal': { crops: t('coastal'), water: t('very high') },
+    'Forest': { crops: t('forest'), water: t('high') }
   };
 
   const [formData, setFormData] = useState({
