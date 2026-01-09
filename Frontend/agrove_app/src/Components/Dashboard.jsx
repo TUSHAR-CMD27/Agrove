@@ -61,11 +61,7 @@ const Dashboard = () => {
         const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
 
         // Fetch Fields
-<<<<<<< HEAD
 const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields`, config);
-=======
-        const res = await axios.get('http://localhost:10000/api/fields', config);
->>>>>>> 405616fff8e4542aa62d1e1d43c9030a9d08c043
         setFields(res.data);
         
         const cropMap = {};
@@ -83,11 +79,7 @@ const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields`, config
             [t('dash.cost')]: f.totalCost 
         })));
 
-<<<<<<< HEAD
 const reportRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields/report`, config);
-=======
-        const reportRes = await axios.get('http://localhost:10000/api/fields/report', config);
->>>>>>> 405616fff8e4542aa62d1e1d43c9030a9d08c043
         setReport(reportRes.data);
 
         // Weather
@@ -149,11 +141,7 @@ const reportRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields/re
     if (window.confirm(`${t('dash.confirm_delete')} ${fieldName}?`)) {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
-<<<<<<< HEAD
         await axios.patch(`${import.meta.env.VITE_API_URL}/api/fields/${fieldId}/delete`, {}, config);
-=======
-        await axios.patch(`http://localhost:10000/api/fields/${fieldId}/delete`, {}, config);
->>>>>>> 405616fff8e4542aa62d1e1d43c9030a9d08c043
         setFields(fields.filter(f => f._id !== fieldId));
       } catch (e) { alert(t('dash.delete_error')); }
     }
