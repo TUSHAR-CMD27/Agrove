@@ -6,6 +6,21 @@ import { useTranslation } from 'react-i18next';
 import { FiDroplet, FiMap, FiActivity, FiClock, FiTrash2 } from 'react-icons/fi';
 import './FieldCard.css';
 
+// Import images for fallback/recovery
+import Arid from '../assets/arid.jpg';
+import BlackSoil from '../assets/black.jpg';
+import RedSoil from '../assets/red.jpg';
+import Alluvial from '../assets/alluvial.jpg';
+import Laterite from '../assets/laterite.jpg';
+import Coastal from '../assets/coastal.jpg';
+import Forest from '../assets/forest.jpg';
+
+const imageMap = {
+  'arid': Arid, 'black': BlackSoil, 'red': RedSoil, 
+  'alluvial': Alluvial, 'laterite': Laterite, 
+  'coastal': Coastal, 'forest': Forest
+};
+
 const FieldCard = ({ field, onClick, onDelete }) => {
   const { t } = useTranslation();
   const [latestLog, setLatestLog] = useState(null);
@@ -16,12 +31,22 @@ const FieldCard = ({ field, onClick, onDelete }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // Helper to recover broken image paths
+  const getFieldImage = (imgStr) => {
+    if (!imgStr) return Arid; // Default
+    const lower = imgStr.toLowerCase();
+    for (const key of Object.keys(imageMap)) {
+      if (lower.includes(key)) return imageMap[key];
+    }
+    return imgStr; // Return original if no keyword match (e.g. external URL)
+  };
+
   useEffect(() => {
     const fetchLatestActivity = async () => {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/activities/field/${field._id}`, config);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/activities?fieldId=${field._id}`, config);
         if (res.data.length > 0) {
           setLatestLog(res.data[res.data.length - 1]);
         }
@@ -72,7 +97,7 @@ const FieldCard = ({ field, onClick, onDelete }) => {
 
  return (
     <motion.div className="field-card" whileHover={{ y: -5 }} onClick={() => onClick(field._id)}>
-      <div className="card-image" style={{ backgroundImage: `url(${field.fieldImage})` }}>
+      <div className="card-image" style={{ backgroundImage: `url(${getFieldImage(field.fieldImage)})` }}>
         <div className="field-delete-btn" onClick={handleConfirmDelete}>
           <FiTrash2 size={16} />
         </div>

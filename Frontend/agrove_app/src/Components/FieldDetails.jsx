@@ -114,7 +114,7 @@ const FieldDetails = () => {
             <h3>{t('details.progress_metrics')}</h3>
             <div className="chart-row">
               <div className="chart-mini big-chart">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie data={pieData} innerRadius={80} outerRadius={105} dataKey="value" startAngle={90} endAngle={-270} stroke="none">
                       <Cell fill="#39ff14" />
