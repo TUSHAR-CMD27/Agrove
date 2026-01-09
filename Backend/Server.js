@@ -8,9 +8,7 @@ connectDB();
 
 const app = express();
 
-// Middleware
-// FIX: origins are now explicitly allowed and credentials enabled for tokens
-// --- UPDATED CORS CONFIGURATION ---
+// --- CLEAN CORS CONFIGURATION ---
 const allowedOrigins = [
   'http://localhost:5173',
   'https://agrove.onrender.com'
@@ -18,13 +16,10 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (Postman, mobile apps)
     if (!origin) return callback(null, true);
-
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
@@ -35,18 +30,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// --- SECURITY HEADERS FOR GOOGLE OAUTH ---
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
+
 // Routes
-const authRoute = require('./routes/authRoutes');
-const fieldRoute = require('./routes/fieldRoutes');
-const activityRoute = require('./routes/activityRoutes');
-
-
-app.use('/api/auth', authRoute);
-app.use('/api/fields', fieldRoute);
-app.use('/api/activities', activityRoute);
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/fields', require('./routes/fieldRoutes'));
+app.use('/api/activities', require('./routes/activityRoutes'));
 
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running at PORT = ${PORT}`);
+  console.log(`Server is running at PORT = ${PORT}`);
 });
