@@ -29,7 +29,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       if (res.data) {
         // 3. Translated Toast with dynamic name
         toast.success(`${t('auth.welcome_back')}, ${res.data.name || t('auth.farmer')}!`, {
@@ -53,7 +53,7 @@ const Login = () => {
     const loadingToast = toast.loading(t('auth.connecting_google'));
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:3000/api/auth/google', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
         credential: credentialResponse.credential
       });
       localStorage.setItem('userInfo', JSON.stringify(res.data));
@@ -128,7 +128,7 @@ const Login = () => {
             <div className="auth-divider"><span>{t('auth.or_continue')}</span></div>
 
             <div className="google-btn-wrapper">
-              <GoogleLogin onSuccess={handleGoogleSuccess} theme="filled_black" width="100%" />
+              <GoogleLogin onSuccess={handleGoogleSuccess} theme="filled_black" width="300" />
             </div>
           </motion.div>
         </div>

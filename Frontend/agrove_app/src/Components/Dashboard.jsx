@@ -61,7 +61,7 @@ const Dashboard = () => {
         const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
 
         // Fetch Fields
-        const res = await axios.get('http://localhost:3000/api/fields', config);
+const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields`, config);
         setFields(res.data);
         
         const cropMap = {};
@@ -79,7 +79,7 @@ const Dashboard = () => {
             [t('dash.cost')]: f.totalCost 
         })));
 
-        const reportRes = await axios.get('http://localhost:3000/api/fields/report', config);
+const reportRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields/report`, config);
         setReport(reportRes.data);
 
         // Weather
@@ -87,7 +87,7 @@ const Dashboard = () => {
           navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
             const wRes = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`);
-            const gRes = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+            const gRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields/proxy/reverse-geocode?lat=${latitude}&lon=${longitude}`);
             
             const addr = gRes.data.address;
             setWeather({
@@ -100,8 +100,7 @@ const Dashboard = () => {
          // News
         const fetchNews = async () => {
           try {
-            const rssUrl = encodeURIComponent('https://krishijagran.com/rss/market-news/');
-            const data = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`).then(r => r.json());
+            const data = await fetch(`${import.meta.env.VITE_API_URL}/api/fields/proxy/rss`).then(r => r.json());
             if (data.status === 'ok' && data.items.length > 0) {
               setNews(data.items.slice(0, 5).map(item => ({ title: item.title, link: item.link, category: "Market" })));
               setNewsLoading(false);
@@ -142,7 +141,7 @@ const Dashboard = () => {
     if (window.confirm(`${t('dash.confirm_delete')} ${fieldName}?`)) {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
-        await axios.patch(`http://localhost:3000/api/fields/${fieldId}/delete`, {}, config);
+        await axios.patch(`${import.meta.env.VITE_API_URL}/api/fields/${fieldId}/delete`, {}, config);
         setFields(fields.filter(f => f._id !== fieldId));
       } catch (e) { alert(t('dash.delete_error')); }
     }
@@ -174,7 +173,7 @@ const Dashboard = () => {
           <div className="bento-card col-span-2 row-span-2">
             <div className="card-header"><h3>{t('dash.profit_analysis')}</h3><FiDollarSign /></div>
             <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={financialData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                   <XAxis dataKey="name" stroke="#666" />
@@ -192,7 +191,7 @@ const Dashboard = () => {
           <div className="bento-card row-span-2">
             <div className="card-header"><h3>{t('dash.crop_dist')}</h3><FiLayers /></div>
             <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie data={pieData} innerRadius="60%" outerRadius="80%" dataKey="value">
                     {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % 5]} />)}
