@@ -54,7 +54,7 @@ const Navbar = () => {
     try {
       const parsedUser = JSON.parse(userInfo);
       setUser(parsedUser);
-      const res = await axios.get('http://localhost:10000/api/fields', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields`, {
 
         headers: { Authorization: `Bearer ${parsedUser.token}` }
       });

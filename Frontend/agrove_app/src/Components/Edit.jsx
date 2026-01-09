@@ -47,8 +47,8 @@ const EditPage = () => {
 
         const endpoint =
           type === "field"
-            ? `http://localhost:10000/api/fields/${id}`
-            : `http://localhost:10000/api/activities/${id}`;
+            ? `${import.meta.env.VITE_API_URL}/api/fields/${id}`
+            : `${import.meta.env.VITE_API_URL}/api/activities/${id}`;
 
         const res = await axios.get(endpoint, config);
         const data = res.data;
@@ -99,8 +99,8 @@ const EditPage = () => {
     try {
       const endpoint =
         type === "field"
-          ? `http://localhost:10000/api/fields/${id}`
-          : `http://localhost:10000/api/activities/${id}`;
+          ? `${import.meta.env.VITE_API_URL}/api/fields/${id}`
+          : `${import.meta.env.VITE_API_URL}/api/activities/${id}`;
 
       const payload =
         type === "activity" && formData.activityDate

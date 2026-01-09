@@ -37,8 +37,8 @@ const FieldDetails = () => {
       
       try {
         const [fieldRes, actRes] = await Promise.all([
-          axios.get(`http://localhost:10000/api/fields/${id}`, config),
-          axios.get(`http://localhost:10000/api/activities?fieldId=${id}`, config)
+          axios.get(`${import.meta.env.VITE_API_URL}/api/fields/${id}`, config),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/activities?fieldId=${id}`, config)
         ]);
         setField(fieldRes.data);
         setActivities(actRes.data);
@@ -76,7 +76,7 @@ const FieldDetails = () => {
             try {
               const userInfo = JSON.parse(localStorage.getItem('userInfo'));
               const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-              await axios.patch(`http://localhost:10000/api/activities/${activityId}/delete`, {}, config);
+              await axios.patch(`${import.meta.env.VITE_API_URL}/api/activities/${activityId}/delete`, {}, config);
               const updated = activities.filter(act => act._id !== activityId);
               setActivities(updated);
               calculateStats(updated);

@@ -37,7 +37,7 @@ const Onboarding = () => {
         setLoading(true);
         try {
             const res = await axios.put(
-                `http://localhost:10000/api/auth/update-profile/${userInfo._id}`,
+                `${import.meta.env.VITE_API_URL}/api/auth/update-profile/${userInfo._id}`,
                 formData
             );
             const completeUser = { ...userInfo, ...res.data };

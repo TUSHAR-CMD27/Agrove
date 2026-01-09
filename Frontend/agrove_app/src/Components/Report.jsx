@@ -7,7 +7,7 @@
 //   useEffect(() => {
 //     const fetchReport = async () => {
 //       const token = localStorage.getItem('token');
-//       const res = await axios.get('http://localhost:3000/api/fields/report', {
+//       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields/report`, {
 //         headers: { Authorization: `Bearer ${token}` }
 //       });
 //       setReport(res.data);

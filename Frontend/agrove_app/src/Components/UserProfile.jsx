@@ -21,7 +21,7 @@ const UserProfile = () => {
         const storedUser = JSON.parse(userInfo);
         try {
           const config = { headers: { Authorization: `Bearer ${storedUser.token}` } };
-          const res = await axios.get(`http://localhost:10000/api/auth/profile/${storedUser._id}`, config);
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile/${storedUser._id}`, config);
           const updatedUserData = { ...res.data, token: storedUser.token };
           setUser(updatedUserData);
           localStorage.setItem('userInfo', JSON.stringify(updatedUserData));

@@ -33,7 +33,7 @@ const AddActivity = () => {
       if (!userInfo) return navigate('/login');
       try {
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const res = await axios.get('http://localhost:10000/api/fields', config);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/fields`, config);
         setFields(res.data);
         if (res.data.length > 0) {
           setFormData(prev => ({ ...prev, fieldId: res.data[0]._id }));
@@ -53,7 +53,7 @@ const AddActivity = () => {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       
       try {
-        const res = await axios.get(`http://localhost:10000/api/activities/${formData.fieldId}`, config);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/activities/${formData.fieldId}`, config);
         const logs = res.data;
 
         const hasSowing = logs.some(l => l.activityType === 'Sowing');
@@ -92,7 +92,7 @@ const AddActivity = () => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post('http://localhost:10000/api/activities', formData, config);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/activities`, formData, config);
       navigate(`/field/${formData.fieldId}`);
     } catch (err) {
       alert(t('activity.error_msg') + ": " + (err.response?.data?.message || err.message));
