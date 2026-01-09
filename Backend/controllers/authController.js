@@ -66,7 +66,8 @@ exports.login = async (req, res) => {
 
 exports.googleLogin = async (req, res) => {
   try {
-    const { token } = req.body;
+    // FIX: Look for 'credential' (from frontend) OR 'token'
+    const token = req.body.credential || req.body.token;
 
     if (!token) {
       return res.status(401).json({ message: 'Google token missing' });
