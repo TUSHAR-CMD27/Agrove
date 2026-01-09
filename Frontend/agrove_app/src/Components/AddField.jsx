@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next'; 
 import { FiCheck, FiArrowLeft, FiInfo, FiDroplet, FiImage } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import './AddField.css';
@@ -16,30 +16,59 @@ import Laterite from '../assets/laterite.jpg';
 import Coastal from '../assets/coastal.jpg';
 import Forest from '../assets/forest.jpg';
 
+// 1. Hardcoded Prediction Database with Actual Strings
+const soilDatabase = {
+  'Arid': { 
+    crops: 'Bajra, Guar, Moth Beans, Mustard', 
+    water: 'Scarce (Low)',
+    label: 'Arid Soil'
+  },
+  'Black': { 
+    crops: 'Cotton, Soybeans, Wheat, Jowar, Linseed', 
+    water: 'Medium (Moisture Retentive)',
+    label: 'Black Cotton Soil'
+  },
+  'Red': { 
+    crops: 'Groundnut, Millet, Pulses, Tobacco', 
+    water: 'High (Needs Regular Irrigation)',
+    label: 'Red Soil'
+  },
+  'Alluvial': { 
+    crops: 'Rice, Wheat, Sugarcane, Maize, Oilseeds', 
+    water: 'Very High (High Absorption)',
+    label: 'Alluvial Soil'
+  },
+  'Laterite': { 
+    crops: 'Cashew Nuts, Tea, Coffee, Rubber', 
+    water: 'High (Well Drained)',
+    label: 'Laterite Soil'
+  },
+  'Coastal': { 
+    crops: 'Coconut, Rice, Areca Nut', 
+    water: 'Very High',
+    label: 'Coastal/Saline Soil'
+  },
+  'Forest': { 
+    crops: 'Spices, Coffee, Tea, Tropical Fruits', 
+    water: 'High',
+    label: 'Forest Soil'
+  }
+};
+
 const AddField = () => {
-  const { t } = useTranslation(); // 2. Initialize translation
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const fieldAvatars = [
-    { id: 'img1', name: t('Arid'), src: Arid },
-    { id: 'img2', name: t('Black'), src: BlackSoil },
-    { id: 'img3', name: t('Red'), src: RedSoil },
-    { id: 'img4', name: t('Alluvial'), src: Alluvial },
-    { id: 'img5', name: t('Laterite'), src: Laterite },
-    { id: 'img6', name: t('Coastal'), src: Coastal },
-    { id: 'img7', name: t('Forest'), src: Forest },
+    { id: 'img1', name: 'Arid', src: Arid },
+    { id: 'img2', name: 'Black', src: BlackSoil },
+    { id: 'img3', name: 'Red', src: RedSoil },
+    { id: 'img4', name: 'Alluvial', src: Alluvial },
+    { id: 'img5', name: 'Laterite', src: Laterite },
+    { id: 'img6', name: 'Coastal', src: Coastal },
+    { id: 'img7', name: 'Forest', src: Forest },
   ];
-
-  const soilDatabase = {
-    'Black': { crops: t('black'), water: t('medium') },
-    'Red': { crops: t('red'), water: t('high') },
-    'Alluvial': { crops: t('alluvial'), water: t('very high') },
-    'Laterite': { crops: t('laterite'), water: t('high') },
-    'Arid': { crops: t('arid'), water: t('scarce') },
-    'Coastal': { crops: t('coastal'), water: t('very high') },
-    'Forest': { crops: t('forest'), water: t('high') }
-  };
 
   const [formData, setFormData] = useState({
     fieldName: '',
@@ -52,15 +81,17 @@ const AddField = () => {
     waterRequirement: ''
   });
 
+  // 2. Updated change handler to pull direct strings
   const handleSoilChange = (e) => {
-    const selectedSoil = e.target.value;
-    const soilData = soilDatabase[selectedSoil];
+    const selectedKey = e.target.value;
+    const data = soilDatabase[selectedKey];
+    
     setFormData(prev => ({
       ...prev,
-      soilType: selectedSoil,
-      recommendedCrops: soilData ? soilData.crops : '',
-      waterRequirement: soilData ? soilData.water : '',
-      waterAvailability: selectedSoil === 'Arid' ? 'Scarce' : prev.waterAvailability
+      soilType: selectedKey,
+      recommendedCrops: data ? data.crops : '',
+      waterRequirement: data ? data.water : '',
+      waterAvailability: selectedKey === 'Arid' ? 'Scarce' : prev.waterAvailability
     }));
   };
 
@@ -137,20 +168,24 @@ const AddField = () => {
                   value={formData.soilType} onChange={handleSoilChange}
                 >
                   <option value="">{t('fields.select_soil')}</option>
-                  {Object.keys(soilDatabase).map(type => (
-                    <option key={type} value={type}>{t(`fields.soils.${type}`)}</option>
+                  {Object.keys(soilDatabase).map(key => (
+                    <option key={key} value={key}>{soilDatabase[key].label}</option>
                   ))}
                 </select>
               </div>
             </div>
           </div>
 
+          {/* 3. Logic: Renders actual strings from the state */}
           {formData.soilType && (
             <motion.div className="smart-insight-box" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <FiInfo className="insight-icon" />
               <div className="insight-text">
-                <h4>{t('fields.analysis_title')}</h4>
-                <p>{t('fields.analysis_desc', { soil: t(`fields.soils.${formData.soilType}`) })} <span>{formData.recommendedCrops}</span>.</p>
+                <h4>Smart Soil Analysis</h4>
+                <p>
+                  For <strong>{soilDatabase[formData.soilType].label}</strong>, 
+                  we recommend: <span className="highlight-text">{formData.recommendedCrops}</span>.
+                </p>
                 <div className="insight-meta">
                   <FiDroplet /> {t('fields.water_req')}: {formData.waterRequirement}
                 </div>
@@ -186,7 +221,7 @@ const AddField = () => {
               <select name="currentCrop" required value={formData.currentCrop} onChange={handleChange}>
                 <option value="">{t('fields.select_crop')}</option>
                 {['Jowar', 'Bajra', 'Wheat', 'Rice', 'Soybean', 'Mango', 'Banana', 'Sugarcane', 'Cotton', 'Gram', 'Maize', 'Other'].map(c => (
-                  <option key={c} value={c}>{t(`fields.crops_list.${c}`)}</option>
+                  <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </div>
@@ -200,7 +235,7 @@ const AddField = () => {
                     onClick={() => setFormData({...formData, waterAvailability: opt})}
                     className={`water-btn ${formData.waterAvailability === opt ? 'active' : ''}`}
                   >
-                    {t(`fields.water_levels.${opt.toLowerCase().replace(' ', '_')}`)}
+                    {opt}
                   </button>
                 ))}
               </div>

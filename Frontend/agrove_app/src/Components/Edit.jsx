@@ -168,7 +168,7 @@ const EditPage = () => {
               >
                 <option value="">{t("fields.select_soil")}</option>
                 {["Black", "Red", "Alluvial", "Laterite", "Arid", "Coastal", "Forest"].map((s) => (
-                  <option key={s} value={s}>{t(`fields.soils.${s}`)}</option>
+                  <option key={s} value={s}>{t(`${s}`)}</option>
                 ))}
               </select>
             </div>
